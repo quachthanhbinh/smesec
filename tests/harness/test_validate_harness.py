@@ -32,6 +32,19 @@ class TestValidateHarness(unittest.TestCase):
         result = validate_project(self.repo_root)
         self.assertIn('failures', result)
 
+    def test_validate_project_flags_missing_required_path(self):
+        missing_repo = self.repo_root / "tmp_missing_harness"
+        missing_repo.mkdir(exist_ok=True)
+        self.addCleanup(lambda: missing_repo.rmdir() if missing_repo.exists() else None)
+        result = validate_project(missing_repo)
+        self.assertGreater(len(result["failures"]), 0)
+
+    def test_required_paths_include_agents_and_rules(self):
+        required = {p.as_posix() for p in REQUIRED_PATHS}
+        self.assertIn("AGENTS.md", required)
+        self.assertIn("docs/rules/00-universal.md", required)
+        self.assertIn("docs/specs/_TEMPLATE/IMPLEMENT-NOTE.md", required)
+
 
 if __name__ == '__main__':
     unittest.main()

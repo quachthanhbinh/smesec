@@ -1,13 +1,61 @@
+from __future__ import annotations
+
 from pathlib import Path
 
-REQUIRED_PATHS = [Path('AGENTS.md')]
+REQUIRED_PATHS = [
+    Path("AGENTS.md"),
+    Path("README.md"),
+    Path("docs/ARCHITECTURE.md"),
+    Path("docs/rules/00-universal.md"),
+    Path("docs/rules/01-architecture.md"),
+    Path("docs/rules/02-security.md"),
+    Path("docs/rules/03-web.md"),
+    Path("docs/rules/04-mobile.md"),
+    Path("docs/rules/05-desktop.md"),
+    Path("docs/rules/06-testing.md"),
+    Path("docs/specs/_TEMPLATE/SPEC.md"),
+    Path("docs/specs/_TEMPLATE/TASKS.md"),
+    Path("docs/specs/_TEMPLATE/IMPLEMENT-NOTE.md"),
+    Path("docs/audit/implement-note-index.md"),
+    Path("docs/audit/telemetry-digest.md"),
+]
 
-REQUIRED_RULE_HEADINGS = ['## Rule:', '**When:**', '**How to verify:**']
+REQUIRED_RULE_HEADINGS = [
+    "## Rule:",
+    "**When:**",
+    "**What:**",
+    "**Why:**",
+    "**How to verify:**",
+]
 
-REQUIRED_SPEC_TEMPLATE_HEADINGS = ['## Acceptance Criteria']
+REQUIRED_SPEC_TEMPLATE_HEADINGS = [
+    "## Problem Statement",
+    "## Solution Overview",
+    "## Architecture / Data Flow",
+    "## Testing Strategy",
+    "## Acceptance Criteria",
+    "## Out of Scope",
+]
 
-REQUIRED_IMPLEMENT_NOTE_HEADINGS = ['## 2. Architecture Decisions']
+REQUIRED_IMPLEMENT_NOTE_HEADINGS = [
+    "## 1. Pre-Implementation Context",
+    "## 2. Architecture Decisions",
+    "## 3. Implementation Challenges",
+    "## 4. Code Patterns Used",
+    "## 5. Testing Strategy",
+    "## 6. What Would Break This",
+    "## 7. Future Considerations",
+]
+
+
+def _missing_paths(repo_root: Path) -> list[str]:
+    failures: list[str] = []
+    for relative_path in REQUIRED_PATHS:
+        if not (repo_root / relative_path).exists():
+            failures.append(f"Missing required path: {relative_path}")
+    return failures
 
 
 def validate_project(repo_root: Path) -> dict:
-    return {'failures': []}
+    failures = _missing_paths(repo_root)
+    return {"failures": failures}
