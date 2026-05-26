@@ -55,6 +55,33 @@ class TestValidateHarness(unittest.TestCase):
         result = validate_project(test_repo)
         self.assertTrue(any("BRAINSTORM" in f for f in result["failures"]))
 
+    def test_rule_files_contain_required_headings(self):
+        test_repo = self.repo_root / "tmp_test_rules"
+        test_repo.mkdir(exist_ok=True)
+        rules_dir = test_repo / "docs" / "rules"
+        rules_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create a rule file missing required headings
+        rule_file = rules_dir / "00-universal.md"
+        rule_file.write_text("# 00 Universal Rules\n\n## Rule: Some rule\n\nMissing other headings")
+
+        def cleanup():
+            if rule_file.exists():
+                rule_file.unlink()
+            if rules_dir.exists():
+                rules_dir.rmdir()
+            if (test_repo / "docs").exists():
+                (test_repo / "docs").rmdir()
+            if test_repo.exists():
+                test_repo.rmdir()
+
+        self.addCleanup(cleanup)
+
+        result = validate_project(test_repo)
+        # Should flag missing headings like **When:**, **What:**, etc.
+        rule_failures = [f for f in result["failures"] if "00-universal.md" in f and "missing required heading" in f]
+        self.assertGreater(len(rule_failures), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

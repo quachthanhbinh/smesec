@@ -26,6 +26,8 @@ REQUIRED_RULE_HEADINGS = [
     "**What:**",
     "**Why:**",
     "**How to verify:**",
+    "**Example (correct):**",
+    "**Example (incorrect):**",
 ]
 
 REQUIRED_SPEC_TEMPLATE_HEADINGS = [
@@ -75,7 +77,33 @@ def _check_agents_content(repo_root: Path) -> list[str]:
     return failures
 
 
+def _check_rule_file_format(repo_root: Path) -> list[str]:
+    failures: list[str] = []
+    rule_files = [
+        Path("docs/rules/00-universal.md"),
+        Path("docs/rules/01-architecture.md"),
+        Path("docs/rules/02-security.md"),
+        Path("docs/rules/03-web.md"),
+        Path("docs/rules/04-mobile.md"),
+        Path("docs/rules/05-desktop.md"),
+        Path("docs/rules/06-testing.md"),
+    ]
+
+    for rule_file in rule_files:
+        file_path = repo_root / rule_file
+        if not file_path.exists():
+            continue
+
+        content = file_path.read_text(encoding="utf-8")
+        for heading in REQUIRED_RULE_HEADINGS:
+            if heading not in content:
+                failures.append(f"{rule_file} missing required heading: {heading}")
+
+    return failures
+
+
 def validate_project(repo_root: Path) -> dict:
     failures = _missing_paths(repo_root)
     failures.extend(_check_agents_content(repo_root))
+    failures.extend(_check_rule_file_format(repo_root))
     return {"failures": failures}
