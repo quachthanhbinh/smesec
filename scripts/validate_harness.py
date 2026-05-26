@@ -58,6 +58,11 @@ REQUIRED_AGENTS_SNIPPETS = [
     "## Rules Index",
 ]
 
+REQUIRED_README_SNIPPETS = [
+    "BRAINSTORM → SPEC → PLAN → IMPLEMENT (TDD) → VERIFY",
+    "scripts/validate_harness.py",
+]
+
 
 def _missing_paths(repo_root: Path) -> list[str]:
     failures: list[str] = []
@@ -127,9 +132,23 @@ def _check_template_sections(repo_root: Path) -> list[str]:
     return failures
 
 
+def _check_readme_content(repo_root: Path) -> list[str]:
+    readme_path = repo_root / "README.md"
+    if not readme_path.exists():
+        return []
+    content = readme_path.read_text(encoding="utf-8")
+    failures: list[str] = []
+    for snippet in REQUIRED_README_SNIPPETS:
+        if snippet not in content:
+            failures.append("README missing harness workflow references")
+            break
+    return failures
+
+
 def validate_project(repo_root: Path) -> dict:
     failures = _missing_paths(repo_root)
     failures.extend(_check_agents_content(repo_root))
     failures.extend(_check_rule_file_format(repo_root))
     failures.extend(_check_template_sections(repo_root))
+    failures.extend(_check_readme_content(repo_root))
     return {"failures": failures}

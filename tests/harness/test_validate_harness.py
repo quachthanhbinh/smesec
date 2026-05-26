@@ -140,6 +140,20 @@ class TestValidateHarness(unittest.TestCase):
         implement_note_failures = [f for f in result["failures"] if "IMPLEMENT-NOTE.md" in f and "missing required heading" in f]
         self.assertGreater(len(implement_note_failures), 0)
 
+    def test_readme_includes_harness_workflow_reference(self):
+        readme = self.repo_root / "README.md"
+        self.assertTrue(readme.exists())
+        content = readme.read_text(encoding="utf-8")
+        self.assertIn("BRAINSTORM → SPEC → PLAN → IMPLEMENT (TDD) → VERIFY", content)
+
+    def test_audit_files_exist_with_expected_headings(self):
+        index_path = self.repo_root / "docs/audit/implement-note-index.md"
+        digest_path = self.repo_root / "docs/audit/telemetry-digest.md"
+        self.assertTrue(index_path.exists())
+        self.assertTrue(digest_path.exists())
+        self.assertIn("# Implementation Notes Index", index_path.read_text(encoding="utf-8"))
+        self.assertIn("# Telemetry Digest", digest_path.read_text(encoding="utf-8"))
+
 
 if __name__ == '__main__':
     unittest.main()
