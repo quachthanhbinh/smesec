@@ -98,43 +98,251 @@ SMEs lack dedicated security teams, so the platform must be both protective AND 
 
 ## 1) System Architecture Diagram
 
-### 1.1 Logical View
+### 1.1 High-Level Architecture (ByteByteGo Style)
 
-```mermaid
-flowchart LR
-    U[Admin / Ops / Non-security Staff] --> UI[Web Dashboard\nReact/Next.js]
-    U --> FD[Flutter Mobile/Desktop App]
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                           CLIENT LAYER (Presentation)                                │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                       │
+│  ┌──────────────────────┐         ┌──────────────────────┐                         │
+│  │   Web Dashboard      │         │  Mobile/Desktop App  │                         │
+│  │   React + Next.js    │         │   Flutter/Dart       │                         │
+│  │   ─────────────      │         │   ─────────────      │                         │
+│  │   • Alert Triage     │         │   • Push Alerts      │                         │
+│  │   • Policy Config    │         │   • Quick Actions    │                         │
+│  │   • Compliance View  │         │   • Incident Wizard  │                         │
+│  └──────────┬───────────┘         └──────────┬───────────┘                         │
+│             │                                 │                                      │
+│             └─────────────────┬───────────────┘                                      │
+│                               │                                                      │
+└───────────────────────────────┼──────────────────────────────────────────────────────┘
+                                │
+                                │ HTTPS/TLS
+                                ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                          API GATEWAY LAYER (Edge)                                    │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                       │
+│  ┌───────────────────────────────────────────────────────────────────────────────┐ │
+│  │  CloudFront + WAF → API Gateway / ALB                                         │ │
+│  │  ────────────────────────────────────────                                     │ │
+│  │  • Rate Limiting  • Auth (Keycloak/SSO)  • Request Routing                   │ │
+│  └───────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                       │
+└───────────────────────────────────────────────────────────────────────────────────┬─┘
+                                                                                      │
+                                                                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                      APPLICATION LAYER (Business Logic)                              │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                       │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐                    │
+│  │ AI Threat       │  │ Policy          │  │ Asset           │                    │
+│  │ Detection       │  │ Orchestration   │  │ Inventory       │                    │
+│  │ ─────────       │  │ ─────────       │  │ ─────────       │                    │
+│  │ Python/FastAPI  │  │ Go + OPA        │  │ Go              │                    │
+│  │                 │  │                 │  │                 │                    │
+│  │ • Prompt Scan   │  │ • Policy Eval   │  │ • Discovery     │                    │
+│  │ • DLP Check     │  │ • Enforcement   │  │ • Classification│                    │
+│  │ • Risk Scoring  │  │ • Offboarding   │  │ • Dependency    │                    │
+│  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘                    │
+│           │                    │                     │                              │
+│  ┌────────┴────────┐  ┌────────┴────────┐  ┌────────┴────────┐                    │
+│  │ Compliance      │  │ Incident        │  │ Integration     │                    │
+│  │ Engine          │  │ Playbook        │  │ Hub             │                    │
+│  │ ─────────       │  │ ─────────       │  │ ─────────       │                    │
+│  │ Python          │  │ Go              │  │ Plugin System   │                    │
+│  │                 │  │                 │  │                 │                    │
+│  │ • Control Check │  │ • Workflow Exec │  │ • Google WS     │                    │
+│  │ • Evidence      │  │ • Notification  │  │ • M365          │                    │
+│  │ • Report Gen    │  │ • Audit Log     │  │ • Slack/QB      │                    │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘                    │
+│                                                                                       │
+└───────────────────────────────────────────────────────────────────────────────────┬─┘
+                                                                                      │
+                                                                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                    INFRASTRUCTURE LAYER (Data & Events)                              │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                       │
+│  ┌──────────────────────────────────────────────────────────────────────────────┐  │
+│  │  DATA STORES                                                                  │  │
+│  │  ────────────                                                                 │  │
+│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐             │  │
+│  │  │ Aurora          │  │ ElastiCache     │  │ S3              │             │  │
+│  │  │ PostgreSQL      │  │ Redis           │  │ Object Storage  │             │  │
+│  │  │ ─────────       │  │ ─────────       │  │ ─────────       │             │  │
+│  │  │ • Assets        │  │ • Sessions      │  │ • Evidence      │             │  │
+│  │  │ • Policies      │  │ • Cache         │  │ • Logs          │             │  │
+│  │  │ • Incidents     │  │ • Rate Limit    │  │ • Backups       │             │  │
+│  │  └─────────────────┘  └─────────────────┘  └─────────────────┘             │  │
+│  └──────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                       │
+│  ┌──────────────────────────────────────────────────────────────────────────────┐  │
+│  │  EVENT & WORKFLOW                                                             │  │
+│  │  ────────────────                                                             │  │
+│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐             │  │
+│  │  │ EventBridge     │  │ SQS             │  │ Step Functions  │             │  │
+│  │  │ ─────────       │  │ ─────────       │  │ ─────────       │             │  │
+│  │  │ • Event Router  │  │ • Queue         │  │ • Playbook      │             │  │
+│  │  │ • Scheduler     │  │ • Buffering     │  │ • Orchestration │             │  │
+│  │  └─────────────────┘  └─────────────────┘  └─────────────────┘             │  │
+│  └──────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                       │
+│  ┌──────────────────────────────────────────────────────────────────────────────┐  │
+│  │  ML & MONITORING                                                              │  │
+│  │  ────────────────                                                             │  │
+│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐             │  │
+│  │  │ SageMaker       │  │ CloudWatch      │  │ SNS             │             │  │
+│  │  │ ─────────       │  │ ─────────       │  │ ─────────       │             │  │
+│  │  │ • ML Models     │  │ • Metrics       │  │ • Alerts        │             │  │
+│  │  │ • Inference     │  │ • Logs          │  │ • Email/Slack   │             │  │
+│  │  └─────────────────┘  └─────────────────┘  └─────────────────┘             │  │
+│  └──────────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                       │
+└───────────────────────────────────────────────────────────────────────────────────┬─┘
+                                                                                      │
+                                                                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                      EXTERNAL INTEGRATIONS                                           │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
+│  │ Google       │  │ Microsoft    │  │ Slack        │  │ QuickBooks   │          │
+│  │ Workspace    │  │ 365          │  │              │  │              │          │
+│  └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘          │
+│                                                                                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐                             │
+│  │ AWS          │  │ Deepfake     │  │ Compliance   │                             │
+│  │ Accounts     │  │ Detection    │  │ APIs         │                             │
+│  └──────────────┘  └──────────────┘  └──────────────┘                             │
+│                                                                                       │
+└───────────────────────────────────────────────────────────────────────────────────┘
 
-    UI --> APIGW[API Gateway]
-    FD --> APIGW
 
-    APIGW --> INV[Asset Inventory Service\nGo]
-    APIGW --> POL[Policy Orchestration Service\nGo + OPA]
-    APIGW --> AIT[AI Threat Detection Service\nPython]
-    APIGW --> CMP[Compliance Engine\nPython]
-    APIGW --> IR[Incident Playbook Service\nGo]
-    APIGW --> INT[Integration Hub\nPlugin-based]
+LEGEND:
+────────────────────────────────────────────────────────────────────────────────────
+🟦 Client Layer      : User-facing applications (Web, Mobile, Desktop)
+🟩 API Gateway       : Edge security, routing, authentication
+🟨 Application Layer : Business logic microservices
+🟧 Infrastructure    : Data stores, events, ML, monitoring
+🟪 External          : Third-party integrations
+────────────────────────────────────────────────────────────────────────────────────
+```
 
-    INT --> GW[Google Workspace]
-    INT --> M365[Microsoft 365]
-    INT --> SLK[Slack]
-    INT --> QB[QuickBooks]
-    INT --> AWSI[AWS Accounts]
+### 1.2 Data Flow Architecture
 
-    AIT --> DFK[Deepfake Detection Vendor API]
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                         AI THREAT DETECTION FLOW                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
 
-    INV --> DB[(Aurora PostgreSQL)]
-    POL --> DB
-    CMP --> DB
-    IR --> DB
+Employee uses AI tool (ChatGPT, Copilot, etc.)
+         │
+         ▼
+┌─────────────────────┐
+│ Browser Extension   │  ◄─── Optional: Client-side monitoring
+│ or Desktop Agent    │
+└──────────┬──────────┘
+           │ Capture prompt/data
+           ▼
+┌─────────────────────┐
+│ API Gateway         │  ◄─── Authentication + Rate Limiting
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│ AI Threat Detection │  ◄─── Python/FastAPI Service
+│ Service             │
+│ ─────────────       │
+│ 1. Pattern Match    │  ◄─── Regex rules (prompt injection, credentials)
+│ 2. DLP Check        │  ◄─── PII/financial/IP detection
+│ 3. ML Classifier    │  ◄─── SageMaker inference (risk scoring)
+│ 4. Risk Scoring     │  ◄─── 0-100 score + severity level
+└──────────┬──────────┘
+           │
+           ├─────────────────────┬─────────────────────┐
+           ▼                     ▼                     ▼
+┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│ Low Risk         │  │ Medium Risk      │  │ High/Critical    │
+│ ────────         │  │ ────────         │  │ ────────         │
+│ • Log only       │  │ • Advisory alert │  │ • Block action   │
+│ • No action      │  │ • Request reason │  │ • Immediate alert│
+└──────────────────┘  └──────────┬───────┘  └──────────┬───────┘
+                                 │                     │
+                                 ▼                     ▼
+                      ┌──────────────────┐  ┌──────────────────┐
+                      │ EventBridge      │  │ SNS/Push         │
+                      │ ────────         │  │ ────────         │
+                      │ • Queue event    │  │ • Mobile alert   │
+                      │ • Trigger flow   │  │ • Email/Slack    │
+                      └──────────┬───────┘  └──────────────────┘
+                                 │
+                                 ▼
+                      ┌──────────────────┐
+                      │ Step Functions   │
+                      │ ────────         │
+                      │ • Execute        │
+                      │   playbook       │
+                      │ • Notify team    │
+                      │ • Log incident   │
+                      └──────────────────┘
+```
 
-    AIT --> SQS[SQS/EventBridge]
-    POL --> SQS
-    IR --> SQS
+### 1.3 Clean Architecture Layers
 
-    CMP --> S3[(S3 Evidence Store)]
-    AIT --> CW[CloudWatch]
-    IR --> SNS[SNS/Email/Slack Alerts]
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                       │
+│                          PRESENTATION LAYER                                          │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐   │
+│  │  Web UI (React/Next.js)  │  Mobile/Desktop (Flutter)  │  API Gateway        │   │
+│  │  ───────────────────────────────────────────────────────────────────────────│   │
+│  │  • User Interface        │  • Native UI               │  • HTTP Endpoints   │   │
+│  │  • State Management      │  • Push Notifications      │  • Request Routing  │   │
+│  │  • Client Validation     │  • Offline Support         │  • Auth Middleware  │   │
+│  └─────────────────────────────────────────────────────────────────────────────┘   │
+│                                      │                                               │
+│                                      ▼                                               │
+│                          APPLICATION LAYER                                           │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐   │
+│  │  Use Cases / Business Logic                                                  │   │
+│  │  ───────────────────────────────────────────────────────────────────────────│   │
+│  │  • ScanPromptUseCase      • EnforcePolicy        • DiscoverAssets           │   │
+│  │  • DetectShadowAI         • ExecutePlaybook      • GenerateComplianceReport │   │
+│  │  • ClassifyRisk           • OffboardEmployee     • CollectEvidence          │   │
+│  └─────────────────────────────────────────────────────────────────────────────┘   │
+│                                      │                                               │
+│                                      ▼                                               │
+│                            DOMAIN LAYER                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐   │
+│  │  Core Business Entities & Rules                                              │   │
+│  │  ───────────────────────────────────────────────────────────────────────────│   │
+│  │  • Threat (risk score, severity, reasons)                                    │   │
+│  │  • Policy (rules, enforcement level, scope)                                  │   │
+│  │  • Asset (type, classification, owner)                                       │   │
+│  │  • Incident (status, playbook, timeline)                                     │   │
+│  │  • ComplianceControl (standard, status, evidence)                            │   │
+│  └─────────────────────────────────────────────────────────────────────────────┘   │
+│                                      │                                               │
+│                                      ▼                                               │
+│                        INFRASTRUCTURE LAYER                                          │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐   │
+│  │  External Services & Data Access                                             │   │
+│  │  ───────────────────────────────────────────────────────────────────────────│   │
+│  │  • PostgreSQL Repository  • Redis Cache         • S3 Storage                 │   │
+│  │  • SageMaker ML Client    • EventBridge Client  • SNS Notifier              │   │
+│  │  • Google Workspace API   • M365 API            • Slack API                  │   │
+│  └─────────────────────────────────────────────────────────────────────────────┘   │
+│                                                                                       │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+DEPENDENCY RULE: Inner layers know nothing about outer layers
+→ Domain has no dependencies
+→ Application depends only on Domain
+→ Infrastructure depends on Domain + Application
+→ Presentation depends on Application (via interfaces)
 ```
 
 ### 1.2 Deployment View (AWS-first)
