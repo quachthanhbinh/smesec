@@ -3,6 +3,99 @@
 Date: 2026-05-26  
 Scope: Strategic proposal for a unified SME protection platform (10–500 employees)
 
+## North Star Metric
+
+**Primary Metric:** Number of severe AI threats detected and prevented without disrupting employee productivity
+
+**Success Criteria:**
+- Detection precision ≥ 85% (correctly identify real threats)
+- False positive rate < 15% (minimize incorrect alerts)
+- Alert response time < 5 minutes (from detection to notification)
+- Incident resolution by non-security staff ≤ 10 minutes (guided playbooks work)
+
+**Why This Metric:**
+SMEs lack dedicated security teams, so the platform must be both protective AND non-disruptive. This metric balances security effectiveness (catch threats) with user experience (don't annoy employees with false alarms). Success means the company is protected while employees can work normally.
+
+## User Experience & Daily Usage
+
+### For Regular Employees (95% of users)
+**Daily interaction: MINIMAL - mostly background monitoring**
+
+**What runs automatically (no employee action needed):**
+- AI tool usage monitoring (ChatGPT, Copilot, etc.)
+- Prompt scanning for sensitive data (PII, credentials, source code)
+- Shadow AI discovery (detecting unapproved tools)
+
+**When employees interact (only when needed):**
+- **Alert notification** (mobile/desktop app): "You just pasted customer emails into ChatGPT - this violates data policy"
+  - Action: Acknowledge + follow guided steps to remediate
+  - Frequency: Rare (only when policy violation detected)
+  
+- **Justification request**: "You're using an unapproved AI tool - please explain business need"
+  - Action: Type 1-2 sentences explaining why
+  - Frequency: Occasional (when trying new AI tools)
+  
+- **Incident playbook** (rare): "Suspected account compromise - follow these 5 steps"
+  - Action: Follow wizard-style guided steps
+  - Frequency: Very rare (only during security incidents)
+
+**Key point:** Employees don't "use" this app daily like they use Slack or email. It's invisible until something needs attention.
+
+### For IT Manager / Admin (1-2 people)
+**Daily interaction: 10-15 minutes reviewing dashboard**
+
+**Morning routine:**
+- Check dashboard for overnight alerts (5 min)
+- Review pending justification requests (3 min)
+- Approve/deny AI tool requests (2 min)
+
+**Weekly tasks:**
+- Review compliance status (10 min)
+- Adjust policies if needed (15 min)
+- Check asset inventory for new devices/accounts (10 min)
+
+**Monthly tasks:**
+- Export compliance reports for audit (5 min)
+- Review AI usage trends (15 min)
+- Update approved AI tool catalog (10 min)
+
+### For CEO / Management
+**Daily interaction: ZERO - only review when needed**
+
+**What happens automatically:**
+- Platform protects company in background
+- Critical alerts escalated via email/Slack (rare)
+- Compliance status tracked continuously
+
+**When CEO interacts:**
+- **Quarterly:** Review compliance dashboard (5 min) before board meeting
+- **Annually:** Review audit reports for ISO/GDPR/SOC2 (30 min)
+- **Incident:** Approve emergency actions if major breach detected (rare)
+
+**Key value for CEO:**
+- "Set it and forget it" protection
+- No need to hire expensive security team
+- Compliance achieved without manual work
+- Peace of mind that AI risks are managed
+
+### Real-World Scenario Example
+
+**Normal day (no incidents):**
+- 8:00 AM: Platform scans 500 employee AI interactions overnight → 0 alerts
+- 9:00 AM: IT Manager checks dashboard → "All clear, 3 pending tool requests"
+- 10:00 AM: IT Manager approves 2 requests, denies 1 → takes 2 minutes
+- Rest of day: Platform monitors silently, employees work normally
+
+**Day with incident:**
+- 2:00 PM: Marketing Manager pastes customer list into ChatGPT
+- 2:00 PM: Platform detects PII → blocks action + sends mobile alert
+- 2:01 PM: Marketing Manager sees alert → follows 3-step remediation playbook
+- 2:05 PM: Incident resolved, logged for compliance
+- 2:06 PM: IT Manager gets summary notification
+- Total disruption: 5 minutes for Marketing Manager, 1 minute for IT
+
+**Key insight:** The platform is like a smoke detector - silent when everything is fine, loud when there's danger, and guides you through what to do.
+
 ## 1) System Architecture Diagram
 
 ### 1.1 Logical View
