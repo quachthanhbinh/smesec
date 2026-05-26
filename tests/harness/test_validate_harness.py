@@ -82,6 +82,64 @@ class TestValidateHarness(unittest.TestCase):
         rule_failures = [f for f in result["failures"] if "00-universal.md" in f and "missing required heading" in f]
         self.assertGreater(len(rule_failures), 0)
 
+    def test_spec_template_contains_required_sections(self):
+        test_repo = self.repo_root / "tmp_test_spec_template"
+        test_repo.mkdir(exist_ok=True)
+        template_dir = test_repo / "docs" / "specs" / "_TEMPLATE"
+        template_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create a SPEC.md template missing required sections
+        spec_file = template_dir / "SPEC.md"
+        spec_file.write_text("# Spec Template\n\n## Problem Statement\n\nMissing other sections")
+
+        def cleanup():
+            if spec_file.exists():
+                spec_file.unlink()
+            if template_dir.exists():
+                template_dir.rmdir()
+            if (test_repo / "docs" / "specs").exists():
+                (test_repo / "docs" / "specs").rmdir()
+            if (test_repo / "docs").exists():
+                (test_repo / "docs").rmdir()
+            if test_repo.exists():
+                test_repo.rmdir()
+
+        self.addCleanup(cleanup)
+
+        result = validate_project(test_repo)
+        # Should flag missing sections like ## Acceptance Criteria, ## Out of Scope, etc.
+        spec_failures = [f for f in result["failures"] if "SPEC.md" in f and "missing required heading" in f]
+        self.assertGreater(len(spec_failures), 0)
+
+    def test_implement_note_template_contains_required_sections(self):
+        test_repo = self.repo_root / "tmp_test_implement_note_template"
+        test_repo.mkdir(exist_ok=True)
+        template_dir = test_repo / "docs" / "specs" / "_TEMPLATE"
+        template_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create an IMPLEMENT-NOTE.md template missing required sections
+        implement_note_file = template_dir / "IMPLEMENT-NOTE.md"
+        implement_note_file.write_text("# Implementation Note\n\n## 1. Pre-Implementation Context\n\nMissing other sections")
+
+        def cleanup():
+            if implement_note_file.exists():
+                implement_note_file.unlink()
+            if template_dir.exists():
+                template_dir.rmdir()
+            if (test_repo / "docs" / "specs").exists():
+                (test_repo / "docs" / "specs").rmdir()
+            if (test_repo / "docs").exists():
+                (test_repo / "docs").rmdir()
+            if test_repo.exists():
+                test_repo.rmdir()
+
+        self.addCleanup(cleanup)
+
+        result = validate_project(test_repo)
+        # Should flag missing sections like ## 2. Architecture Decisions, ## 7. Future Considerations, etc.
+        implement_note_failures = [f for f in result["failures"] if "IMPLEMENT-NOTE.md" in f and "missing required heading" in f]
+        self.assertGreater(len(implement_note_failures), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

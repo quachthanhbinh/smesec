@@ -34,6 +34,9 @@ REQUIRED_SPEC_TEMPLATE_HEADINGS = [
     "## Problem Statement",
     "## Solution Overview",
     "## Architecture / Data Flow",
+    "## Database Changes (if applicable)",
+    "## API Contract (if applicable)",
+    "## Platform-Specific Considerations",
     "## Testing Strategy",
     "## Acceptance Criteria",
     "## Out of Scope",
@@ -102,8 +105,31 @@ def _check_rule_file_format(repo_root: Path) -> list[str]:
     return failures
 
 
+def _check_template_sections(repo_root: Path) -> list[str]:
+    failures: list[str] = []
+
+    # Check SPEC.md template
+    spec_template_path = repo_root / "docs/specs/_TEMPLATE/SPEC.md"
+    if spec_template_path.exists():
+        content = spec_template_path.read_text(encoding="utf-8")
+        for heading in REQUIRED_SPEC_TEMPLATE_HEADINGS:
+            if heading not in content:
+                failures.append(f"docs/specs/_TEMPLATE/SPEC.md missing required heading: {heading}")
+
+    # Check IMPLEMENT-NOTE.md template
+    implement_note_path = repo_root / "docs/specs/_TEMPLATE/IMPLEMENT-NOTE.md"
+    if implement_note_path.exists():
+        content = implement_note_path.read_text(encoding="utf-8")
+        for heading in REQUIRED_IMPLEMENT_NOTE_HEADINGS:
+            if heading not in content:
+                failures.append(f"docs/specs/_TEMPLATE/IMPLEMENT-NOTE.md missing required heading: {heading}")
+
+    return failures
+
+
 def validate_project(repo_root: Path) -> dict:
     failures = _missing_paths(repo_root)
     failures.extend(_check_agents_content(repo_root))
     failures.extend(_check_rule_file_format(repo_root))
+    failures.extend(_check_template_sections(repo_root))
     return {"failures": failures}
