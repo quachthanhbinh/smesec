@@ -543,11 +543,11 @@ SMEs (10-500 employees) face AI-driven risks but lack dedicated security teams a
 
 ---
 
-## 9. Scope Boundaries (Plan A vs B/C/D)
+## 9. Scope Boundaries (v1.0 vs v1.1+)
 
-This design and plan cover **Plan A only** - the foundation and AI detection vertical slice.
+This design and plan cover **v1.0 only** - the foundation and AI detection vertical slice.
 
-**Plan A (This Document) - 12 Tasks:**
+**v1.0 (This Document) - 12 Tasks:**
 - Monorepo foundation (Tasks 1-2)
 - AI threat detection engine (Task 3)
 - API Gateway + Web Dashboard + Flutter App (Tasks 4-6)
@@ -562,17 +562,17 @@ This design and plan cover **Plan A only** - the foundation and AI detection ver
 
 After reviewing the design spec, we identified a gap: the backend API cannot collect real prompts without client-side components. We evaluated three approaches:
 
-1. **Add both Browser Extension + Desktop Agent to Plan A** → Too much scope, risks 6-month timeline
-2. **Defer all client-side monitoring to Plan B** → Plan A becomes passive dashboard, cannot validate AI accuracy
-3. **Hybrid: Browser Extension in Plan A, Desktop Agent in Plan B** ← **SELECTED**
+1. **Add both Browser Extension + Desktop Agent to v1.0** → Too much scope, risks 6-month timeline
+2. **Defer all client-side monitoring to v1.1** → v1.0 becomes passive dashboard, cannot validate AI accuracy
+3. **Hybrid: Browser Extension in v1.0, Desktop Agent in v1.1** ← **SELECTED**
 
 **Rationale for Hybrid Approach:**
 - Browser extension covers 90% of AI usage (ChatGPT, Copilot web)
 - Simpler than desktop agent (no admin rights, no kernel hooks)
 - Critical for M3 accuracy gate (need real prompts to test)
-- Desktop agent deferred to Plan B (covers edge cases: desktop apps, clipboard)
+- Desktop agent deferred to v1.1 (covers edge cases: desktop apps, clipboard)
 
-**Deferred to Plan B (Post-V1):**
+**Deferred to v1.1 (Post-V1.0):**
 - **Desktop Monitoring Agent:** Clipboard monitoring, desktop app traffic inspection, kernel-level hooks
 - **Endpoint DLP Agent:** File operation monitoring, screen capture detection, USB controls
 - **Network-Level Inspection:** Corporate proxy/firewall integration, SSL/TLS decryption, DNS blocking
@@ -580,12 +580,12 @@ After reviewing the design spec, we identified a gap: the backend API cannot col
 - **Deep asset discovery:** Network scanning, agent-based discovery
 - **Advanced policy orchestration:** Complex rule engine, automated offboarding workflows
 
-**Deferred to Plan C:**
+**Deferred to v1.2:**
 - Full compliance engine
 - Evidence collection automation
 - Audit report generation
 
-**Deferred to Plan D:**
+**Deferred to v2.0:**
 - Incident playbook library
 - Production hardening
 - Pilot customer onboarding
@@ -598,13 +598,13 @@ Personal mobile/tablet devices present unique challenges:
 - Cannot install desktop agent (privacy concerns + no admin rights)
 - Cannot intercept network traffic (requires corporate certificate)
 
-**V1 Approach (Plan A):**
+**V1.0 Approach:**
 - OAuth token monitoring via Google Workspace / M365 APIs (already in Task 3)
 - Detect when employees authorize AI apps on any device
 - IT can revoke tokens remotely
 - Limitation: Reactive (detect after authorization), not proactive (block before)
 
-**V2 Approach (Plan B):**
+**V1.1 Approach:**
 - MDM integration (Intune, Workspace ONE, MobileIron)
 - Enforce work profile policies on BYOD devices
 - Conditional access: require MDM enrollment to access work email
@@ -612,11 +612,11 @@ Personal mobile/tablet devices present unique challenges:
 - Preserve personal app privacy (IT cannot access personal data)
 
 **Rationale:**
-- Plan A validates the riskiest assumption (AI detection accuracy) with browser extension
+- v1.0 validates the riskiest assumption (AI detection accuracy) with browser extension
 - Keeps scope tight for 6-month timeline
-- Each plan produces working, testable software
+- Each version produces working, testable software
 - Avoids "big bang" integration risk
-- BYOD monitoring deferred to Plan B based on pilot feedback
+- BYOD monitoring deferred to v1.1 based on pilot feedback
 
 ---
 
@@ -683,7 +683,7 @@ Personal mobile/tablet devices present unique challenges:
 ## 13. Next Steps
 
 1. ✅ **Design approved** - This document
-2. ✅ **Implementation plan created** - [2026-05-26-sme-ai-security-platform-v1-plan.md](2026-05-26-sme-ai-security-platform-v1-plan.md)
+2. ✅ **Implementation plan created** - [2026-05-26-sme-platform-v1.0-implementation.md](../plans/2026-05-26-sme-platform-v1.0-implementation.md)
 3. ⏳ **Set up worktree** - Isolated workspace for implementation
 4. ⏳ **Execute Task 1** - Initialize Nx monorepo
 5. ⏳ **Execute Tasks 2-10** - Follow plan sequentially
