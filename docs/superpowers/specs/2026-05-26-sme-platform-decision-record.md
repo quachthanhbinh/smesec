@@ -547,18 +547,38 @@ SMEs (10-500 employees) face AI-driven risks but lack dedicated security teams a
 
 This design and plan cover **Plan A only** - the foundation and AI detection vertical slice.
 
-**Plan A (This Document):**
-- Monorepo foundation
-- AI threat detection engine
-- Basic asset inventory
-- Minimal policy orchestration
-- Web + Flutter UI for alerts
-- AWS deployment baseline
+**Plan A (This Document) - 12 Tasks:**
+- Monorepo foundation (Tasks 1-2)
+- AI threat detection engine (Task 3)
+- API Gateway + Web Dashboard + Flutter App (Tasks 4-6)
+- Accuracy validation gate (Task 7)
+- AWS deployment baseline (Task 8)
+- CI/CD pipeline (Task 9)
+- Pilot readiness package (Task 10)
+- **Browser Extension - Prompt Interceptor (Task 11)** ← Added after architecture review
+- **Browser Extension - DLP Scanner (Task 12)** ← Added after architecture review
 
-**Deferred to Plan B:**
-- Deep asset discovery (network scanning, agent-based)
-- Advanced policy orchestration
-- Automated offboarding workflows
+**Critical Architecture Decision (2026-05-26):**
+
+After reviewing the design spec, we identified a gap: the backend API cannot collect real prompts without client-side components. We evaluated three approaches:
+
+1. **Add both Browser Extension + Desktop Agent to Plan A** → Too much scope, risks 6-month timeline
+2. **Defer all client-side monitoring to Plan B** → Plan A becomes passive dashboard, cannot validate AI accuracy
+3. **Hybrid: Browser Extension in Plan A, Desktop Agent in Plan B** ← **SELECTED**
+
+**Rationale for Hybrid Approach:**
+- Browser extension covers 90% of AI usage (ChatGPT, Copilot web)
+- Simpler than desktop agent (no admin rights, no kernel hooks)
+- Critical for M3 accuracy gate (need real prompts to test)
+- Desktop agent deferred to Plan B (covers edge cases: desktop apps, clipboard)
+
+**Deferred to Plan B (Post-V1):**
+- **Desktop Monitoring Agent:** Clipboard monitoring, desktop app traffic inspection, kernel-level hooks
+- **Endpoint DLP Agent:** File operation monitoring, screen capture detection, USB controls
+- **Network-Level Inspection:** Corporate proxy/firewall integration, SSL/TLS decryption, DNS blocking
+- **MDM Integration:** Mobile device management for BYOD scenarios (Intune, Workspace ONE)
+- **Deep asset discovery:** Network scanning, agent-based discovery
+- **Advanced policy orchestration:** Complex rule engine, automated offboarding workflows
 
 **Deferred to Plan C:**
 - Full compliance engine
@@ -571,11 +591,32 @@ This design and plan cover **Plan A only** - the foundation and AI detection ver
 - Pilot customer onboarding
 - SLA/monitoring setup
 
+**BYOD Considerations:**
+
+Personal mobile/tablet devices present unique challenges:
+- Cannot install browser extension (mobile browsers don't support extensions)
+- Cannot install desktop agent (privacy concerns + no admin rights)
+- Cannot intercept network traffic (requires corporate certificate)
+
+**V1 Approach (Plan A):**
+- OAuth token monitoring via Google Workspace / M365 APIs (already in Task 3)
+- Detect when employees authorize AI apps on any device
+- IT can revoke tokens remotely
+- Limitation: Reactive (detect after authorization), not proactive (block before)
+
+**V2 Approach (Plan B):**
+- MDM integration (Intune, Workspace ONE, MobileIron)
+- Enforce work profile policies on BYOD devices
+- Conditional access: require MDM enrollment to access work email
+- Block unapproved AI apps within work profile
+- Preserve personal app privacy (IT cannot access personal data)
+
 **Rationale:**
-- Plan A validates the riskiest assumption (AI detection accuracy)
+- Plan A validates the riskiest assumption (AI detection accuracy) with browser extension
 - Keeps scope tight for 6-month timeline
 - Each plan produces working, testable software
 - Avoids "big bang" integration risk
+- BYOD monitoring deferred to Plan B based on pilot feedback
 
 ---
 
