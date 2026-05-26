@@ -47,6 +47,12 @@ REQUIRED_IMPLEMENT_NOTE_HEADINGS = [
     "## 7. Future Considerations",
 ]
 
+REQUIRED_AGENTS_SNIPPETS = [
+    "## Workflow",
+    "BRAINSTORM → SPEC → PLAN → IMPLEMENT (TDD) → VERIFY",
+    "## Rules Index",
+]
+
 
 def _missing_paths(repo_root: Path) -> list[str]:
     failures: list[str] = []
@@ -56,6 +62,20 @@ def _missing_paths(repo_root: Path) -> list[str]:
     return failures
 
 
+def _check_agents_content(repo_root: Path) -> list[str]:
+    failures: list[str] = []
+    agents_path = repo_root / "AGENTS.md"
+    if not agents_path.exists():
+        return failures
+
+    content = agents_path.read_text(encoding="utf-8")
+    for snippet in REQUIRED_AGENTS_SNIPPETS:
+        if snippet not in content:
+            failures.append(f"AGENTS.md missing required snippet: {snippet}")
+    return failures
+
+
 def validate_project(repo_root: Path) -> dict:
     failures = _missing_paths(repo_root)
+    failures.extend(_check_agents_content(repo_root))
     return {"failures": failures}

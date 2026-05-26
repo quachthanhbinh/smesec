@@ -45,6 +45,16 @@ class TestValidateHarness(unittest.TestCase):
         self.assertIn("docs/rules/00-universal.md", required)
         self.assertIn("docs/specs/_TEMPLATE/IMPLEMENT-NOTE.md", required)
 
+    def test_validate_project_flags_missing_agents_pipeline_header(self):
+        test_repo = self.repo_root / "tmp_test_agents"
+        test_repo.mkdir(exist_ok=True)
+        agents_file = test_repo / "AGENTS.md"
+        agents_file.write_text("# AGENTS\n\nSome content without pipeline")
+        self.addCleanup(lambda: test_repo.rmdir() if test_repo.exists() else None)
+        self.addCleanup(lambda: agents_file.unlink() if agents_file.exists() else None)
+        result = validate_project(test_repo)
+        self.assertTrue(any("BRAINSTORM" in f for f in result["failures"]))
+
 
 if __name__ == '__main__':
     unittest.main()
