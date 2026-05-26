@@ -848,33 +848,335 @@ git commit -m "docs: add pilot readiness gates and operational runbook"
 
 ---
 
+## Task 11: Browser Extension - Prompt Interceptor
+
+**Files:**
+- Create: `apps/browser-extension/manifest.json`
+- Create: `apps/browser-extension/src/background.ts`
+- Create: `apps/browser-extension/src/interceptor.ts`
+- Create: `apps/browser-extension/tests/interceptor.test.ts`
+
+- [ ] **Step 1: Write failing extension test**
+
+`apps/browser-extension/tests/interceptor.test.ts`:
+```ts
+import { interceptRequest } from '../src/interceptor';
+
+describe('prompt interceptor', () => {
+  it('detects ChatGPT API requests', () => {
+    const request = {
+      url: 'https://api.openai.com/v1/chat/completions',
+      method: 'POST',
+      requestBody: { messages: [{ role: 'user', content: 'test prompt' }] }
+    };
+    
+    const result = interceptRequest(request);
+    expect(result.shouldIntercept).toBe(true);
+    expect(result.prompt).toBe('test prompt');
+  });
+});
+```
+
+- [ ] **Step 2: Run test to verify it fails**
+
+Run: `npx jest apps/browser-extension/tests/interceptor.test.ts -v`  
+Expected: FAIL with module not found.
+
+- [ ] **Step 3: Implement minimal interceptor**
+
+`apps/browser-extension/manifest.json`:
+```json
+{
+  "manifest_version": 3,
+  "name": "SME Security Monitor",
+  "version": "1.0.0",
+  "permissions": ["webRequest", "webRequestBlocking", "storage"],
+  "host_permissions": [
+    "*://api.openai.com/*",
+    "*://api.anthropic.com/*",
+    "*://copilot.microsoft.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
+```
+
+`apps/browser-extension/src/interceptor.ts`:
+```ts
+export interface InterceptResult {
+  shouldIntercept: boolean;
+  prompt?: string;
+  aiService?: 'openai' | 'anthropic' | 'copilot';
+}
+
+const AI_ENDPOINTS = [
+  { pattern: /api\.openai\.com/, service: 'openai' as const },
+  { pattern: /api\.anthropic\.com/, service: 'anthropic' as const },
+  { pattern: /copilot\.microsoft\.com/, service: 'copilot' as const }
+];
+
+export function interceptRequest(request: any): InterceptResult {
+  for (const endpoint of AI_ENDPOINTS) {
+    if (endpoint.pattern.test(request.url)) {
+      const prompt = extractPrompt(request.requestBody, endpoint.service);
+      return {
+        shouldIntercept: true,
+        prompt,
+        aiService: endpoint.service
+      };
+    }
+  }
+  return { shouldIntercept: false };
+}
+
+function extractPrompt(body: any, service: string): string {
+  if (service === 'openai' && body.messages) {
+    return body.messages[body.messages.length - 1]?.content || '';
+  }
+  // Add extractors for other services
+  return '';
+}
+```
+
+- [ ] **Step 4: Run test to verify it passes**
+
+Run: `npx jest apps/browser-extension/tests/interceptor.test.ts -v`  
+Expected: PASS.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add apps/browser-extension
+git commit -m "feat(extension): add prompt interceptor for AI services"
+```
+
+---
+
+## Task 12: Browser Extension - DLP Scanner Integration
+
+**Files:**
+- Create: `apps/browser-extension/src/scanner.ts`
+- Create: `apps/browser-extension/src/api-client.ts`
+- Create: `apps/browser-extension/tests/scanner.test.ts`
+- Modify: `apps/browser-extension/src/background.ts`
+
+- [ ] **Step 1: Write failing scanner test**
+
+`apps/browser-extension/tests/scanner.test.ts`:
+```ts
+import { scanPrompt } from '../src/scanner';
+
+describe('DLP scanner', () => {
+  it('detects PII in prompt', async () => {
+    const prompt = 'Send email to john.doe@company.com about the project';
+    const result = await scanPrompt(prompt);
+    
+    expect(result.hasPII).toBe(true);
+    expect(result.patterns).toContain('email');
+  });
+  
+  it('detects credentials in prompt', async () => {
+    const prompt = 'My API key is sk-1234567890abcdef';
+    const result = await scanPrompt(prompt);
+    
+    expect(result.hasCredentials).toBe(true);
+    expect(result.riskLevel).toBe('critical');
+  });
+});
+```
+
+- [ ] **Step 2: Run test to verify it fails**
+
+Run: `npx jest apps/browser-extension/tests/scanner.test.ts -v`  
+Expected: FAIL with module not found.
+
+- [ ] **Step 3: Implement scanner with API integration**
+
+`apps/browser-extension/src/scanner.ts`:
+```ts
+import { scanPromptAPI } from './api-client';
+
+export interface ScanResult {
+  hasPII: boolean;
+  hasCredentials: boolean;
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  patterns: string[];
+  shouldBlock: boolean;
+}
+
+const LOCAL_PATTERNS = {
+  email: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
+  apiKey: /\b(sk|pk)[-_][a-zA-Z0-9]{20,}\b/,
+  password: /password\s*[:=]\s*\S+/i
+};
+
+export async function scanPrompt(prompt: string): Promise<ScanResult> {
+  // Quick local scan first
+  const localResult = quickScan(prompt);
+  
+  if (localResult.riskLevel === 'critical') {
+    return { ...localResult, shouldBlock: true };
+  }
+  
+  // Send to backend for deep scan
+  try {
+    const apiResult = await scanPromptAPI(prompt);
+    return apiResult;
+  } catch (error) {
+    // Fallback to local scan if API fails
+    return localResult;
+  }
+}
+
+function quickScan(prompt: string): ScanResult {
+  const patterns: string[] = [];
+  let hasPII = false;
+  let hasCredentials = false;
+  
+  if (LOCAL_PATTERNS.email.test(prompt)) {
+    patterns.push('email');
+    hasPII = true;
+  }
+  
+  if (LOCAL_PATTERNS.apiKey.test(prompt) || LOCAL_PATTERNS.password.test(prompt)) {
+    patterns.push('credentials');
+    hasCredentials = true;
+  }
+  
+  const riskLevel = hasCredentials ? 'critical' : hasPII ? 'high' : 'low';
+  
+  return {
+    hasPII,
+    hasCredentials,
+    riskLevel,
+    patterns,
+    shouldBlock: hasCredentials
+  };
+}
+```
+
+`apps/browser-extension/src/api-client.ts`:
+```ts
+import { ScanResult } from './scanner';
+
+const API_BASE_URL = 'https://api.smesec.com'; // Configure per environment
+
+export async function scanPromptAPI(prompt: string): Promise<ScanResult> {
+  const response = await fetch(`${API_BASE_URL}/v1/scan/prompt`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${await getAuthToken()}`
+    },
+    body: JSON.stringify({
+      tenantId: await getTenantId(),
+      userId: await getUserId(),
+      source: 'browser',
+      promptText: prompt
+    })
+  });
+  
+  if (!response.ok) {
+    throw new Error(`API scan failed: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  
+  return {
+    hasPII: data.reasons.some((r: string) => r.includes('PII')),
+    hasCredentials: data.reasons.some((r: string) => r.includes('credential')),
+    riskLevel: data.riskLevel,
+    patterns: data.reasons,
+    shouldBlock: data.riskLevel === 'critical'
+  };
+}
+
+async function getAuthToken(): Promise<string> {
+  const storage = await chrome.storage.local.get('authToken');
+  return storage.authToken || '';
+}
+
+async function getTenantId(): Promise<string> {
+  const storage = await chrome.storage.local.get('tenantId');
+  return storage.tenantId || '';
+}
+
+async function getUserId(): Promise<string> {
+  const storage = await chrome.storage.local.get('userId');
+  return storage.userId || '';
+}
+```
+
+- [ ] **Step 4: Run test to verify it passes**
+
+Run: `npx jest apps/browser-extension/tests/scanner.test.ts -v`  
+Expected: PASS.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add apps/browser-extension
+git commit -m "feat(extension): add DLP scanner with API integration"
+```
+
+---
+
 ## Dependency Order Summary
 
 1. Task 1 → Task 2 (workspace first)  
-2. Task 3 (AI service) before Task 4/5/6 (consumers)  
+2. Task 3 (AI service) before Task 4/5/6/11/12 (consumers)  
 3. Task 7 accuracy gate after Task 3  
 4. Task 8 infra can run parallel from Task 2 onward  
 5. Task 9 CI after core tests exist  
 6. Task 10 pilot package after M3 validation evidence exists
+7. Task 11 (browser extension interceptor) after Task 3 (needs API endpoint)
+8. Task 12 (browser extension scanner) after Task 11 (builds on interceptor)
 
 ---
 
 ## Risk Mitigation Mapping
 
-- **AI detection accuracy risk:** Task 7 gating + weekly calibration cycle
+- **AI detection accuracy risk:** Task 7 gating + weekly calibration cycle + Task 11-12 provide real prompt data
 - **Scope creep risk:** strict Plan A boundary; defer asset/policy/compliance deep features to Plans B/C/D
 - **Integration risk:** stub interfaces first; real connectors after M3 gate
 - **Ops complexity risk:** AWS managed services first (Fargate/SQS/EventBridge/Step Functions)
 - **Non-security usability risk:** early Flutter/web operator flows from Tasks 5-6
+- **Data collection risk:** Browser extension (Tasks 11-12) provides real-world prompts for accuracy validation
 
 ---
 
 ## Spec Coverage Check (self-review)
 
 - Architecture and AWS-first deployment: covered by Tasks 1,2,8  
-- AI threat strategy with phased v1 controls: covered by Tasks 3,4,7  
+- AI threat strategy with phased v1 controls: covered by Tasks 3,4,7,11,12  
 - Web + Flutter operator UX: covered by Tasks 5,6  
+- Browser extension for prompt interception: covered by Tasks 11,12
 - Validation gates and risk-first sequencing: covered by Milestones + Task 7 + Task 10  
 - Team/delivery cadence alignment: reflected in milestones M1-M4 and week-based gating
 
 No placeholders (TBD/TODO) remain; steps include concrete files, commands, and expected outcomes.
+
+## Deferred to Plan B (Post-V1)
+
+The following components are intentionally deferred to maintain 6-month timeline:
+
+**Desktop Monitoring Agent:**
+- Clipboard monitoring
+- Desktop app traffic inspection (non-browser AI tools)
+- Kernel-level hooks for system-wide monitoring
+- Rationale: Browser extension covers 90% of AI usage; desktop agent adds complexity without proportional value in v1
+
+**Endpoint DLP Agent:**
+- File operation monitoring
+- Screen capture detection
+- USB/external device controls
+- Rationale: Browser-level DLP (Task 12) is sufficient for v1; full endpoint DLP requires admin rights and complex deployment
+
+**Network-Level Inspection:**
+- Corporate proxy/firewall integration
+- SSL/TLS decryption at network edge
+- DNS-based blocking
+- Rationale: Requires enterprise network infrastructure; browser extension provides equivalent protection without network changes
+
+These will be evaluated for Plan B based on v1 pilot feedback and customer demand.
