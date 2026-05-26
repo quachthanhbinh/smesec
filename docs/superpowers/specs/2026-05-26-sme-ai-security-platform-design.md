@@ -98,7 +98,7 @@ SMEs lack dedicated security teams, so the platform must be both protective AND 
 
 ## 1) System Architecture Diagram
 
-### 1.1 High-Level Architecture (ByteByteGo Style)
+### 1.1 High-Level Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
@@ -345,7 +345,7 @@ DEPENDENCY RULE: Inner layers know nothing about outer layers
 → Presentation depends on Application (via interfaces)
 ```
 
-### 1.2 Deployment View (AWS-first)
+### 1.4 Deployment View (AWS-first)
 
 ```mermaid
 flowchart TB
