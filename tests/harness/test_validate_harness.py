@@ -1,3 +1,5 @@
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
@@ -153,6 +155,16 @@ class TestValidateHarness(unittest.TestCase):
         self.assertTrue(digest_path.exists())
         self.assertIn("# Implementation Notes Index", index_path.read_text(encoding="utf-8"))
         self.assertIn("# Telemetry Digest", digest_path.read_text(encoding="utf-8"))
+
+    def test_validator_cli_returns_zero_on_valid_project(self):
+        result = subprocess.run(
+            [sys.executable, "-m", "scripts.validate_harness", "--repo-root", str(self.repo_root)],
+            capture_output=True,
+            text=True,
+            cwd=self.repo_root
+        )
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("Harness validation passed", result.stdout)
 
 
 if __name__ == '__main__':

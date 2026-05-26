@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import argparse
+import sys
 from pathlib import Path
 
 REQUIRED_PATHS = [
@@ -152,3 +154,32 @@ def validate_project(repo_root: Path) -> dict:
     failures.extend(_check_template_sections(repo_root))
     failures.extend(_check_readme_content(repo_root))
     return {"failures": failures}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Validate harness workflow structure and content"
+    )
+    parser.add_argument(
+        "--repo-root",
+        type=Path,
+        default=Path.cwd(),
+        help="Path to repository root (defaults to current directory)",
+    )
+    args = parser.parse_args()
+
+    result = validate_project(args.repo_root)
+    failures = result["failures"]
+
+    if not failures:
+        print("Harness validation passed")
+        return 0
+    else:
+        print("Harness validation failed:")
+        for failure in failures:
+            print(f"  - {failure}")
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
