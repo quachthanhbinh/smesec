@@ -21,11 +21,13 @@ Track 1 xay dung **nen tang bao mat deterministic** cho SMESec -- khong phu thuo
 |---------------------------|---------|
 | Asset inventory and classification | Yes - Full |
 | Access governance (least-privilege, offboarding, shadow IT) | Yes - Full |
-| Compliance posture (ISO 27001, GDPR, SOC 2) | Yes - Foundation |
+| Compliance posture (ISO 27001, GDPR, SOC 2) | Yes - Compliance-Ready* |
 | Incident playbooks cho non-security staff | Yes - 5 core playbooks |
 | Integration (Google Workspace, M365, Slack, AWS) | Yes - Full |
 | AI-specific threat surface | No - Track 2 |
 | Cost model / pricing | No - Workstream rieng |
+
+**\*Compliance-Ready:** V1 launch voi technical controls + evidence collection automation. **Certification audits** (SOC 2, ISO 27001) dien ra **post-launch** (6-12 thang). Xem [Compliance Roadmap](../compliance/03-roadmap.md).
 
 ---
 
