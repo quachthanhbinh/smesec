@@ -35,10 +35,10 @@ Track 2 xay dung **AI threat detection** cho SMESec voi target accuracy >95%. Da
 
 | Gate | Sprint | Metrics | Decision |
 |------|--------|---------|---------|
-| Gate 1 | End S3 (W6) | Prompt injection >90%; DLP >95% critical data | Pass -> continue; Fail -> iterate models |
-| Gate 2 | End S6 (W12) | False positive rate: injection <10%, DLP <5% | Pass -> continue; Fail -> tune thresholds |
-| Gate 3 | End S9 (W18) | All targets met: injection >95%, DLP >99%, deepfake >90% | Pass -> start pilot; Fail -> delay pilot |
-| Gate 4 | End S12 (W24) | Real-world pilot validates; customer satisfaction >4.0/5.0 | Pass -> merge to product; Fail -> continue beta |
+| Gate 1 | End S3 (W6) | Prompt injection baseline: TPR/FPR benchmarked; gap vs production gate (TPR >85%, FPR <2%) quantified | Pass → continue; Fail → iterate models |
+| Gate 2 | End S5 (W10) | Prompt injection: TPR >85%, FPR <2% (30-day holdout, independently evaluated); DLP critical PII >99%, FP <5% | Pass → promote to beta; Fail → stays opt-in R&D |
+| Gate 3 | End S10 (W20) | Shadow AI classification >95%; Deepfake >80% (Hive, independently evaluated; combined with OOV ≈99% fraud prevention); Prompt injection still ≥ TPR >85%, FPR <2% | Pass → start pilot; Fail → delay pilot |
+| Gate 4 | End S12 (W24) | Real-world pilot validates; customer satisfaction >4.0/5.0 | Pass → merge to product; Fail → continue beta |
 
 ---
 

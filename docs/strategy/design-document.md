@@ -475,11 +475,11 @@ v2 — Internal BERT Classifier (Sprint 23–24, Enterprise tier only):
 |---|---|---|---|
 | Shadow AI classification | >95% AI tool identification | <10% (unknown apps miscategorized as AI) | Sprint 9 production evaluation |
 | LLM DLP (PII detection) | >99% for CRITICAL data (credit card, SSN) | <5% for INTERNAL data | Sprint 8 staging test |
-| Deepfake detection | >80% voice deepfake detection | <15% (ambiguous → escalate, not block) | Sprint 10 evaluation |
-| Prompt injection (Lakera Guard v1) | Production-validated (vendor SLA) | Vendor-managed | Sprint 8 integration test |
+| Deepfake detection | >80% voice deepfake detection (independently evaluated by SMESec ML team on labeled test dataset — not vendor-asserted); combined with OOV workflow ≈ 99% fraud prevention rate | <15% (ambiguous → escalate, not block) | Sprint 10 evaluation |
+| Prompt injection (Lakera Guard v1) | TPR >85%, FPR <2% — independently evaluated by SMESec ML team on 30-day SMESec-specific production holdout | Not vendor-managed — SMESec evaluates independently | Sprint 8 integration + 30-day holdout evaluation |
 | Prompt injection (BERT internal) | TPR >85% | FPR <2% | Sprint 24 production holdout (Enterprise only) |
 
-> **Policy:** If accuracy gate is not met → feature remains `beta`, opt-in only. Track 2 features are never shipped as GA without passing the accuracy gate.
+> **Policy:** If accuracy gate is not met → feature remains `beta`, opt-in only. Track 2 features are never shipped as GA without passing the accuracy gate. **All accuracy gates are evaluated independently by the SMESec ML team on SMESec-specific production holdout data — vendor API uptime SLAs (e.g., Lakera Guard) do not satisfy accuracy gates.** Monthly re-evaluation: 500 labeled samples; alert if TPR drops below 82% (prompt injection) or 75% (deepfake).
 
 ---
 
