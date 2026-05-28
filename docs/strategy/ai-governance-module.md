@@ -1,3 +1,11 @@
+# SMESec — AI Governance Module
+
+> **Language note:** This document is written in Vietnamese (target audience: Vietnamese-speaking stakeholders). For the English-language summary of the same content, see [design-document.md § AI Governance Module](design-document.md#6-ai-governance-module).
+>
+> **Summary (English):** This module details SMESec's approach to detecting and governing employee use of external AI tools (e.g., ChatGPT, GitHub Copilot). It covers: (1) a 3-layer control framework (detect → govern → respond), (2) six specific modules — AI Submission Gate (browser DLP), Prompt Injection Detection, Shadow AI Governance, Deepfake Fraud Defense, AI Phishing Defense, and Employee Privacy transparency — (3) zero-knowledge DLP architecture (local Presidio WASM, no content leaves the browser), and (4) build/buy decisions per component. The delivery sequence aligns with the 13-sprint roadmap in [delivery-plan.md](delivery-plan.md) (Track 2, Sprints 4–11).
+
+---
+
 # SMESec — AI Governance Module: Phân Tích Chuyên Sâu
 
 **Ngày tạo:** 2026-05-28  

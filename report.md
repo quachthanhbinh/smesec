@@ -12,7 +12,7 @@ Small and medium enterprises (10–500 employees) face escalating AI-driven secu
 **Two-Track Strategy:** All development splits into parallel tracks to eliminate the accuracy risk of AI detection.
 
 - **Track 1 — Foundation & Governance (deterministic, ~100% accuracy):** Asset inventory, access governance, automated offboarding, incident playbooks, compliance reporting. Ships at MVP (Month 3) and v1 (Month 6) independently.
-- **Track 2 — AI Threat Detection (ML-gated):** Browser DLP, shadow AI governance, deepfake defense, prompt injection detection. Merges into product only after four accuracy validation gates. If gates not met, Track 1 ships alone.
+- **Track 2 — AI Threat Detection (ML-gated):** Browser DLP, shadow AI governance, deepfake defense, prompt injection detection. **Starts Sprint 1 in parallel with Track 1.** ML Engineer #1 onboards Day 1 to begin R&D (research, dataset collection, prototype models). Merges into product only after four accuracy validation gates. If gates not met, Track 1 ships alone.
 
 This document covers all four deliverables: System Architecture, Design Document, Team & Delivery Plan, and AI Governance Module.
 
@@ -210,8 +210,8 @@ Four contractual, architecturally-enforced commitments:
 
 | Phase | Months | FTE | Team Composition | Milestone |
 |---|---|---|---|---|
-| **Phase 1** | 1–3 | **6 + BD** | Tech Lead · BE#1 · BE#2 · FE#1 · Flutter · DevSecOps(contract) + PM(0.5) + **BD Consultant (contract, Week 1, 3 days/wk) [R-C5]** | **MVP** (W12) |
-| **Phase 2** | 4–6 | **9** | +ML Eng #1 (M4) · +BE#3 Python (M4) · +FE#2 Browser Ext (M4.5) | **v1** (W26) |
+| **Phase 1** | 1–3 | **7 + BD** | Tech Lead · BE#1 · BE#2 · FE#1 · Flutter · **ML Eng #1 (Day 1)** · DevSecOps(contract) + PM(0.5) + **BD Consultant (contract, Week 1, 3 days/wk) [R-C5]** | **MVP** (W12) |
+| **Phase 2** | 4–6 | **9** | +BE#3 Python (M4) · +FE#2 Browser Ext (M4.5) | **v1** (W26) |
 | **Phase 3** | 7–9 | **11** | +Customer Success Eng (M7) · +ML Eng #2 (M8, opt.) · DevSecOps → FTE | **v1.5** (W38) |
 | **Phase 4** | 10–12 | **11.5** | +Compliance Consultant (contract M10–M12) | **v2** (W52) |
 
@@ -221,14 +221,14 @@ Four contractual, architecturally-enforced commitments:
 
 #### Phase 1: Foundation → MVP (S1–S6, Month 1–3)
 
-| Sprint | Deliverable | Gate |
-|---|---|---|
-| **S1** (W1–2) | AWS infra (VPC/ECS/RDS), Keycloak SSO (min 2 ECS tasks, JWKS cache), multi-tenant schema (`tenant_id + data_residency` from day 1), CI/CD, S3 Object Lock (envelope encryption per-tenant KMS key), **`subscription_registry` schema + EventBridge Scheduler skeleton cho M365 webhook renewal [R-C3]** | Tenant isolation CI test green |
-| **S2** (W3–4) | Google Workspace sync — users, OAuth apps, shadow IT detection. Dashboard skeleton. | First-value demo <30 min from OAuth grant |
-| **S3** (W5–6) | M365 sync + delta link, unified dashboard (Google + M365), risk indicators per user/app | Visibility: all assets from both providers |
-| **S4** (W7–8) | Asset classification engine, OAuth scope risk scoring, shadow IT alerts (<15 min), Flutter mobile scaffold | Shadow IT alert pipeline live |
-| **S5** (W9–10) | Slack + AWS IAM discovery, RBAC model + least-privilege recommendations, composite identity graph | 4 providers unified in one view |
-| **S6** (W11–12) | **🏁 MVP**: Automated offboarding <5 min (Step Functions) + **grace period 30 min configurable (emergency=0) + rollback 24h + idempotency key [R-C1]**, 2 incident playbooks (wizard UI), immutable audit log (envelope encrypted), mobile app beta | Offboarding timed test <5 min in CI; grace period cancel test pass; rollback test pass |
+| Sprint | Track 1 | Track 2 | Gate |
+|---|---|---|---|
+| **S1** (W1–2) | AWS infra (VPC/ECS/RDS), Keycloak SSO (min 2 ECS tasks, JWKS cache), multi-tenant schema (`tenant_id + data_residency` from day 1), CI/CD, S3 Object Lock (envelope encryption per-tenant KMS key), **`subscription_registry` schema + EventBridge Scheduler skeleton for M365 webhook renewal [R-C3]** | `ThreatDetectionEvent` schema contract v0.1 (joint design) · Literature review (OWASP LLM Top 10, PromptBench) · Dataset collection plan · SageMaker workspace setup · Shadow AI tool registry v0.1 (100+ tools) | Tenant isolation CI test green · Track 2: schema v0.1 reviewed by both tracks |
+| **S2** (W3–4) | Google Workspace sync — users, OAuth apps, shadow IT detection. Dashboard skeleton. | Baseline model evaluation: BERT-tiny + regex vs labeled datasets (PromptBench, Presidio test suite) · Shadow AI risk scoring rubric design | First-value demo <30 min from OAuth grant · Track 2: baseline accuracy benchmarks documented |
+| **S3** (W5–6) | M365 sync + delta link, unified dashboard (Google + M365), risk indicators per user/app | Prompt injection prototype v0.1 (fine-tuned BERT-tiny, >80% precision target) · Presidio WASM compile pipeline setup · Lakera Guard API account + cost baseline | Visibility: all assets from both providers · Track 2: prototype >80% precision documented |
+| **S4** (W7–8) | Asset classification engine, OAuth scope risk scoring, shadow IT alerts (<15 min), Flutter mobile scaffold | Browser extension scaffold (Chrome MV3): Tier 1 regex DLP active in dev Chrome · Shadow AI risk model v0.1 SageMaker training job | Shadow IT alert pipeline live · Track 2: DLP intercepts email/credit card in dev |
+| **S5** (W9–10) | Slack + AWS IAM discovery, RBAC model + least-privilege recommendations, composite identity graph | **Track 2 Accuracy Gate 1 (W10):** Prompt injection >90% · DLP Tier 2 BERT-tiny ONNX in browser · Shadow AI classification >95% on top-100 tools · Hive API live | 4 providers unified · Track 2: Gate 1 accuracy report |
+| **S6** (W11–12) | **🏁 MVP**: Automated offboarding <5 min (Step Functions) + **grace period 30 min configurable (emergency=0) + rollback 24h + idempotency key [R-C1]**, 2 incident playbooks (wizard UI), immutable audit log (envelope encrypted), mobile app beta | DLP extension v0.3 tested vs real ChatGPT/Gemini (staging) · `ThreatDetectionEvent` schema v1 draft · Track 2 Phase 1 retrospective | Offboarding timed test <5 min in CI · grace period/rollback tests pass · Track 2: DLP confirmed end-to-end in staging |
 
 **MVP = "Can you revoke all access for a departing employee in 5 minutes?"**
 
@@ -236,8 +236,8 @@ Four contractual, architecturally-enforced commitments:
 
 | Sprint | Track 1 | Track 2 | Gate |
 |---|---|---|---|
-| **S7** | JIT access + auto-revoke, access reviews | ML Eng onboards; shadow AI model v0.2 on live OAuth data | Vanta evidence collection active |
-| **S8** | Playbook engine (Step Functions), 3 playbooks | LLM DLP browser extension v0.1 (Presidio local inference) | Extension detects PII in text field |
+| **S7** | JIT access + auto-revoke, access reviews | Shadow AI governance v1 on live OAuth data (ML Eng has 3 months of R&D to work from) | Vanta evidence collection active |
+| **S8** | Playbook engine (Step Functions), 3 playbooks | LLM DLP browser extension v1 (Presidio + Tier 2 BERT local inference) | Extension detects PII in text field |
 | **S9** | 5 playbooks complete, mobile push notifications | Shadow AI governance v1: AI tool classification + risk scores + attestation workflow | Shadow AI risk scores live |
 | **S10** | ISO 27001 + SOC 2 compliance dashboard, Vanta integration | Deepfake defense POC (Hive API), `ThreatDetectionEvent` schema v1 **frozen** | Schema locked — no breaking changes |
 | **S11** | Compliance reports (PDF export), GDPR automation | T1-T2 integration: AI threat events → EventBridge → Step Functions playbook auto-trigger | **Highest-risk sprint** — Tech Lead full-time |
@@ -282,7 +282,7 @@ Four contractual, architecturally-enforced commitments:
 | # | Risk | Phase | Probability | Impact | Mitigation |
 |---|---|---|---|---|---|
 | 1 | OAuth wizard >30 min for non-technical IT admin | MVP | High | Critical | Usability test W4. IT admin setup guide. Minimum-permission scope explainer. |
-| 2 | ML Engineer not hired before W9 | Phase 2 | Medium | High | Begin recruiting W5. Contractor ML fallback. Tech Lead builds SageMaker scaffold at S5. |
+| 2 | ML Engineer #1 not hired before project kick-off | Pre-start | High | Critical | **Must be hired before Day 1. No project start without ML Eng #1.** Recruiting begins during founding phase. |
 | 3 | Track 1–Track 2 integration at S11 delayed >1 sprint | Phase 2 | High | High | Tech Lead full-time S11. API contract frozen S10. Fallback: manual playbook trigger for v1. |
 | 4 | Pentest vendor LOI not signed before W14 | Phase 2 | Low | High | PM locks calendar W8. Backup vendor list ready. Hard deadline: no extensions. |
 | 5 | SOC 2 Type 2 evidence gap at Month 9 review | Phase 3 | Low | High | Vanta weekly review from W13. PM owns Vanta. Zero-gap policy from W22 onward. |

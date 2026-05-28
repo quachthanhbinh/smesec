@@ -55,9 +55,9 @@ Sprint: S1  S2  S3  S4  S5  S6  S7  S8  S9  S10 S11 S12 S13 S14 S15 S16 S17 S18 
 | **Asset Inventory** | Google WS + M365: users, OAuth apps, basic devices | + Slack, AWS, Shadow AI detection | + Custom asset types, dependency map | + Full cloud posture, peer anomaly |
 | **Access Governance** | Automated offboarding <5 min, RBAC dashboard | + JIT access, access reviews, shadow IT remediation | + Risk scoring, access policy templates | + Peer group anomaly, insider threat signal |
 | **AI Threat Surface** | ❌ (Track 2 in R&D) | Shadow AI governance + LLM DLP browser ext (beta) | + Deepfake defense, AI phishing, prompt injection v1 | + Prompt injection ML (BERT), advanced analytics |
-| **Compliance Posture** | Evidence collection begins (silent, no UI) | Dashboard compliance, SOC 2 Type 1 + ISO 27001 report-ready | SOC 2 Type 2 evidence running (90 days) | SOC 2 Type 2 certified + ISO 27001 certified |
+| **Compliance Posture** | Immutable audit log active (S3 Object Lock + per-tenant KMS, Day 1 — no Vanta yet) | Vanta evidence collection live (from W13) · Dashboard compliance · SOC 2 Type 1 + ISO 27001 report-ready | SOC 2 Type 2 evidence running (90 days) | SOC 2 Type 2 certified + ISO 27001 certified |
 | **Incident Playbooks** | 2 playbooks (Offboarding, Cred Compromise) | 5 playbooks, wizard UI, AWS Step Functions | + Custom playbook builder, mobile triggers | + Playbook analytics, ML suggestions |
-| **Integrations** | Google WS + M365 (OAuth wizard <30 min) | + Slack full + AWS IAM basic | + AWS CloudTrail, S3 audit, IAM deep | + SIEM (Splunk/QRadar), custom webhooks |
+| **Integrations** | Google WS + M365 (OAuth wizard <30 min) | + Slack full + AWS IAM basic | + AWS CloudTrail, S3 audit, IAM deep | + SIEM (Splunk/QRadar), custom webhooks · QuickBooks deferred to v2 backlog (out of v1 scope — insufficient AI security value) |
 | **Mobile App** | ❌ TestFlight/Beta | Alerts + playbook trigger (iOS + Android) | Full incident response mobile | Full feature parity |
 | **Billing / Pricing** | Manual invoicing (pilot free) | Starter + Growth tiers code-ready | Pricing tiers enforced, billing live | Enterprise custom + usage-based |
 
@@ -94,11 +94,11 @@ MVP = Sprint 6 complete (end of Week 12)
 ### Headcount Timeline
 
 ```
-Month 1–3 (Phase 1 / MVP):         6 FTE core + DevSecOps contract
-Month 4 (start of Phase 2):        + ML Engineer #1 (Track 2)
+Month 1 (Sprint 1):                ML Engineer #1 onboards Day 1 — Track 2 R&D starts in parallel with Track 1
+Month 1–3 (Phase 1 / MVP):         7 FTE core + DevSecOps contract
 Month 4 (Sprint 7):                + Backend Engineer #3 (Track 2)
 Month 4–5 (Sprint 8):              + Frontend Engineer #2 (Browser Extension)
-Month 6 (Sprint 13 / v1 launch):   DevSecOps → FTE (no longer contract)
+Month 7 (start of Phase 3):        DevSecOps → FTE (no longer contract)
 Month 7 (start of Phase 3):        + Customer Success Engineer
 Month 8 (mid Phase 3):             + ML Engineer #2 (optional, depending on v1 velocity)
 Month 10–12 (Phase 4):             + Compliance Consultant (contract)
@@ -115,15 +115,15 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 | Flutter / Mobile Eng | ✅ 1.0 | ✅ 1.0 | ✅ 1.0 | ✅ 1.0 | 1 |
 | DevSecOps | Contract (0.5) | Contract (0.5) | **FTE (1.0)** | **FTE (1.0)** | Shared |
 | PM | 0.5 | 0.5 | 0.5 | 0.5 | Shared |
-| **ML Engineer #1** | — | **✅ 1.0 (T4)** | ✅ 1.0 | ✅ 1.0 | 2 |
+| **ML Engineer #1** | **✅ 1.0 (T1, Day 1)** | ✅ 1.0 | ✅ 1.0 | ✅ 1.0 | 2 |
 | **Backend Eng #3 (Python/FastAPI)** | — | **✅ 1.0 (T4)** | ✅ 1.0 | ✅ 1.0 | 2 |
 | **Frontend Eng #2 (Browser Ext)** | — | **✅ 1.0 (T4.5)** | ✅ 1.0 | ✅ 1.0 | 2 |
 | **Customer Success Engineer** | — | — | **✅ 1.0 (T7)** | ✅ 1.0 | Customer |
 | **ML Engineer #2** | — | — | **✅ 1.0 (T8, opt.)** | ✅ 1.0 | 2 |
 | **Compliance Consultant** | — | — | — | **Contract (T10–T12)** | Compliance |
-| **Total FTE** | **6** | **8.5 → 9** | **10 → 11** | **11.5** | |
+| **Total FTE** | **7** | **9 → 9.5** | **10 → 11** | **11.5** | |
 
-> **Hiring principle:** ML Engineer must have SageMaker or managed ML platform experience — not an academic researcher. Begin recruiting from Week 5 (Sprint 3) to onboard in time for Sprint 6.
+> **Hiring principle:** ML Engineer #1 must onboard **Week 1** alongside Track 1 — no delay. Must have SageMaker or managed ML platform experience, not an academic researcher. Begin recruiting before project kick-off.
 
 > **⚠️ R-C5 (No customer acquisition plan):** BD Consultant (contract 3 days/week, $60–80/hr) onboard **Week 1** — not after product is ready. Year 1 goals:
 > - **MSP Partner Program:** Partner with 3 MSP/IT consultant firms in first 6 months (CAC via MSP: $500–$800 vs $3,000–$5,000 direct)
@@ -136,79 +136,91 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 
 ### Phase 1: Foundation → MVP (Month 1–3, S1–S6)
 
-**Team Phase 1:** Tech Lead · BE1 · BE2 · FE1 · Flutter · DevSecOps(contract) · PM = **6 FTE**
+**Team Phase 1:** Tech Lead · BE1 · BE2 · FE1 · Flutter · **ML Eng #1** · DevSecOps(contract) · PM = **7 FTE**
+
+> ⚠️ **Both tracks run in parallel from Sprint 1.** Track 2 R&D (research, dataset collection, prototype models, schema design) begins Week 1 alongside Track 1 infrastructure work. ML Eng #1 is a Day-1 hire — no delay.
 
 ---
 
-#### S1 — W1–2: Infrastructure & Auth
+#### S1 — W1–2: Infrastructure & Auth + Track 2 Kickoff
 
 | | |
 |---|---|
-| **Goal** | Technical foundation: deployable, users can log in |
-| **Sprint deliverable** | Engineer logs into web app with real Google/M365. Staging deployed from CI automatically. |
-| **Scope** | AWS VPC + ECS Fargate + RDS PostgreSQL Multi-AZ · S3 Object Lock (audit log, envelope encryption per-tenant KMS key) · Keycloak SSO (Google + M365) · JWKS cache (6-hour TTL, serve-stale-on-failure) · MFA TOTP mandatory · CI/CD GitHub Actions · Multi-tenant schema (`tenant_id` + `data_residency` on all tables, RLS enforced) · `ThreatDetectionEvent` interface draft (T1-T2 schema contract) · **⚠️ R-C3 (Mandatory):** `subscription_registry` table schema for M365 webhook renewal service · EventBridge Scheduler skeleton for 12-hour renewal job · **R-C2 (Design):** Google rate limit strategy — per-cluster GCP service account layout, quota distribution algorithm |
-| **Key risks** | Auth provider decision (Auth0 vs Cognito vs Keycloak self-host) must be finalized Day 1 |
-| **PM action** | Begin recruiting ML Engineer #1. Prepare list of potential pilot customers. **BD Consultant (contract 3 days/week) must onboard Week 1 (R-C5).** |
+| **Goal** | Technical foundation: deployable, users can log in. Track 2 R&D officially begins. |
+| **Sprint deliverable** | Engineer logs into web app with real Google/M365. Staging deployed from CI automatically. Track 2: literature review complete + dataset collection plan approved. |
+| **Scope — Track 1** | AWS VPC + ECS Fargate + RDS PostgreSQL Multi-AZ · S3 Object Lock (audit log, envelope encryption per-tenant KMS key) · Keycloak SSO (Google + M365) · JWKS cache (6-hour TTL, serve-stale-on-failure) · MFA TOTP mandatory · CI/CD GitHub Actions · Multi-tenant schema (`tenant_id` + `data_residency` on all tables, RLS enforced) · **⚠️ R-C3 (Mandatory):** `subscription_registry` table schema for M365 webhook renewal service · EventBridge Scheduler skeleton for 12-hour renewal job · **R-C2 (Design):** Google rate limit strategy — per-cluster GCP service account layout, quota distribution algorithm |
+| **Scope — Track 2** | `ThreatDetectionEvent` schema contract v0.1 (joint T1+T2 design, finalized with Tech Lead) · Literature review: OWASP LLM Top 10, prompt injection research papers, DLP benchmark datasets · Dataset collection plan: identify public datasets (PromptBench, LLM Attacks repo, PII-Bench) · SageMaker workspace setup (training environment, experiment tracking) · Shadow AI tool registry v0.1 (seed list of 100+ known AI tools from public sources) |
+| **Key risks** | Auth provider decision (Auth0 vs Cognito vs Keycloak self-host) must be finalized Day 1. ML Eng #1 must onboard Day 1 — recruiting must complete before project start. |
+| **PM action** | **ML Eng #1 must already be hired — this is a Day-1 requirement, not a future hire.** BD Consultant (contract 3 days/week) onboards Week 1 (R-C5). Prepare pilot customer list. |
 
-> **Mandatory gate:** `data_residency` column must be present from S1 — if skipped, full schema refactor required near MVP. Tenant isolation CI test must be green before merging any code.
+> **Mandatory gate:** `data_residency` column present from S1. Tenant isolation CI test green. `ThreatDetectionEvent` schema v0.1 drafted and reviewed by both tracks.
 
 ---
 
-#### S2 — W3–4: Google Workspace Sync
+#### S2 — W3–4: Google Workspace Sync + Track 2 Baseline Models
 
 | | |
 |---|---|
-| **Goal** | View users + OAuth apps from Google Workspace |
-| **Sprint deliverable** | Dashboard displays user list + OAuth apps from real Google tenant. First-value demo <30 min from OAuth grant. |
-| **Scope** | Google Admin SDK: user/group/device sync · OAuth app discovery (scope risk analysis) · 15-min incremental sync (delta pull) · Asset inventory DB schema v1 · Shadow IT detection rules v1 (high-risk OAuth scopes) · Dashboard skeleton (data visible, no styling required) |
-| **Key risks** | Google Admin SDK pagination + rate limits — validate on real tenant >100 users in S1 skeleton |
+| **Goal** | View users + OAuth apps from Google Workspace. Track 2: first baseline model results. |
+| **Sprint deliverable** | Dashboard displays user list + OAuth apps from real Google tenant. First-value demo <30 min from OAuth grant. Track 2: baseline accuracy benchmarks for prompt injection + PII detection on public datasets. |
+| **Scope — Track 1** | Google Admin SDK: user/group/device sync · OAuth app discovery (scope risk analysis) · 15-min incremental sync (delta pull) · Asset inventory DB schema v1 · Shadow IT detection rules v1 (high-risk OAuth scopes) · Dashboard skeleton (data visible, no styling required) |
+| **Scope — Track 2** | Dataset labeling: prompt injection test cases (PromptBench) + PII benchmark (Presidio test suite) · Baseline model evaluation: BERT-tiny (HuggingFace) + regex rules vs labeled dataset · Record baseline F1, precision, recall — establishes accuracy improvement targets · Shadow AI tool registry v0.2: risk scoring rubric design (scope sensitivity, DPA availability, app age) |
+| **Key risks** | Google Admin SDK pagination + rate limits — validate on real tenant >100 users in S1 skeleton. Baseline model accuracy may be lower than expected — this is expected at S2, not a blocker. |
 | **PM action** | Pilot outreach begins. Target 3–5 SMEs (50–200 employees) for Month 3 onboard. |
+| **Track 2 gate** | Baseline accuracy benchmarks documented. Accuracy improvement gap identified. Research plan updated with concrete targets. |
 
 ---
 
-#### S3 — W5–6: M365 Sync + Dashboard v1
+#### S3 — W5–6: M365 Sync + Dashboard v1 + Track 2 Prototype
 
 | | |
 |---|---|
-| **Goal** | Unified dashboard: Google + M365 on one screen |
-| **Sprint deliverable** | Dashboard displays assets from both Google + M365. Risk indicators per user/app. Export CSV. |
-| **Scope** | Microsoft Graph API + Azure AD: user/app/device sync · M365 delta link + webhook · **⚠️ R-C3: Deploy webhook renewal job** (already designed from S1 schema) — 410 Gone handler + DLQ + polling fallback + staleness UI indicator · Cross-provider identity matching (email canonical) · Unified risk indicators (per-provider, not composite) · Dashboard polish: filter, search, sort |
-| **Key risks** | M365 OAuth permission consent — need detailed IT Admin guide. Prepare "minimum-permission scope explainer" for customers. **Webhook renewal CANNOT be skipped — silent failure here cascades permanently.** |
-| **PM action** | Sign ML Engineer #1 LOI this week. Pilot customer list must have at least 5 leads. |
+| **Goal** | Unified dashboard: Google + M365 on one screen. Track 2: first working prototype. |
+| **Sprint deliverable** | Dashboard displays assets from both Google + M365. Risk indicators per user/app. Export CSV. Track 2: prompt injection prototype achieving TPR >75% / FPR <10% on test dataset (early baseline). |
+| **Scope — Track 1** | Microsoft Graph API + Azure AD: user/app/device sync · M365 delta link + webhook · **⚠️ R-C3: Deploy webhook renewal job** (already designed from S1 schema) — 410 Gone handler + DLQ + polling fallback + staleness UI indicator · Cross-provider identity matching (email canonical) · Unified risk indicators (per-provider, not composite) · Dashboard polish: filter, search, sort |
+| **Scope — Track 2** | Prompt injection detection prototype v0.1: fine-tuned BERT-tiny on labeled dataset (HuggingFace Trainer) · Evaluate vs baseline: TPR, FPR, F1 on held-out test set · PII detection: Microsoft Presidio integration test + WASM compile pipeline (onnxruntime-web) setup · **Lakera Guard API: account setup, rate limit test, cost-per-request baseline measured — designated primary production v1 implementation** |
+| **Key risks** | M365 OAuth permission consent — need detailed IT Admin guide. **Webhook renewal CANNOT be skipped.** BERT fine-tuning requires labeled data — Lakera Guard API is the designated primary (not fallback). |
+| **PM action** | Pilot customer list must have at least 5 leads. Confirm Lakera Guard API pricing and SLA. |
+| **Track 2 gate** | Prompt injection baseline TPR/FPR documented. Gap vs production gate (TPR >85%, FPR <2%) quantified. WASM compile pipeline confirmed working in browser environment. |
 
 ---
 
-#### S4 — W7–8: Classification + Shadow IT Alerts
+#### S4 — W7–8: Classification + Shadow IT Alerts + Track 2 DLP Prototype
 
 | | |
 |---|---|
-| **Goal** | IT admin can classify assets, receive alerts on new OAuth apps |
-| **Sprint deliverable** | Shadow IT alerts firing correctly. Asset classifications visible. Flutter mobile scaffold running on iOS + Android. |
-| **Scope** | Asset classification engine (criticality + data sensitivity, rule-based) · OAuth scope risk scoring (high/medium/low) · New OAuth app alert pipeline (<15 min) · Email + Slack notification system · Mobile scaffold (Flutter): auth flow Keycloak PKCE, navigation shell, push notification skeleton |
-| **Key risks** | Alert noise too high → pilot users overwhelmed. Start with conservative threshold (only HIGH risk alerts). |
+| **Goal** | IT admin can classify assets, receive alerts on new OAuth apps. Track 2: browser extension DLP prototype working. |
+| **Sprint deliverable** | Shadow IT alerts firing correctly. Asset classifications visible. Flutter mobile scaffold running on iOS + Android. Track 2: browser extension prototype blocking a PII submission in Chrome dev environment. |
+| **Scope — Track 1** | Asset classification engine (criticality + data sensitivity, rule-based) · OAuth scope risk scoring (high/medium/low) · New OAuth app alert pipeline (<15 min) · Email + Slack notification system · Mobile scaffold (Flutter): auth flow Keycloak PKCE, navigation shell, push notification skeleton |
+| **Scope — Track 2** | Browser extension scaffold v0.1 (Chrome MV3): content script intercepts textarea submit on chatgpt.com · Presidio WASM integration: ONNX model loaded in service worker, Tier 1 regex patterns active · First end-to-end DLP test: type email address → intercept → block confirmed in dev environment · Shadow AI risk scoring model v0.1: SageMaker training job with OAuth scope feature vector |
+| **Key risks** | Alert noise too high → start conservative. Chrome MV3 service worker lifecycle limitations — validate WASM load time in extension context before committing to architecture. |
+| **Track 2 gate** | Browser extension DLP prototype: Tier 1 regex intercepts email/credit card in dev Chrome. Shadow AI risk model v0.1 training job completes on SageMaker. |
 
 ---
 
-#### S5 — W9–10: Slack + AWS Discovery + RBAC
+#### S5 — W9–10: Slack + AWS Discovery + RBAC + Track 2 Accuracy Validation Gate 1
 
 | | |
 |---|---|
-| **Goal** | 4 integrations (Google, M365, Slack, AWS). RBAC dashboard live. |
-| **Sprint deliverable** | Unified inventory 4 providers. Least-privilege recommendations displayed. Slack deactivation tested. |
-| **Scope** | Slack Admin API: users, apps, channels · Slack tier detection (Free/Pro/Business+ gating) · AWS IAM inventory: users, roles, policies · RBAC model: role assignment, permission diff engine · Least-privilege recommendations (rule-based) · Composite identity graph (cross-provider) |
-| **Key risks** | Slack API tier limitation — Business+ required for automated offboarding. Detect tier early and set expectations with pilot customers. |
-| **PM action** | ⚠️ **ML Engineer #1 must onboard this week (W9)**. Begin shadow AI governance R&D on synthetic data. |
+| **Goal** | 4 integrations (Google, M365, Slack, AWS). RBAC dashboard live. Track 2: first formal accuracy gate. |
+| **Sprint deliverable** | Unified inventory 4 providers. Least-privilege recommendations displayed. Slack deactivation tested. Track 2: Accuracy Gate 1 report — prompt injection TPR >85% / FPR <5% on expanded test set (via Lakera Guard API). |
+| **Scope — Track 1** | Slack Admin API: users, apps, channels · Slack tier detection (Free/Pro/Business+ gating) · AWS IAM inventory: users, roles, policies · RBAC model: role assignment, permission diff engine · Least-privilege recommendations (rule-based) · Composite identity graph (cross-provider) |
+| **Scope — Track 2** | **Track 2 Accuracy Gate 1 (Week 10) — Prompt Injection:** Lakera Guard API: TPR >85%, FPR <2% verified on 30-day holdout test set (production gate criteria) · DLP browser extension v0.2: Tier 2 BERT-tiny ONNX semantic detection active in Chrome · **Track 2 Accuracy Gate 2 (Week 10) — LLM DLP:** Critical PII detection >99%, FP <5% on Presidio benchmark · Shadow AI tool classification: >95% of top-100 known AI tools correctly identified from OAuth scope signals · SageMaker endpoint v0.1 deployed (shadow AI risk scorer) — not production, staging only · Deepfake detection: Hive Moderation API account live, rate limits verified, first test audio clip analyzed |
+| **Key risks** | Slack API tier limitation — Business+ required for automated offboarding. Gate 1 failure: if Lakera Guard FPR >2% or TPR <85% → feature stays beta (opt-in, no SLA), Track 1 unaffected. |
+| **PM action** | ⚠️ **Sign pentest vendor LOI before end of W14 — begin discussion now.** Begin Vanta account setup planning. |
+| **Track 2 gates 1 & 2** | ✅ Gate 1 — Prompt injection: Lakera Guard TPR >85%, FPR <2% on holdout · ✅ Gate 2 — LLM DLP: Critical PII >99%, FP <5% · ✅ Shadow AI classification >95% on top-100 tool list |
 
 ---
 
-#### S6 — W11–12: Automated Offboarding + 2 Playbooks — **🏁 MVP**
+#### S6 — W11–12: Automated Offboarding + 2 Playbooks + Track 2 MVP Gate — 🏁 MVP
 
 | | |
 |---|---|
-| **Goal** | Offboard employee in <5 min. 2 playbooks. Mobile app beta. |
-| **Sprint deliverable** | **MVP: Offboarding test user <5 min via Google+M365+Slack. Mobile app on TestFlight/Play Console. PDF offboarding report.** |
-| **Scope** | Automated offboarding workflow (AWS Step Functions): disable + revoke + notify · **⚠️ R-C1 (mandatory):** 30-min grace period with cancellation (configurable 0–60 min, emergency = 0) before execution — one-click cancel via Slack/email · **Rollback workflow:** Reactivate account within 24h post-offboard (manual Admin action, audit-logged) · **Idempotency key** on all offboarding requests (prevents double-execution) · Dry-run + 2-step confirmation (hard gate, no bypass) · Offboarding report PDF · 2 incident playbooks: (1) Offboarding Emergency (2) Credential Compromise · Playbook wizard UI (web) · Immutable audit log: PostgreSQL append-only + S3 (envelope-encrypted) · Mobile app v1: alerts, offboarding trigger, read-only inventory |
-| **Key risks** | Sprint with highest utilization in Phase 1 (~89%). Mobile scope must be cut if needed — offboarding is absolute priority. **Grace period CANNOT be cut — this is a legal requirement.** |
+| **Goal** | Offboard employee in <5 min. 2 playbooks. Mobile app beta. Track 2: 6-month accuracy targets set, integration readiness confirmed. |
+| **Sprint deliverable** | **MVP: Offboarding test user <5 min via Google+M365+Slack. Mobile app on TestFlight/Play Console. PDF offboarding report. Track 2: DLP extension detects PII in real ChatGPT/Gemini test sessions (staging).** |
+| **Scope — Track 1** | Automated offboarding workflow (AWS Step Functions): disable + revoke + notify · **⚠️ R-C1 (mandatory):** 30-min grace period with cancellation (configurable 0–60 min, emergency = 0) before execution — one-click cancel via Slack/email · **Rollback workflow:** Reactivate account within 24h post-offboard (manual Admin action, audit-logged) · **Idempotency key** on all offboarding requests (prevents double-execution) · Dry-run + 2-step confirmation (hard gate, no bypass) · Offboarding report PDF · 2 incident playbooks: (1) Offboarding Emergency (2) Credential Compromise · Playbook wizard UI (web) · Immutable audit log: PostgreSQL append-only + S3 (envelope-encrypted) · Mobile app v1: alerts, offboarding trigger, read-only inventory |
+| **Scope — Track 2** | LLM DLP browser extension v0.3: tested against real chatgpt.com + gemini.google.com (staging accounts) — PII blocking confirmed end-to-end · `ThreatDetectionEvent` schema v1 draft ready for S10 freezing · Track 2 Phase 1 retrospective: accuracy achieved vs targets, gaps identified, revised plan for S7–S13 |
+| **Key risks** | Sprint with highest utilization in Phase 1 (~89%). Mobile scope must be cut if needed — offboarding is absolute priority. **Grace period CANNOT be cut.** Track 2 work must not pull ML Eng #1 from critical path work — Track 2 runs independently. |
 | **PM action** | ✅ 3+ pilot customers must onboard on staging environment before end of W12. |
 
 > **MVP Gate Checklist:**
@@ -227,9 +239,9 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 
 ### Phase 2: MVP → v1 (Month 4–6, S7–S13)
 
-**Team Phase 2:** 6 FTE (Phase 1) + ML Eng #1 + BE3 + FE2 = **9 FTE** (ramping up from S7→S8)
+**Team Phase 2:** 7 FTE (Phase 1) + BE3 + FE2 = **9 FTE** (ramping up from S7→S8)
 
-**Phase 2 characteristics:** Track 2 (AI/ML) begins integrating with Track 1 from S7. Both tracks run in parallel, converging at S11.
+**Phase 2 characteristics:** Track 2 has been running since S1. By Phase 2, ML Eng #1 has 3 months of R&D results to work with. BE3 + FE2 join to scale Track 2 integration and browser extension work. Both tracks converge at S11.
 
 ---
 
@@ -266,8 +278,8 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 | **Goal** | Full 5 playbooks. Mobile incident alerts. Shadow AI governance v1 in production. |
 | **Sprint deliverable** | 5 playbooks complete. Push notifications from mobile for security alerts. Shadow AI risk scores live (OAuth apps classified as AI/non-AI). |
 | **Scope — Track 1** | Remaining 2 playbooks: (4) Ransomware Response (5) Insider Threat Response · Mobile push notifications (FCM + APNs) · Incident alert from playbook → mobile |
-| **Scope — Track 2** | Shadow AI governance v1: AI tool classification (ChatGPT, Copilot, Gemini, Claude, etc.) + risk score per OAuth app · Shadow AI attestation workflow: employee confirm/deny usage · LLM DLP extension: tenant-scoped allow-list, PII blocking before submit |
-| **Key risks** | Shadow AI classification accuracy low → many false positives → pilot users complain. Start with conservative threshold (only block HIGH risk apps already confirmed as AI). |
+| **Scope — Track 2** | Shadow AI governance v1: AI tool classification (ChatGPT, Copilot, Gemini, Claude, etc.) + risk score per OAuth app · Shadow AI attestation workflow: employee confirm/deny usage · LLM DLP extension: tenant-scoped allow-list, PII blocking before submit · **Track 2 Accuracy Gate 3 (Week 18) — Shadow AI Risk Scoring:** >95% AI tool classification accuracy on top-200 known AI tool list |
+| **Key risks** | Shadow AI classification accuracy low → many false positives → pilot users complain. Start with conservative threshold (only block HIGH risk apps already confirmed as AI). Gate 3 failure: shadow AI governance stays alert-only (no blocking), not a Track 1 blocker. |
 
 ---
 
@@ -278,7 +290,7 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 | **Goal** | Compliance dashboard with Vanta. T1-T2 API contract finalized. |
 | **Sprint deliverable** | Compliance dashboard: coverage % ISO 27001 + SOC 2. Deepfake defense prototype. `ThreatDetectionEvent` schema v1 locked. |
 | **Scope — Track 1** | ISO 27001 + SOC 2 control mapping in Vanta · Automated evidence collection hooks · Compliance dashboard (control status, evidence links) · Cross-provider composite risk score (per user, weighted) |
-| **Scope — Track 2** | Deepfake defense: Hive Moderation API POC (pay-per-use, rate limit test) · Out-of-band verification workflow design · **`ThreatDetectionEvent` schema v1 finalized and locked** |
+| **Scope — Track 2** | **Track 2 Accuracy Gate 4 (Week 20) — Deepfake Defense:** Hive Moderation API: >80% voice deepfake detection on test dataset (production gate criteria) · Out-of-band verification workflow design · **`ThreatDetectionEvent` schema v1 finalized and locked** |
 | **Tech action** | ⚠️ **`ThreatDetectionEvent` schema must be approved by end of S10.** Delay here cascades directly into S11 integration sprint. |
 
 ---
@@ -290,7 +302,7 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 | **Goal** | Compliance reports exportable. AI threats auto-trigger Track 1 playbooks. |
 | **Sprint deliverable** | PDF compliance report (ISO 27001 + SOC 2 Type 1 evidence). Track 2 AI threat event → auto-trigger Step Functions playbook in staging. |
 | **Scope — Track 1** | ISO 27001 + SOC 2 compliance reports (PDF export) · Audit trail UI · GDPR data subject request automation (export + delete) |
-| **Scope — Track 2** | T1-T2 integration: `ThreatDetectionEvent` → EventBridge → Step Functions trigger · Prompt injection detection v1 (rule-based regex) · AI phishing: M365 Defender + Google Workspace threat feed connected |
+| **Scope — Track 2** | T1-T2 integration: `ThreatDetectionEvent` → EventBridge → Step Functions trigger · Prompt injection detection v1 (**Lakera Guard API** — production-validated, ~$0.001/req, FPR <2% + TPR >85% gate) · AI phishing: M365 Defender + Google Workspace threat feed connected |
 | **Key risks** | ⚠️ **This is the HIGHEST technical risk sprint** — integration always takes 3x longer than estimated. Tech Lead must be full-time on this integration. Fallback: if auto-trigger is unstable → manual trigger (button) for v1, auto-trigger in v1.5. |
 | **PM action** | ⚠️ **Pentest MUST START week W21** (per LOI signed in S7). Coordinate with vendor. |
 
@@ -386,7 +398,7 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 > - [ ] AWS v1.1 production (CloudTrail, IAM deep)
 > - [ ] Browser extension: Chrome Web Store published (not sideloaded)
 > - [ ] AI detection accuracy >90% (deepfake + LLM DLP)
-> - [ ] Prompt injection detection v1 (rule-based) production
+> - [ ] Prompt injection detection v1 (Lakera Guard API) production — FPR <2% + TPR >85% on 30-day holdout
 > - [ ] Pricing tiers enforced (Starter / Growth / Business)
 > - [ ] Billing integration live (Stripe)
 > - [ ] 10+ paying customers on production
@@ -498,6 +510,17 @@ Cadence:                               Cadence:
 
 > **Conclusion:** All 7 key requirements from the brief **are present in v1 (month 6)**, as required by "v1 after 5-6 months".
 
+### Pricing Tier Definitions
+
+| Tier | Price | User Limit | Features | Available |
+|---|---|---|---|---|
+| **Starter** | $399/mo | Up to 50 users | Asset inventory (Google WS + M365), automated offboarding, 2 playbooks, shadow IT alerts, RBAC dashboard | v1 (W26) |
+| **Growth** | $799/mo | Up to 200 users | All Starter + Slack + AWS IAM + 5 playbooks + JIT access + access reviews + LLM DLP browser ext (beta) + Shadow AI governance (beta) + compliance dashboard (SOC 2 / ISO 27001 report export) | v1 (W26) |
+| **Business** | $1,499/mo | Up to 500 users | All Growth + advanced AI detection (deepfake + prompt injection GA) + custom playbook builder + priority support + SOC 2 Type 2 evidence export + multi-region option | v1.5 (W38) |
+| **Enterprise** | Custom | 500+ users | All Business + BERT prompt injection (fine-tuned, Sprint 23–24) + SIEM integration + white-label / MSSP + SLA-backed uptime + custom data residency | v2 (W52) |
+
+> **Note:** Tiers are enforced in code from v1 (W26). Stripe billing integration activates at v1.5 (W38). During MVP pilot (W1–W26), all customers are billed manually at Starter/Growth rate or free.
+
 ---
 
 ## 7. Riskiest Assumption to Validate First
@@ -558,9 +581,9 @@ Month 12 (W52): v2 LAUNCH
 | Deadline | Week | Description | Consequence if delayed |
 |----------|------|--------|----------------|
 | Auth provider decision | W1D1 | Choose Keycloak self-host vs Auth0 vs Cognito | Delay S1 → cascade all sprints |
+| **ML Engineer #1 onboard** | **W1D1** | Must be hired before project kick-off | Track 2 cannot start in parallel; 3 months of R&D lost |
 | Google test tenant available | W3 | Internal Google Workspace tenant for S2 development | S2 cannot demo |
 | Pilot customer #1 onboard | W8 | At least 1 real customer using staging | MVP has no real validation |
-| **ML Engineer #1 onboard** | **W9** | Begin recruiting W5 | Track 2 delay → AI features miss v1 |
 | **Pentest vendor LOI signed** | **W14** | Hard deadline — 7-week lead time | Pentest does not start W21 → v1 delay |
 | **Vanta setup active** | **W13** | Need 60+ days evidence for SOC 2 Type 1 | SOC 2 Type 1 insufficient evidence at v1 |
 | Chrome Web Store submission | W29 | Browser extension needs 1–2 weeks review | Extension misses v1.5 launch |
@@ -660,7 +683,8 @@ MILESTONE OVERVIEW
 ══════════════════════════════════════════════════════════════════════
 
 MVP    │ W12  │ T3  │ Asset inventory + offboarding + shadow IT
-       │      │     │ Team: 6 FTE + contract
+       │      │     │ Team: 7 FTE + contract (ML Eng #1 from Day 1)
+       │      │     │ Track 2: Prototype models + DLP extension v0.3 proven in staging
        │      │     │ Pilot: 3+ customers on staging (free)
 ───────┼──────┼─────┼──────────────────────────────────────────────
 v1     │ W26  │ T6  │ All 7 key requirements delivered

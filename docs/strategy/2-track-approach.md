@@ -48,7 +48,8 @@
    - Google Workspace (Admin API, Audit API)
    - Microsoft 365 (Graph API, Azure AD)
    - Slack (Admin API, Audit Logs)
-   - AWS/Azure/GCP (asset discovery APIs)
+   - AWS IAM (asset discovery, CloudTrail events) — **v1 scope**
+   - Azure / GCP — **out of v1 scope** (deferred to v2 backlog; only AWS covered through v1.5)
 
 **Why Track 1 has High Confidence:**
 - Proven technology: OAuth 2.0, RBAC, API integrations
@@ -104,11 +105,11 @@
 - AI Threat Detection Service: ML inference, risk scoring
 - Deepfake Detection API: Voice/video analysis
 
-**Validation Gates:**
-- **Week 6:** Prompt injection precision >90% on test dataset
-- **Week 12:** DLP false negative rate <1% on critical data
-- **Week 18:** Deepfake detection >85% on benchmark dataset
-- **Week 24:** Pilot with 2-3 customers, collect real-world metrics
+**Validation Gates (updated to align with new parallel timeline):**
+- **Week 10 (S5):** Prompt injection precision >90% on test dataset
+- **Week 12 (S6):** DLP false negative rate <1% on critical data
+- **Week 18 (S9):** Deepfake detection >85% on benchmark dataset
+- **Week 24 (S12):** Pilot with 2–3 customers, collect real-world metrics
 
 ---
 
@@ -126,28 +127,31 @@
 - Integrations (Google, M365, Slack)
 - Compliance reporting
 
-### Team 2: AI Threat Detection (3 FTE)
-- 1 ML Engineer / Security Researcher
-- 1 Backend Engineer (Python/FastAPI)
-- 1 Frontend Engineer (Browser Extension + Desktop Agent)
+### Team 2: AI Threat Detection (1 FTE → 3 FTE)
+- **Month 1–3:** 1 ML Engineer / Security Researcher (Day-1 hire)
+- **Month 4:** + Backend Engineer (Python/FastAPI)
+- **Month 4.5:** + Frontend Engineer (Browser Extension)
 
 **Focus:**
-- Prompt injection detection
-- LLM DLP
-- Deepfake detection
-- Browser extension + desktop agent
+- R&D: prompt injection detection (Months 1–3)
+- LLM DLP + browser extension (Months 2–3)
+- Deepfake detection integration (Month 3)
+- Shadow AI risk scoring model (Months 2–3)
+- Full integration + production readiness (Months 4–6)
+
+> **⚠️ Critical:** ML Engineer #1 must be a **Day-1 hire**. Track 2 cannot start in parallel if this role is filled after project kick-off. Recruiting must be complete before Month 1.
 
 ### Shared Resources (2 FTE)
 - 1 Product Manager / Security Analyst (coordinate both tracks)
 - 1 DevSecOps / QA (CI/CD, testing, infrastructure)
 
-**Total:** 10 FTE
+**Total:** 8 FTE at Phase 1 start → 10 FTE at Phase 2 start
 
 ---
 
-## Timeline: 6 Months in Parallel
+## Timeline: 6 Months in Parallel (Both tracks start Month 1)
 
-### Track 1: Foundation (Launch-Ready sau 6 tháng)
+### Track 1: Foundation (Launch-Ready after 6 months)
 
 ```
 Month 1: FOUNDATION
@@ -187,32 +191,45 @@ Month 6: HARDENING & LAUNCH
 └── Beta launch with 5-10 pilot customers
 ```
 
-### Track 2: AI Detection (Pilot-Ready sau 6 tháng)
+### Track 2: AI Detection (Starts Month 1, Production-Ready Month 6)
 
 ```
-Month 1-2: RESEARCH & PROTOTYPING
-├── Literature review (OWASP LLM Top 10, research papers)
-├── Dataset collection (prompt injection, DLP test cases)
-├── Baseline models (BERT, GPT-based classifiers)
-└── Accuracy benchmarking (precision, recall, F1)
+Month 1 — S1–2: KICKOFF & BASELINE
+├── ThreatDetectionEvent schema contract v0.1 (joint design with Track 1)
+├── Literature review (OWASP LLM Top 10, prompt injection papers)
+├── Dataset collection plan (PromptBench, PII-Bench, LLM Attacks repo)
+├── SageMaker training environment setup
+└── Shadow AI tool registry v0.1 (100+ known tools)
+[ Accuracy gate 0: Baseline benchmarks documented ]
 
-Month 3-4: CORE DETECTION ENGINE
-├── Prompt injection detection (rules + ML)
-├── DLP engine (PII, credentials, IP patterns)
-├── Risk scoring algorithm (0-100 scale)
-└── Browser extension v1 (prompt interceptor)
+Month 2 — S3–4: PROTOTYPE MODELS
+├── Prompt injection prototype v0.1 (fine-tuned BERT-tiny)
+├── Browser extension scaffold (Chrome MV3 + Presidio WASM)
+├── First end-to-end DLP test in dev Chrome
+└── Shadow AI risk scoring model v0.1 (SageMaker training job)
+[ Accuracy gate 1 (W10): Prompt injection precision >90% on test dataset ]
 
-Month 5: DEEPFAKE & ADVANCED FEATURES
-├── Deepfake detection API integration (Sensity, Reality Defender)
-├── Dynamic redaction (mask sensitive data)
-├── Desktop agent v1 (clipboard monitoring)
-└── Behavioral analysis (user baseline)
+Month 3 — S5–6: CORE DETECTION ENGINE
+├── LLM DLP extension v0.3: tested vs real ChatGPT/Gemini (staging)
+├── DLP false negative rate <1% on critical data
+├── Deepfake detection: Hive API account live, rate limits verified
+└── ThreatDetectionEvent schema v1 draft ready for S10 freeze
+[ Accuracy gate 2 (W12): DLP false negative <1% on critical data ]
 
-Month 6: VALIDATION & TUNING
-├── Pilot with 2-3 customers (collect real-world data)
-├── False positive/negative analysis
-├── Threshold tuning (optimize for SME use cases)
-└── Decision: Launch or iterate based on metrics
+Month 4–5 — S7–11: INTEGRATION & ADVANCED FEATURES
+├── Shadow AI governance v1 on live OAuth data
+├── LLM DLP extension v1 (full Tier 1+2+3 pipeline)
+├── Deepfake defense v1 (Hive + out-of-band verification)
+├── Prompt injection (Lakera Guard API, Sprint 8)
+└── T1-T2 integration: ThreatDetectionEvent → EventBridge → playbook
+[ Accuracy gate 3 (W18): Deepfake detection >85% on benchmark dataset ]
+
+Month 6 — S12–13: VALIDATION & LAUNCH
+├── Full T1-T2 end-to-end automated integration test
+├── Shadow AI + LLM DLP in v1 production release
+├── Chrome Web Store submission
+└── Pilot customers validate accuracy in production
+[ Accuracy gate 4 (W24): Pilot real-world metrics meet production thresholds ]
 ```
 
 ---
@@ -328,10 +345,10 @@ Month 6: VALIDATION & TUNING
 ## Next Steps
 
 1. ✅ **Approve 2-track strategy** (this document)
-2. ⏳ **Create detailed requirements** for Track 1 (Asset + Access + Playbooks)
-3. ⏳ **Create research plan** for Track 2 (AI detection accuracy targets)
-4. ⏳ **Set up 2 team structures** (hire if needed)
-5. ⏳ **Kick off Month 1** for both tracks in parallel
+2. ✅ **ML Engineer #1 hired before project kick-off** — Day-1 hire, no exceptions
+3. ⏳ **Create detailed requirements** for Track 1 (Asset + Access + Playbooks)
+4. ⏳ **Create R&D plan** for Track 2 (dataset sources, model targets, accuracy thresholds by sprint)
+5. ⏳ **Kick off Month 1** for BOTH tracks simultaneously — Track 2 starts Sprint 1, not Sprint 7
 
 ---
 

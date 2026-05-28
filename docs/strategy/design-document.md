@@ -34,7 +34,7 @@ SMESec applies a deliberate **Hybrid Build/Buy** strategy: buy proven commodity 
 
 **Build:** Integration sync engine (Google Workspace + M365 + Slack + AWS IAM — rate limit handling, delta sync, shadow IT detection are the core differentiators), asset inventory and classification engine (no competitor detects shadow AI tools at SME pricing), browser extension DLP (local PII inference, tenant-scoped allow-list, privacy-preserving), incident playbook wizard (domain-specific UX for non-security staff), and all domain logic (Clean Architecture — domain is vendor-independent).
 
-**Why Hybrid wins:** Pure Buy = vendor lock-in to tools ill-suited for SMEs. Pure Build = 18+ months before product exists. Hybrid = v1 in 6 months with gross margin >70%.
+**Why Hybrid wins:** Pure Buy = vendor lock-in to tools ill-suited for SMEs. Pure Build = 18+ months before product exists. Hybrid = v1 in 6 months with gross margin ~91% (infra costs $44K/yr vs $480K ARR at 50 customers).
 
 ---
 
