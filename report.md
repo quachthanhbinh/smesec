@@ -62,7 +62,7 @@ EDGE ZONE
   → CloudFront CDN → WAF (OWASP rules) → ALB
 
 AWS VPC (private subnets only — no public IPs on compute)
-  ├── AUTH: Keycloak ECS Fargate (Multi-AZ, self-hosted SSO/MFA)
+  ├── AUTH: Keycloak ECS Fargate (min 2 tasks active-active, JWKS cached 6h — JWT validation independent of Keycloak uptime) [R-C6]
   │
   ├── APPLICATION — ECS Fargate services (Go):
   │     Track 1: AssetSvc · AccessSvc · PlaybookSvc · ComplianceSvc · SyncSvc
@@ -94,8 +94,8 @@ CLIENTS:
 
 | Service | Method | OAuth Scopes (minimum) | Cadence | Features Enabled |
 |---|---|---|---|---|
-| **Google Workspace** | OAuth 2.0 + Admin SDK | `admin.directory.user.readonly` `admin.directory.userschema.readonly` `admin.reports.audit.readonly` | 15-min delta sync | User inventory, OAuth app discovery, shadow IT detection, offboarding |
-| **Microsoft 365** | OAuth 2.0 + Graph API + webhook | `User.Read.All` `Application.Read.All` `AuditLog.Read.All` `SecurityEvents.Read.All` | 15-min delta + webhook | User inventory, OAuth apps, M365 Defender phishing alerts, offboarding |
+| **Google Workspace** | OAuth 2.0 + Admin SDK | `admin.directory.user.readonly` `admin.directory.userschema.readonly` `admin.reports.audit.readonly` | 15-min delta sync. **⚠️ R-C2:** Quota = 1,500 req/100s per GCP project. At 50+ tenants must distribute sync windows + separate GCP service accounts per 20-tenant cluster. | User inventory, OAuth app discovery, shadow IT detection, offboarding |
+| **Microsoft 365** | OAuth 2.0 + Graph API + webhook | `User.Read.All` `Application.Read.All` `AuditLog.Read.All` `SecurityEvents.Read.All` | 15-min delta + webhook. **⚠️ R-C3:** Webhook subscriptions expire every **3 days** — renewal job (EventBridge Scheduler, 12h) + 410 Gone → full sync fallback + staleness UI required. Schema designed in S1. | User inventory, OAuth apps, M365 Defender phishing alerts, offboarding |
 | **Slack** | OAuth 2.0 + Admin API | `admin.users:read` `admin.apps:read` `channels:read` | 30-min delta | App inventory, user deactivation (Business+ tier), channel audit |
 | **AWS IAM** | IAM assumed role (cross-account) | `iam:ListUsers` `iam:ListRoles` `cloudtrail:LookupEvents` `config:ListDiscoveredResources` | 30-min delta | Cloud resource inventory, IAM policy diff, CloudTrail events |
 | **Hive Moderation API** | REST (pay-per-use) | API key (Secrets Manager) | On-demand | Deepfake voice/video detection (<$0.01/check) |
@@ -118,7 +118,8 @@ CLIENTS:
 | **Incident Playbook Engine** | **Build on Step Functions** | AWS Step Functions | Step Functions = proven orchestration; wizard UI for non-security staff is differentiator |
 | **Browser Extension DLP** | **Build** (Chrome MV3) | Microsoft Presidio WASM | Local PII inference — content never leaves browser. Privacy moat no competitor matches at SME price |
 | **AI tool risk classification** | **Build + curate** | SageMaker + internal registry | No off-the-shelf AI-specific risk scoring at SME context and pricing |
-| **SSO / MFA** | **Buy: Keycloak** (self-hosted ECS) | Keycloak | Zero per-user cost ($50/mo compute only) vs Auth0 $5,750/mo at 50 tenants × 500 users |
+| **SSO / MFA** | **Buy: Keycloak** (self-hosted ECS) | Keycloak | Zero per-user cost ($50/mo compute only) vs Auth0 $5,750/mo at 50 tenants × 500 users. **⚠️ R-C6 requirements:** Min 2 ECS tasks active-active; JWKS caching mandatory; Keycloak DB must be separate from application DB. **Evaluate WorkOS/Auth0 before v1.5** if DevSecOps ops capacity is insufficient. |
+| **Prompt injection detection** | **Buy: Lakera Guard API (v1)** | Lakera Guard | Production-validated (~$0.001/req). No training data. Internal BERT target moved to Sprint 23–24 Enterprise-only evaluation. Gate: FPR <2% + TPR >85% on 30-day holdout before promoting from beta. [BS-4 fix] |
 | **Compliance automation** | **Buy: Vanta** | Vanta Startup plan | $4–6K/yr vs 3 months engineering ($60K+). Auditor trust built in. SOC 2 Type 1 in 60 days. |
 | **Deepfake detection** | **Buy: Hive Moderation API** | Hive Moderation | Pay-per-use (<$0.01/check). No training data required. Vendor maintains model updates. |
 | **ML platform** | **Buy: AWS SageMaker** | SageMaker | Managed training, endpoint auto-scaling, drift monitoring. vs 6 months custom MLOps. |
@@ -180,7 +181,7 @@ Go API middleware injects `tenant_id` into every PostgreSQL session via `SET LOC
 | **Shadow AI risk scoring** | SageMaker endpoint (feature vector: OAuth scopes, vendor DPA, app age) | >95% AI tool classification | Sprint 9 eval |
 | **LLM DLP (browser ext)** | Presidio WASM (Tier 1 regex) + BERT-tiny ONNX (Tier 2 semantic) | >99% CRITICAL PII, <5% FP | Sprint 8 staging |
 | **Deepfake defense** | Hive Moderation API + out-of-band verification (Step Functions) | >80% voice deepfake detection | Sprint 10 eval |
-| **Prompt injection** | OWASP regex library (v1) → fine-tuned BERT (v2, Enterprise tier) | TPR >85%, FPR <2% (BERT) | Sprint 11 / Sprint 24 |
+| **Prompt injection** | **Lakera Guard API (v1, Sprint 8)** → fine-tuned BERT (v2, Enterprise tier, Sprint 23–24, only if Lakera cost prohibitive + sufficient labeled data) | TPR >85%, FPR <2% (BERT gate); Lakera Guard: vendor SLA | Sprint 8 / Sprint 24 |
 
 **Accuracy gate policy:** No Track 2 feature ships as GA until its accuracy gate is met. Failed gates → feature stays `beta` (opt-in only, no SLA). Track 1 is never held back by Track 2.
 
@@ -192,12 +193,12 @@ Four contractual, architecturally-enforced commitments:
 |---|---|---|
 | **No training on customer data** | SageMaker trains on public datasets + synthetic data only. Customer data is never used for model training. | Model card published; architecture review. |
 | **Local inference for browser extension** | Presidio WASM runs entirely in-browser. Content typed into AI tools never leaves the user's device. Only pseudonymized metadata (category, severity, timestamp) is sent to servers. | Open-source extension code; network traffic audit. |
-| **Immutable audit logs** | S3 Object Lock, COMPLIANCE mode, 7-year retention. No deletion — not by customers, not by SMESec engineers. | AWS Object Lock settings; SOC 2 evidence. |
+| **Immutable audit logs (GDPR-erasable)** | S3 Object Lock WORM ciphertext (7-year). **⚠️ R-C4:** Per-tenant KMS envelope encryption — key destruction = permanent inaccessibility = GDPR "effective erasure" (EDPB Recommendation 01/2020). Ciphertext remains in storage but is permanently unreadable without the encryption key. | AWS Object Lock settings; KMS key deletion log; erasure certificate; SOC 2 evidence. |
 | **Data residency isolation** | `data_residency` column mandatory from Sprint 1. EU tenant data stays in `eu-west-1` exclusively — enforced at DB, S3, KMS, and Secrets Manager layers. | Tenant isolation CI test; penetration test. |
 
 **Encryption:** RDS AES-256 (KMS CMK), S3 SSE-KMS, TLS 1.3 (external), all secrets in Secrets Manager (auto-rotation, zero plaintext in env vars). Secrets access follows IAM least-privilege: each service can only access its own secret namespace.
 
-**GDPR alignment:** Art. 17 (erasure) via `/api/v1/gdpr/erasure` endpoint (30-day SLA, Sprint 11). Art. 20 (portability) via JSON export endpoint. Art. 25 (privacy by design) via `data_residency` from day 1 and local inference architecture.
+**GDPR alignment:** Art. 17 (erasure) via `/api/v1/gdpr/erasure` endpoint — PII anonymized within 30 days + KMS CMK scheduled for deletion (7-day AWS pending window); ciphertext permanently inaccessible after key deletion; erasure certificate issued (EDPB Recommendation 01/2020). Art. 20 (portability) via JSON export endpoint. Art. 25 (privacy by design) via `data_residency` from day 1 and local inference architecture. [R-C4]
 
 **Compliance roadmap:** SOC 2 Type 1 at v1 (Month 6, Vanta evidence from Week 13). SOC 2 Type 2 + ISO 27001 at v2 (Month 12, 6-month observation window from Week 26).
 
@@ -209,7 +210,7 @@ Four contractual, architecturally-enforced commitments:
 
 | Phase | Months | FTE | Team Composition | Milestone |
 |---|---|---|---|---|
-| **Phase 1** | 1–3 | **6** | Tech Lead · BE#1 · BE#2 · FE#1 · Flutter · DevSecOps(contract) + PM(0.5) | **MVP** (W12) |
+| **Phase 1** | 1–3 | **6 + BD** | Tech Lead · BE#1 · BE#2 · FE#1 · Flutter · DevSecOps(contract) + PM(0.5) + **BD Consultant (contract, Week 1, 3 days/wk) [R-C5]** | **MVP** (W12) |
 | **Phase 2** | 4–6 | **9** | +ML Eng #1 (M4) · +BE#3 Python (M4) · +FE#2 Browser Ext (M4.5) | **v1** (W26) |
 | **Phase 3** | 7–9 | **11** | +Customer Success Eng (M7) · +ML Eng #2 (M8, opt.) · DevSecOps → FTE | **v1.5** (W38) |
 | **Phase 4** | 10–12 | **11.5** | +Compliance Consultant (contract M10–M12) | **v2** (W52) |
@@ -222,12 +223,12 @@ Four contractual, architecturally-enforced commitments:
 
 | Sprint | Deliverable | Gate |
 |---|---|---|
-| **S1** (W1–2) | AWS infra (VPC/ECS/RDS), Keycloak SSO, multi-tenant schema (`tenant_id + data_residency` from day 1), CI/CD | Tenant isolation CI test green |
+| **S1** (W1–2) | AWS infra (VPC/ECS/RDS), Keycloak SSO (min 2 ECS tasks, JWKS cache), multi-tenant schema (`tenant_id + data_residency` from day 1), CI/CD, S3 Object Lock (envelope encryption per-tenant KMS key), **`subscription_registry` schema + EventBridge Scheduler skeleton cho M365 webhook renewal [R-C3]** | Tenant isolation CI test green |
 | **S2** (W3–4) | Google Workspace sync — users, OAuth apps, shadow IT detection. Dashboard skeleton. | First-value demo <30 min from OAuth grant |
 | **S3** (W5–6) | M365 sync + delta link, unified dashboard (Google + M365), risk indicators per user/app | Visibility: all assets from both providers |
 | **S4** (W7–8) | Asset classification engine, OAuth scope risk scoring, shadow IT alerts (<15 min), Flutter mobile scaffold | Shadow IT alert pipeline live |
 | **S5** (W9–10) | Slack + AWS IAM discovery, RBAC model + least-privilege recommendations, composite identity graph | 4 providers unified in one view |
-| **S6** (W11–12) | **🏁 MVP**: Automated offboarding <5 min (Step Functions), 2 incident playbooks (wizard UI), immutable audit log, mobile app beta | Offboarding timed test <5 min in CI |
+| **S6** (W11–12) | **🏁 MVP**: Automated offboarding <5 min (Step Functions) + **grace period 30 min configurable (emergency=0) + rollback 24h + idempotency key [R-C1]**, 2 incident playbooks (wizard UI), immutable audit log (envelope encrypted), mobile app beta | Offboarding timed test <5 min in CI; grace period cancel test pass; rollback test pass |
 
 **MVP = "Can you revoke all access for a departing employee in 5 minutes?"**
 
@@ -292,9 +293,17 @@ Four contractual, architecturally-enforced commitments:
 
 ### 4.1 The Problem
 
-78% of knowledge workers use AI tools at work. 52% use tools their employer didn't provide. 11% of content pasted into ChatGPT contains confidential company data (Cyberhaven 2025). The average SME now has 20+ unapproved AI tools connected to company accounts (Nudge Security 2024). BEC losses from AI-powered CEO voice impersonation: $2.9B in 2023 (FBI IC3), avg SME loss $140K/incident.
+75% of global knowledge workers use AI at work — and 78% of those users are bringing their own AI tools without employer approval (BYOAI), rising to 80% at small and medium-sized companies.<sup>[[1]](#src-1)</sup> 52% are reluctant to admit using AI for their most important tasks.<sup>[[1]](#src-1)</sup> 11% of content pasted into ChatGPT contains confidential company data.<sup>[[2]](#src-2)</sup> The average SME now has 20+ unapproved AI tools connected to company accounts.<sup>[[3]](#src-3)</sup> BEC losses from AI-powered CEO voice impersonation: $2.9B in 2023, avg SME loss $140K/incident.<sup>[[4]](#src-4)</sup>
 
 **No vendor has an affordable, unified solution for the "SME as AI consumer" threat model.** Every serious AI security vendor (HiddenLayer, Wiz, Prompt Security) targets companies deploying LLMs — not companies using them. Nudge Security discovers shadow AI but cannot block it. Prompt Security has browser DLP but costs $15–30K/yr and requires IT admin/developer setup.
+
+<a name="src-1"></a>**[1]** Microsoft & LinkedIn — [2024 Work Trend Index Annual Report: AI at Work Is Here. Now Comes the Hard Part](https://www.microsoft.com/en-us/worklab/work-trend-index/ai-at-work-is-here-now-comes-the-hard-part) (May 2024, n=31,000 knowledge workers, 31 countries)
+
+<a name="src-2"></a>**[2]** Cyberhaven — [The Cyberhaven Data Exposure Report 2024](https://www.cyberhaven.com/resources/data-exposure-report-2024) — analysis of data movement across 1.4M workers using Cyberhaven DLP
+
+<a name="src-3"></a>**[3]** Nudge Security — [2024 State of SaaS Security Report](https://www.nudgesecurity.com/post/state-of-saas-security-2024-report) — shadow AI discovery telemetry across SME customer base
+
+<a name="src-4"></a>**[4]** FBI Internet Crime Complaint Center — [2023 IC3 Annual Report](https://www.ic3.gov/AnnualReport/Reports/2023_IC3Report.pdf) — Business Email Compromise section, p. 14–15
 
 ### 4.2 Governance Framework: 3 Tiers
 
@@ -395,9 +404,9 @@ Employee uploads ≤60 second audio clip → Hive Moderation API analyzes (audio
 
 ### 4.6 Module B — Prompt Injection Detection
 
-**v1 (Sprint 11, rule-based, all tiers):** 50+ OWASP LLM Top 10 patterns covering jailbreaks ("Ignore all previous instructions"), role overrides ("You are now DAN"), system prompt extraction ("Print your system prompt"), and data exfiltration instructions. Server-push pattern updates — no extension reinstall required. Accuracy ~75% of known patterns, <5% FP.
+**v1 (Sprint 8, Lakera Guard API):** REST API call per prompt submission before forwarding to internal AI assistant. ~$0.001/request. Production-validated by Lakera across known + novel injection patterns. Latency <50ms (p99). **[BS-4 fix — replaces original rule-based regex target which covered only ~75% of known patterns.]**
 
-**v2 (Sprint 23–24, BERT, Enterprise tier only):** Fine-tuned BERT on 6 months of production data (opt-in Enterprise tenants). Gate: TPR >85% AND FPR <2% on 30-day production holdout set. If not achieved → rule-based remains GA, BERT stays opt-in preview.
+**v2 (Sprint 23–24, BERT, Enterprise tier only):** Triggered only if (a) Lakera Guard cost becomes prohibitive at Enterprise volume AND (b) ≥50K labeled production samples available. Fine-tuned BERT on opt-in Enterprise tenant data. Gate: TPR >85% AND FPR <2% on 30-day production holdout set. If not achieved → Lakera Guard remains GA, BERT stays opt-in preview.
 
 **4-tier response by combined risk score (0–100):**
 
@@ -452,3 +461,70 @@ Month 12 (W52): v2 LAUNCH → SOC 2 Type 2 ✅ + ISO 27001 ✅ both certified
 ```
 
 **Note:** SOC 2 Type 2 requires a minimum 6-month observation window. Evidence collection **must start no later than W26** (v1 production launch date) to complete audit by W52. Starting W13 provides a 10-week buffer over the minimum.
+
+---
+
+## 5. Post-v2 Roadmap & Ongoing Obligations (Month 13+)
+
+> v2 (W52) is the "commercially viable" milestone — not "done". The items below are obligations that carry high risk if not planned before the end of Year 1.
+
+### 5.1 Compliance & Certifications (Recurring)
+
+| Obligation | Cadence | Trigger / Deadline |
+|---|---|---|
+| **SOC 2 Type 2 re-audit (Year 2)** | Annual | W104 (Month 24) — evidence window W52→W104 must be clean |
+| **ISO 27001 Surveillance Audit #1** | 12 months after certification (W52+12mo) | Mandatory to maintain certificate — not optional |
+| **ISO 27001 Recertification** | 3 years after initial cert | Plan engineering + consultant capacity |
+| **Penetration test (bi-annual)** | Every 6 months | Next pentest: Month 18. Rotate vendors annually. |
+| **GDPR DPA annual review** | Annual | DPA (Data Processing Agreements) with customers must reflect any architecture changes. KMS envelope encryption approach must be documented in DPA. |
+| **Vanta evidence continuity** | Continuous | Zero evidence gaps from W26 onward. Any gap resets SOC 2 Type 2 observation window. PM owns weekly Vanta review permanently. |
+
+### 5.2 Technical Infrastructure
+
+| Item | Priority | Notes |
+|---|---|---|
+| **Keycloak quarterly CVE patching** | 🔴 Critical ongoing | Keycloak releases security patches monthly. Zero-downtime rolling upgrade procedure must be documented and drilled before v1 launch. If ops cost too high → migrate to WorkOS/Auth0 (decision point: v1.5 retrospective). |
+| **KMS key rotation & erasure certificate management** | 🔴 Critical | Per-tenant KMS CMK rotation (annual, automated). GDPR erasure certificates must be stored + retrievable on demand. Build erasure audit trail by v1 launch. |
+| **Google rate limit architecture at 70+ tenants** | 🟡 High | Current design degrades sync to 30-min at >70 tenants. At 100+ tenants: migrate to dedicated GCP projects per 20-tenant cluster (new GCP service accounts, credential rotation, quota monitoring per project). Design window: Month 10–12 before hitting limit. |
+| **RDS connection pooling at scale** | 🟡 High | RDS Proxy mandatory before 50 tenants (connection math: 50 tenants × 10 req × 10 ECS tasks × 4 pg connections = 20K vs RDS max 3.2K). Provision in S1 infra even if not needed immediately. |
+| **Multi-region active-active (EU)** | 🟡 High | v2 includes DR runbook + failover drill. Post-v2: if EU revenue >30% of ARR, upgrade eu-west-1 from DR standby to active-active. Requires separate ECS cluster + cross-region RDS replication audit. |
+| **BERT model drift monitoring** | 🟡 Medium | If BERT prompt injection ships at v2: SageMaker Model Monitor (data drift + concept drift detection). Retraining trigger: FPR creeps above 3% on 30-day production rolling window. Requires labeled data pipeline. |
+| **SCA/SAST pipeline maturity** | 🟡 Medium | `govulncheck` (Go) + `pip-audit` (Python) in CI by v1. Post-v2: add DAST (OWASP ZAP) to staging pipeline, automate Dependabot PR merge for low-risk patches. |
+
+### 5.3 Product Expansion
+
+| Item | Target | Notes |
+|---|---|---|
+| **EU deepfake (Module D1)** | Month 15–18 | Voice biometric = GDPR Article 9 special category data. Requires independent legal opinion + explicit employee consent mechanism before EU deployment. Commission legal review by Month 6 (alongside EU v1 launch). UK/AU ship at v2; EU ships only after legal clearance. |
+| **EU AI Act compliance** | Month 15–18 | If SMESec's threat detection features are classified as "high-risk AI" under EU AI Act (Annex III) for EU Enterprise customers: conformity assessment, technical documentation, human oversight controls, and registration in EU database required. Engage specialist counsel by Month 10. |
+| **QuickBooks / accounting integrations** | Month 14–18 | Deferred from v2. For SMEs with finance teams: invoice fraud detection + payment authorization anomaly detection (complements deepfake defense). Requires separate PCI DSS scoping analysis. |
+| **MSSP / white-label product** | Month 15+ | v2 ships foundation (multi-tenant Enterprise, SIEM integration). Post-v2: white-label UI, MSP management console, usage-based billing API, partner portal. MSP partner program seeded from Month 1 (BD Consultant) — product must be ready when first MSSP deal closes. |
+| **QuickBooks / Xero integration** | Month 16+ | Financial anomaly detection + invoice fraud layer. Deferred. Requires separate scoping for financial data handling. |
+
+### 5.4 Security & Privacy
+
+| Item | Timeline | Notes |
+|---|---|---|
+| **GDPR Right to Erasure at scale** | Ongoing | As customer base grows: bulk erasure requests (tenant offboard) must complete within 30-day SLA. Test with 100+ tenant erasure simulation before Month 12. KMS key deletion + cascade PII anonymization must be fully automated. |
+| **ISO 27001 continuous control evidence** | Ongoing | Surveillance audit requires evidence of continuous control operation (not just point-in-time). PM must maintain Vanta + internal audit log review. 10% of controls need spot evidence monthly. |
+| **Keycloak CVE response SLA** | Ongoing | Critical CVE in Keycloak: patch within 72h (ECS rolling deploy). High CVE: patch within 7 days. Process must be documented and drilled. If migration to WorkOS/Auth0 → decommission Keycloak securely (session migration, token invalidation, data deletion). |
+| **Third-party vendor security reviews** | Annual | Hive Moderation, Lakera Guard, Vanta: annual SOC 2 report collection + DPA review. If any vendor loses SOC 2 certification → immediate substitute evaluation. |
+
+### 5.5 Go-to-Market (Post-v2 Growth)
+
+| Item | Notes |
+|---|---|
+| **MSP partner program maturity** | BD Consultant seeds 3 MSP partnerships in Year 1 (Month 1–12). Year 2: formalize partner tiers, revenue share model, co-marketing. CAC via MSP channel ($500–800) vs direct ($3,000–5,000) makes this the primary growth lever. |
+| **Freemium → paid conversion optimization** | "Security Health Check" free tier (14 days, 5 users) must convert at >15% to paid. Track cohort conversion by acquisition channel. A/B test trial duration and feature gating. |
+| **Customer Success at scale** | Customer Success Engineer hired Month 7 (v1.5). By Month 13: define churn early-warning signals (DAU/MAU ratio, alert acknowledgment rate, integration health). Build automated health score. |
+| **Usage-based billing** | v2 includes option. Post-v2: implement tiered consumption pricing for Track 2 features (e.g., deepfake checks, DLP events) — reduces SME barrier to entry while capturing upside at scale. |
+
+### 5.6 Top 5 Post-v2 Risks to Track
+
+| # | Risk | Probability | Impact | Watch Signal |
+|---|---|---|---|---|
+| 1 | **SOC 2 Type 2 Year 2 evidence gap** — team relaxes after v2 certification | Medium | Critical | Vanta weekly score drops below 90% |
+| 2 | **Keycloak unpatched CVE exploited** — ops burden causes patch delay | Medium | Critical | CVE published with CVSS >8.0 and no patch applied within 72h |
+| 3 | **EU AI Act compliance failure** — deepfake/DLP features classified high-risk without conformity assessment | Medium | High | EU Enterprise customer signs contract before legal opinion completed |
+| 4 | **Google rate limit breach at 70+ tenants** — causes mass sync failure + customer churn signal | High (scale-dependent) | High | Aggregate API quota usage exceeds 70% in CloudWatch |
+| 5 | **Lakera Guard pricing increase → prompt injection gap** — vendor raises price or discontinues SME tier | Low | Medium | Lakera pricing change or SLA degradation → accelerate internal BERT evaluation |

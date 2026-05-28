@@ -1,17 +1,17 @@
 # SMESec Platform — System Architecture
 
-**Ngày tạo:** 2026-05-28  
-**Trạng thái:** Approved  
-**Phiên bản:** 1.0  
-**Tác giả:** Technical Advisor (30 năm cybersecurity + cloud architecture)
+**Date:** 2026-05-28  
+**Status:** Approved  
+**Version:** 1.0  
+**Author:** Technical Advisor (30 years cybersecurity + cloud architecture)
 
 ---
 
-## Mục Lục
+## Table of Contents
 
-1. [Tổng Quan Kiến Trúc](#1-tổng-quan-kiến-trúc)
+1. [Architecture Overview](#1-architecture-overview)
 2. [Clean Architecture Principles](#2-clean-architecture-principles)
-3. [Logical Architecture — Các Tầng Hệ Thống](#3-logical-architecture--các-tầng-hệ-thống)
+3. [Logical Architecture — System Layers](#3-logical-architecture--system-layers)
 4. [AWS Deployment Architecture](#4-aws-deployment-architecture)
 5. [Integration Touchpoints](#5-integration-touchpoints)
 6. [Data Architecture & Multi-Tenancy](#6-data-architecture--multi-tenancy)
@@ -19,31 +19,31 @@
 8. [Track 1 vs Track 2 — Separation of Concerns](#8-track-1-vs-track-2--separation-of-concerns)
 9. [Non-Functional Requirements](#9-non-functional-requirements)
 10. [Build vs Buy Decisions](#10-build-vs-buy-decisions)
-11. [Sơ Đồ Kiến Trúc (go-diagrams)](#11-sơ-đồ-kiến-trúc-go-diagrams)
+11. [Architecture Diagrams (go-diagrams)](#11-architecture-diagrams-go-diagrams)
 
 ---
 
-## 1. Tổng Quan Kiến Trúc
+## 1. Architecture Overview
 
-SMESec là một **unified security platform cho SMEs (10–500 nhân viên)** được xây dựng theo mô hình SaaS multi-tenant. Platform bảo vệ các tài sản quan trọng nhất của doanh nghiệp vừa và nhỏ: data, accounts, intellectual property, và operational continuity — trong bối cảnh AI-driven threats ngày càng gia tăng.
+SMESec is a **unified security platform for SMEs (10–500 employees)** built as a multi-tenant SaaS. The platform protects the most critical assets of small and medium businesses: data, accounts, intellectual property, and operational continuity — in an environment of escalating AI-driven threats.
 
-### Quyết Định Kiến Trúc Cốt Lõi
+### Core Architecture Decisions
 
-| Quyết định | Lựa chọn | Lý do |
+| Decision | Choice | Rationale |
 |---|---|---|
 | **Build vs Buy** | Hybrid | Build core domain logic (differentiator); Buy commodity services (Keycloak, Vanta, Hive) |
-| **Multi-tenancy** | Shared infrastructure, isolated data (Row-Level Security) | Cost-efficient; PostgreSQL RLS đủ mạnh cho SME scale; physical isolation quá tốn kém |
-| **AI-threat detection** | 2-track: deterministic (Track 1) + ML/AI (Track 2) | Track 1 = 100% accuracy, high trust; Track 2 = R&D-gated, không ảnh hưởng core reliability |
-| **Data privacy** | `data_residency` trên mọi bảng; EU data ở `eu-west-1`; no training on customer data | GDPR compliance; customer trust; không dùng customer data để train ML models |
-| **Architecture pattern** | Clean Architecture + Event-Driven | Domain logic độc lập; adapter pattern cho integration; event sourcing cho audit trail |
-| **Infrastructure** | AWS (primary) + Cloudflare R2 (CDN/storage) | AWS SLA + managed services; Cloudflare giảm egress cost |
-| **Runtime** | Go (backend) + Python (ML/scripts) + React (web) + Flutter (mobile) | Go cho concurrency + type safety; Python cho ML ecosystem |
+| **Multi-tenancy** | Shared infrastructure, isolated data (Row-Level Security) | Cost-efficient; PostgreSQL RLS is sufficient for SME scale; physical isolation too costly |
+| **AI-threat detection** | 2-track: deterministic (Track 1) + ML/AI (Track 2) | Track 1 = 100% accuracy, high trust; Track 2 = R&D-gated, does not affect core reliability |
+| **Data privacy** | `data_residency` on every table; EU data in `eu-west-1`; no training on customer data | GDPR compliance; customer trust; customer data never used for ML model training |
+| **Architecture pattern** | Clean Architecture + Event-Driven | Domain logic is independent; adapter pattern for integrations; event sourcing for audit trail |
+| **Infrastructure** | AWS (primary) + Cloudflare R2 (CDN/storage) | AWS SLA + managed services; Cloudflare reduces egress cost |
+| **Runtime** | Go (backend) + Python (ML/scripts) + React (web) + Flutter (mobile) | Go for concurrency + type safety; Python for ML ecosystem |
 
 ---
 
 ## 2. Clean Architecture Principles
 
-SMESec áp dụng **Clean Architecture** (Robert C. Martin) kết hợp với **Hexagonal Architecture** (Ports & Adapters):
+SMESec applies **Clean Architecture** (Robert C. Martin) combined with **Hexagonal Architecture** (Ports & Adapters):
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -63,7 +63,7 @@ SMESec áp dụng **Clean Architecture** (Robert C. Martin) kết hợp với **
 
 ### Dependency Rule
 
-> **Mọi source code dependency chỉ được phép trỏ VÀO TRONG** — về phía Domain Layer. Domain không biết gì về Infrastructure, Application không biết gì về Interface.
+> **All source code dependencies must point INWARD** — toward the Domain Layer. Domain has no knowledge of Infrastructure; Application has no knowledge of Interface.
 
 ```
 Interface → Application → Domain ← Infrastructure
@@ -71,7 +71,7 @@ Interface → Application → Domain ← Infrastructure
 
 ### Ports & Adapters
 
-**Ports (interfaces định nghĩa trong Domain):**
+**Ports (interfaces defined in Domain):**
 
 ```go
 // Domain/Ports — Primary Ports (driven by Interface Layer)
@@ -101,16 +101,16 @@ type ThreatEventPublisher interface {
 
 ### Layer Responsibilities
 
-| Layer | Trách nhiệm | Dependencies |
+| Layer | Responsibility | Dependencies |
 |---|---|---|
-| **Domain** | Entities, Value Objects, Domain Services, Aggregates, Domain Events, Repository Interfaces | Không có — zero external dependencies |
+| **Domain** | Entities, Value Objects, Domain Services, Aggregates, Domain Events, Repository Interfaces | None — zero external dependencies |
 | **Application** | Use Cases, Orchestration, Transaction boundaries, DTO mapping | Domain only |
 | **Infrastructure** | Repository implementations (PostgreSQL), Integration adapters (Google, M365, Slack), Event publishers (EventBridge), External clients (Vanta, Hive) | Application + Domain interfaces |
 | **Interface** | REST handlers (Echo), gRPC handlers, WebSocket server, React SSR, Flutter bridge, Browser Extension service worker | Application Use Cases only |
 
 ---
 
-## 3. Logical Architecture — Các Tầng Hệ Thống
+## 3. Logical Architecture — System Layers
 
 ### 3.1 Interface Layer
 
@@ -330,7 +330,7 @@ Async Flow:
 | Threat Detection | 1024 | 2048 MB | 1 | 6 | 2 |
 | LLM DLP | 512 | 1024 MB | 1 | 4 | 2 |
 | Deepfake Defense | 256 | 512 MB | 1 | 4 | 2 |
-| Keycloak | 512 | 1024 MB | 2 | 4 | Auth |
+| Keycloak | 512 | 1024 MB | **2 (minimum — not negotiable)** | 4 | Auth |
 
 ---
 
@@ -340,10 +340,50 @@ Async Flow:
 
 | Provider | Protocol | Data Collected | Write Operations | Sync Frequency |
 |---|---|---|---|---|
-| **Google Workspace** | OAuth 2.0 (Admin SDK) | Users, Groups, OAuth Apps, Devices, Audit Logs | Disable user, Revoke OAuth, Suspend account | 15-min delta via Workspace Events API |
-| **Microsoft 365** | OAuth 2.0 (Graph API) | Users, Groups, OAuth Apps, Devices, SignIn Logs | Disable user, Revoke sessions, Block signin | 15-min delta via Delta Link + Webhooks |
-| **Slack** | OAuth 2.0 (Admin API) | Users, Channels, OAuth Apps, Audit Logs | Deactivate user (Business+ only), Remove app | 15-min poll + Events API webhooks |
+| **Google Workspace** | OAuth 2.0 (Admin SDK) | Users, Groups, OAuth Apps, Devices, Audit Logs | Disable user, Revoke OAuth, Suspend account | 15-min delta via Workspace Events API. **⚠️ R-C2:** Quota = 1,500 req/100s per GCP project (shared). At 50+ tenants, must distribute sync across window + use per-cluster GCP service accounts (20 tenants/project). Aggregate monitoring required. |
+| **Microsoft 365** | OAuth 2.0 (Graph API) | Users, Groups, OAuth Apps, Devices, SignIn Logs | Disable user, Revoke sessions, Block signin | 15-min delta via Delta Link + Webhooks. **⚠️ R-C3:** Webhook subscriptions expire every **3 days** — renewal job mandatory. 410 Gone → full delta sync fallback. Renewal failure → DLQ + alert + polling mode. |
+| Slack | OAuth 2.0 (Admin API) | Users, Channels, OAuth Apps, Audit Logs | Deactivate user (**Business+ only** — Free/Pro tiers: read-only, offboarding not supported; UI must show tier warning) | 15-min poll + Events API webhooks |
 | **AWS IAM** | AWS SDK (assumed role) | Users, Roles, Policies, Access Keys, CloudTrail | Disable access key, Remove policy (dry-run first) | 30-min full pull |
+
+### 5.1.1 M365 Webhook Renewal Service (Required in S1a)
+
+> **Architecture required from Sprint 1a — not a Sprint 3 feature.** If the renewal job fails, all M365 change events stop silently.
+
+```
+Architecture:
+  SubscriptionRegistry (RDS table):
+    - subscription_id, tenant_id, resource_type, expiry_timestamp, status
+
+  RenewalJob (EventBridge Scheduler — runs every 12 hours):
+    - Query: SELECT * FROM subscriptions WHERE expiry_timestamp < NOW() + 24h
+    - For each: PATCH /subscriptions/{id} via Graph API
+    - On 410 Gone → mark EXPIRED → trigger full delta sync for tenant
+    - On failure → DLQ → alert IT admin + switch tenant to polling mode
+    - On success → UPDATE expiry_timestamp
+
+  UI staleness indicator:
+    - "Last synced: X minutes ago" per provider per tenant
+    - Amber warning: last sync > 20 minutes
+    - Red alert: last sync > 60 minutes
+```
+
+### 5.1.2 Google Workspace Rate Limit Management (Required in S1a design, S2 implementation)
+
+```go
+// SyncScheduler: distribute tenants evenly across 15-min window
+// Prevents aggregate quota breach when tenants > 50
+type SyncScheduler struct {
+    tenantClusters [][]TenantID  // 20 tenants per GCP project cluster
+    windowSeconds  int           // 900s = 15 min
+    apiCallBudget  int           // 1,400 calls/15min per cluster (safety margin)
+}
+
+// Spread: cluster[0] syncs at t=0, cluster[1] at t=45s, etc.
+// Each cluster gets its own GCP service account → separate quota
+// Retry: exponential backoff on 429 with jitter (max 3 retries)
+// Monitor: CloudWatch metric on aggregate quota usage; alert at 80%
+// Degradation: if >70 tenants, extend sync interval to 30 min automatically
+```
 
 ### 5.2 OAuth Scope Policy (Minimum Permissions)
 
@@ -389,7 +429,7 @@ Slack (App):
 **Chosen approach:** Single PostgreSQL cluster, Row-Level Security (RLS) enforced at database level.
 
 ```sql
--- Mọi bảng domain đều có hai cột bắt buộc
+-- Every domain table must have these two mandatory columns
 CREATE TABLE assets (
     id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tenant_id     UUID NOT NULL,          -- FK to tenants table
@@ -400,19 +440,19 @@ CREATE TABLE assets (
     updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- RLS Policy — mọi query tự động scoped theo tenant_id
+-- RLS Policy — all queries automatically scoped by tenant_id
 ALTER TABLE assets ENABLE ROW LEVEL SECURITY;
 CREATE POLICY tenant_isolation ON assets
     USING (tenant_id = current_setting('app.tenant_id')::UUID);
 
--- Index bắt buộc trên tenant_id để performance
+-- Mandatory index on tenant_id for performance
 CREATE INDEX idx_assets_tenant ON assets(tenant_id);
 ```
 
-**Enforcement tại API Middleware (Go):**
+**Enforcement at API Middleware (Go):**
 
 ```go
-// Middleware inject tenant_id vào mọi PostgreSQL connection
+// Middleware injects tenant_id into every PostgreSQL connection
 func TenantMiddleware(db *sql.DB) echo.MiddlewareFunc {
     return func(next echo.HandlerFunc) echo.HandlerFunc {
         return func(c echo.Context) error {
@@ -432,7 +472,7 @@ func TenantMiddleware(db *sql.DB) echo.MiddlewareFunc {
 ### 6.2 ThreatDetectionEvent — Shared Schema Contract (T1 ↔ T2)
 
 ```go
-// Định nghĩa trong domain/events package — cả Track 1 và Track 2 đều dùng
+// Defined in domain/events package — used by both Track 1 and Track 2
 type ThreatDetectionEvent struct {
     EventID        string          `json:"event_id"`    // UUID v4
     TenantID       string          `json:"tenant_id"`   // Non-nullable
@@ -449,21 +489,41 @@ type ThreatDetectionEvent struct {
     SchemaVersion  string          `json:"schema_version"` // 'v1' — semver
 }
 
-// Không được phép thay đổi schema sau Sprint 6 mà không có RFC + migration plan
+// Schema must not be changed after Sprint 6 without an RFC + migration plan
 ```
 
-### 6.3 Audit Log Architecture (Immutable)
+### 6.3 Audit Log Architecture (Immutable + GDPR-Erasable)
+
+> **⚠️ R-C4 — Required architecture:** S3 Object Lock (WORM, 7 years) directly conflicts with GDPR Article 17 (right to erasure). Resolution: **envelope encryption per tenant + key destruction** = ciphertext remains but is permanently unreadable = GDPR "effective erasure" (EDPB Recommendation 01/2020).
 
 ```
-Write Path:
-  Application Event → PostgreSQL (append-only table, no UPDATE/DELETE)
-                    → S3 Object Lock (WORM, 7-year retention, AES-256)
-                    → CloudWatch Logs (operational, 90-day retention)
+Write Path (Envelope Encryption):
+  Application Event
+      → Encrypt with per-tenant Data Encryption Key (DEK)
+          DEK = AES-256 key, wrapped by tenant KMS CMK (Key Encryption Key)
+          Each tenant has dedicated KMS CMK in their data_residency region
+      → Store ciphertext in PostgreSQL (append-only, no UPDATE/DELETE)
+      → Archive ciphertext to S3 Object Lock (WORM, 7-year, Compliance mode)
+      → CloudWatch Logs (plaintext operational copy, 90-day retention)
 
-Read Path:
+Read Path (Normal operation):
+  KMS CMK (active) → decrypt DEK → decrypt ciphertext → plaintext
   Compliance Dashboard → PostgreSQL (indexed queries)
   Auditor Export → S3 pre-signed URL (time-limited, tenant-scoped)
   SIEM Integration → CloudWatch Logs Insights
+
+GDPR Erasure Path (Article 17):
+  Customer submits DELETE request → POST /api/v1/gdpr/erasure
+      → Schedule KMS CMK deletion (7-day AWS pending window, minimum)
+      → After key deletion: DEK cannot be decrypted → ciphertext permanently unreadable
+      → Issue erasure certificate with key_deletion_timestamp
+      → S3 Object Lock ciphertext remains (legally inert — no KMS key = no data)
+      → Satisfies GDPR "effective erasure" standard
+
+DPA template must explicitly state:
+  "Audit logs stored in AES-256 encrypted WORM storage.
+   Erasure performed via cryptographic key destruction per EDPB Recommendation 01/2020.
+   Ciphertext may persist in storage but is permanently inaccessible without the encryption key."
 ```
 
 ### 6.4 Data Residency Routing
@@ -497,7 +557,7 @@ Layer 1 — Network:
 
 Layer 2 — Authentication & Authorization:
   Keycloak (OIDC/OAuth 2.0 + SAML 2.0)
-  MFA: TOTP bắt buộc cho tất cả users
+  MFA: TOTP mandatory for all users
   JWT (RS256, 15-min access token, 7-day refresh token)
   RBAC: Tenant Admin > Security Admin > IT Staff > Read-Only
   API Gateway: JWT validation on every request
@@ -537,6 +597,61 @@ Keycloak Sessions:
   - Refresh token: 7 days (sliding, revocable)
   - Stored: Redis (not PostgreSQL) — eviction on logout
   - MFA: Required on every new device/IP
+```
+
+### 7.3 Keycloak High Availability & Auth Resilience (R-C6)
+
+> **⚠️ R-C6 — CRITICAL:** Keycloak is the single authentication gateway. If it crashes → nobody can log in, including during incident response. Two mandatory mitigations:
+
+**Mitigation 1 — JWKS Caching (JWT validation independent of Keycloak uptime):**
+
+```go
+// infrastructure/auth/jwt_validator.go
+// Each API service caches Keycloak's public JWKS locally.
+// JWT validation does NOT call Keycloak at runtime.
+type JWTValidator struct {
+    jwksCache   *jwk.Cache  // lestrrat-go/jwx — auto-refresh every 6h
+    keycloakURL string
+}
+
+func NewJWTValidator(keycloakURL string) *JWTValidator {
+    cache := jwk.NewCache(context.Background())
+    // Serve stale cache on Keycloak failure — existing JWTs (15-min TTL)
+    // remain valid for their remaining lifetime even if Keycloak is down.
+    cache.Register(keycloakURL+"/protocol/openid-connect/certs",
+        jwk.WithRefreshInterval(6*time.Hour),
+        jwk.WithMinRefreshInterval(30*time.Minute),
+    )
+    return &JWTValidator{jwksCache: cache, keycloakURL: keycloakURL}
+}
+// Result: Keycloak down → new logins fail (expected) but existing
+// authenticated sessions remain functional for up to 15 minutes.
+```
+
+**Mitigation 2 — Keycloak ECS HA Config:**
+
+```
+ECS Task Definition (Keycloak):
+  - Min tasks: 2 (active-active behind ALB, NOT just multi-AZ placement)
+  - Max tasks: 4
+  - Health check: GET /health/ready, interval 30s, threshold 3 failures
+  - Auto-restart: ECS replaces unhealthy task within <60s
+  - RTO target: <2 minutes (ECS task replacement SLA)
+  - Database: Separate RDS instance (NOT shared with application DB)
+    → Keycloak DB failure does not affect application DB
+
+Keycloak Ops Runbook (required before v1 launch):
+  - Quarterly CVE patch process (Keycloak releases monthly security patches)
+  - Certificate rotation procedure (realm certificate + TLS cert)
+  - Zero-downtime upgrade procedure (rolling ECS deployment)
+  - Backup: RDS automated backups (daily) + point-in-time recovery
+  - Owner: DevSecOps FTE (converted from contract at M3, not M7)
+
+Alternative considered for v1 (if DevSecOps capacity is insufficient):
+  WorkOS or Auth0 as managed alternative (~$500-1,000/mo at 50 customers)
+  Trade-off: operational simplicity vs cost
+  Decision: revisit at v1 launch — if Keycloak ops proves too costly in engineer time,
+  migrate to WorkOS before v1.5
 ```
 
 ---
@@ -647,15 +762,15 @@ Horizontal scaling:
 
 ---
 
-## 11. Sơ Đồ Kiến Trúc (go-diagrams)
+## 11. Architecture Diagrams (go-diagrams)
 
-Các sơ đồ được sinh tự động bằng Go programs sử dụng thư viện [blushft/go-diagrams](https://github.com/blushft/go-diagrams). Source code trong thư mục `diagrams/`.
+Diagrams are auto-generated by Go programs using the [blushft/go-diagrams](https://github.com/blushft/go-diagrams) library. Source code in the `diagrams/` directory.
 
-### Cách Chạy
+### How to Run
 
 ```bash
-# Yêu cầu: Go 1.21+, Graphviz (dot)
-# Cài Graphviz: https://graphviz.org/download/
+# Requirements: Go 1.21+, Graphviz (dot)
+# Install Graphviz: https://graphviz.org/download/
 
 cd diagrams
 
@@ -671,21 +786,21 @@ dot -Tpng go-diagrams/out/deployment-architecture.dot -o go-diagrams/out/deploym
 go run cmd/integrations/main.go
 dot -Tpng go-diagrams/out/integration-touchpoints.dot -o go-diagrams/out/integration-touchpoints.png
 
-# Hoặc chạy tất cả 1 lần:
-make diagrams   # xem diagrams/Makefile
+# Or run all at once:
+make diagrams   # see diagrams/Makefile
 ```
 
-### Sơ Đồ 1: Logical Architecture
+### Diagram 1: Logical Architecture
 
 > **File:** `diagrams/cmd/logical/main.go`  
-> **Mô tả:** Clean Architecture layers — dependency flow từ Interface → Application → Domain ← Infrastructure
+> **Description:** Clean Architecture layers — dependency flow from Interface → Application → Domain ← Infrastructure
 
-### Sơ Đồ 2: AWS Deployment Architecture
+### Diagram 2: AWS Deployment Architecture
 
 > **File:** `diagrams/cmd/deployment/main.go`  
-> **Mô tả:** Physical deployment trên AWS — VPC, ECS Fargate, RDS, EventBridge, SageMaker, Security services
+> **Description:** Physical deployment on AWS — VPC, ECS Fargate, RDS, EventBridge, SageMaker, Security services
 
-### Sơ Đồ 3: Integration Touchpoints
+### Diagram 3: Integration Touchpoints
 
 > **File:** `diagrams/cmd/integrations/main.go`  
-> **Mô tả:** Integration với third-party SaaS (Google Workspace, M365, Slack, AWS IAM) và security services (Vanta, Hive, Keycloak)
+> **Description:** Integration with third-party SaaS (Google Workspace, M365, Slack, AWS IAM) and security services (Vanta, Hive, Keycloak)

@@ -1,17 +1,17 @@
 # SMESec Platform — Design Document
 
-**Ngày tạo:** 2026-05-28  
-**Trạng thái:** Approved  
-**Phiên bản:** 1.0  
+**Date:** 2026-05-28  
+**Status:** Approved  
+**Version:** 1.0  
 **Scope:** Core architectural decisions — Build vs Buy · Multi-tenancy · AI-threat detection · Data privacy  
-**Liên quan:** [system-architecture.md](system-architecture.md) · [delivery-plan.md](delivery-plan.md)
+**Related:** [system-architecture.md](system-architecture.md) · [delivery-plan.md](delivery-plan.md)
 
 ---
 
-## Mục Lục
+## Table of Contents
 
 1. [Executive Summary (600 words — Deliverable)](#1-executive-summary-600-words--deliverable)
-2. [Build vs Buy — Chi Tiết Từng Component](#2-build-vs-buy--chi-tiết-từng-component)
+2. [Build vs Buy — Component Details](#2-build-vs-buy--component-details)
 3. [Multi-Tenancy Model](#3-multi-tenancy-model)
 4. [AI-Threat Detection Strategy](#4-ai-threat-detection-strategy)
 5. [Data Privacy Guarantees](#5-data-privacy-guarantees)
@@ -22,87 +22,88 @@
 
 ## 1. Executive Summary (600 words — Deliverable)
 
-> *Phần này là bản tóm tắt 600 từ cho deliverable #2 của đề bài. Các phần tiếp theo là tài liệu chi tiết nội bộ.*
+> *This section is the 600-word summary for Deliverable #2. Subsequent sections are detailed internal documentation.*
 
 ---
 
 ### Build vs Buy: Hybrid Approach
 
-SMESec áp dụng chiến lược **Hybrid Build/Buy** có chủ đích: mua các commodity services đã được kiểm chứng, xây dựng những gì tạo ra differentiation thực sự.
+SMESec applies a deliberate **Hybrid Build/Buy** strategy: buy proven commodity services, build what creates real differentiation.
 
-**Mua (Buy):** Authentication (Keycloak self-hosted — OIDC/SAML, zero per-user cost), compliance automation (Vanta — $4–6K/yr thay vì 3 tháng engineering), deepfake detection API (Hive Moderation — pay-per-use $0.01/check), ML platform (AWS SageMaker — managed training và inference), và cloud infrastructure (AWS ECS Fargate, RDS, EventBridge, Step Functions).
+**Buy:** Authentication (Keycloak self-hosted — OIDC/SAML, zero per-user cost), compliance automation (Vanta — $4–6K/yr vs 3 months of engineering), deepfake detection API (Hive Moderation — pay-per-use $0.01/check), ML platform (AWS SageMaker — managed training and inference), and cloud infrastructure (AWS ECS Fargate, RDS, EventBridge, Step Functions).
 
-**Xây dựng (Build):** Integration sync engine (Google Workspace + M365 + Slack + AWS IAM — rate limit handling, delta sync, shadow IT detection là differentiator cốt lõi), asset inventory và classification engine (không có competitor nào detect shadow AI tools ở SME pricing), browser extension DLP (local PII inference, tenant-scoped allow-list, privacy-preserving), incident playbook wizard (domain-specific UX cho non-security staff), và toàn bộ domain logic (Clean Architecture — domain không phụ thuộc bất kỳ vendor nào).
+**Build:** Integration sync engine (Google Workspace + M365 + Slack + AWS IAM — rate limit handling, delta sync, shadow IT detection are the core differentiators), asset inventory and classification engine (no competitor detects shadow AI tools at SME pricing), browser extension DLP (local PII inference, tenant-scoped allow-list, privacy-preserving), incident playbook wizard (domain-specific UX for non-security staff), and all domain logic (Clean Architecture — domain is vendor-independent).
 
-**Lý do Hybrid thắng:** Pure Buy = vendor lock-in vào tools không phù hợp với SME. Pure Build = 18+ tháng trước khi có product. Hybrid = v1 trong 6 tháng với gross margin >70%.
+**Why Hybrid wins:** Pure Buy = vendor lock-in to tools ill-suited for SMEs. Pure Build = 18+ months before product exists. Hybrid = v1 in 6 months with gross margin >70%.
 
 ---
 
 ### Multi-Tenancy Model: Shared Infrastructure, Isolated Data
 
-SMESec dùng mô hình **Shared PostgreSQL với Row-Level Security (RLS)** — một cluster database phục vụ tất cả tenants, nhưng mọi query đều bị scoped tự động theo `tenant_id` tại database level (không phải application level).
+SMESec uses a **Shared PostgreSQL with Row-Level Security (RLS)** model — a single database cluster serves all tenants, but every query is automatically scoped by `tenant_id` at the database level (not application level).
 
-Mọi bảng domain đều có hai cột bắt buộc: `tenant_id UUID NOT NULL` và `data_residency VARCHAR(10) NOT NULL` (giá trị: `'US'`, `'EU'`, `'APAC'`). PostgreSQL RLS policy chặn mọi cross-tenant access ngay cả khi có bug trong application code. API middleware inject `tenant_id` vào mọi database session via `SET LOCAL app.tenant_id`. Tenant isolation CI tests chạy trên mọi PR — nếu fail, block merge.
+Every domain table has two mandatory columns: `tenant_id UUID NOT NULL` and `data_residency VARCHAR(10) NOT NULL` (values: `'US'`, `'EU'`, `'APAC'`). The PostgreSQL RLS policy blocks all cross-tenant access even when there are application code bugs. API middleware injects `tenant_id` into every database session via `SET LOCAL app.tenant_id`. Tenant isolation CI tests run on every PR — failures block the merge.
 
-EU tenants được route sang `eu-west-1` ECS tasks và RDS cluster riêng. US/APAC tenants sang `us-east-1`. Data không bao giờ rời khỏi region đã cam kết — đây là yêu cầu cứng của GDPR Article 46.
+EU tenants are routed to `eu-west-1` ECS tasks and a separate RDS cluster. US/APAC tenants go to `us-east-1`. Data never leaves the committed region — this is a hard requirement of GDPR Article 46.
 
 ---
 
 ### AI-Threat Detection Strategy: 2-Track Architecture
 
-SMESec giải quyết bài toán độ tin cậy của AI detection bằng cách tách biệt hoàn toàn **Track 1** (deterministic, 100% accuracy) và **Track 2** (ML/AI, target >90% accuracy).
+SMESec solves the AI detection reliability problem by completely separating **Track 1** (deterministic, 100% accuracy) and **Track 2** (ML/AI, target >90% accuracy).
 
-Track 1 là backbone: asset inventory, access governance, offboarding automation, incident playbooks, compliance reporting — tất cả rule-based logic, không phụ thuộc ML. Track 2 là AI detection layer: shadow AI risk scoring, LLM data leakage prevention, deepfake fraud defense, prompt injection detection — R&D-gated, chỉ ship khi đạt accuracy threshold.
+Track 1 is the backbone: asset inventory, access governance, offboarding automation, incident playbooks, compliance reporting — all rule-based logic, with no ML dependency. Track 2 is the AI detection layer: shadow AI risk scoring, LLM data leakage prevention, deepfake fraud defense, prompt injection detection — R&D-gated, ships only when accuracy thresholds are met.
 
-Hai track chia sẻ `ThreatDetectionEvent` schema contract và EventBridge event bus. Track 2 events có thể tự động trigger Track 1 playbooks — nhưng Track 1 không phụ thuộc Track 2. Nếu Track 2 có false positive, Track 1 vẫn hoạt động bình thường.
+Both tracks share the `ThreatDetectionEvent` schema contract and EventBridge event bus. Track 2 events can automatically trigger Track 1 playbooks — but Track 1 does not depend on Track 2. If Track 2 produces a false positive, Track 1 continues operating normally.
 
 ---
 
 ### Data Privacy Guarantees
 
-Bốn cam kết không thể nhượng bộ:
+Four non-negotiable commitments:
 
-1. **No training on customer data:** ML models được train trên public datasets và synthetic data — không bao giờ dùng customer data để train.
-2. **Local inference cho browser extension:** PII detection chạy locally trong browser (Presidio WASM) — nội dung người dùng gõ không bao giờ rời thiết bị.
-3. **Immutable audit logs:** S3 Object Lock (WORM, 7-year retention) — không ai, kể cả SMESec engineers, có thể xóa audit evidence.
-4. **Data residency isolation:** `data_residency` column trên mọi bảng từ Sprint 1 — EU data ở `eu-west-1`, không bao giờ replication sang US.
+1. **No training on customer data:** ML models are trained on public datasets and synthetic data — customer data is never used for training.
+2. **Local inference for browser extension:** PII detection runs locally in the browser (Presidio WASM) — content the user types never leaves their device.
+3. **Immutable audit logs:** S3 Object Lock (WORM, 7-year retention) — nobody, including SMESec engineers, can delete audit evidence.
+4. **Data residency isolation:** `data_residency` column on every table from Sprint 1 — EU data stays in `eu-west-1`, never replicated to US.
 
 ---
 
-## 2. Build vs Buy — Chi Tiết Từng Component
+## 2. Build vs Buy — Component Details
 
-### 2.1 Ma Trận Quyết Định
+### 2.1 Decision Matrix
 
-| Component | Decision | Lý Do Chi Tiết | Chi Phí |
+| Component | Decision | Detailed Rationale | Cost |
 |---|---|---|---|
-| **Authentication (SSO + MFA)** | **Buy: Keycloak (self-hosted ECS)** | OIDC/SAML 2.0, Google + M365 federation sẵn. Zero per-user cost (vs Auth0 $0.23/MAU = $1,380/mo ở 500 users/tenant × 10 tenants). Full control: custom MFA flows, branding, GDPR DPA. | ~$50/mo (ECS only) |
-| **Compliance automation** | **Buy: Vanta (Startup plan)** | $4–6K/yr vs 3 months engineer time ($60K+ cost). AWS + GitHub + Cloudflare connectors native. Evidence collection 24/7. Auditor portal. SOC 2 Type 1 trong 60 ngày. | $4–6K/yr |
-| **Deepfake detection** | **Buy: Hive Moderation API** | Pay-per-use (<$0.01/check). Không cần training data. Vendor maintain model updates. Voice + Video. Duy nhất SME-accessible tool có real-time API. | ~$0.01/check |
-| **ML platform** | **Buy: AWS SageMaker** | Managed training jobs, endpoint auto-scaling, model registry, A/B testing. vs 6 tháng build custom MLOps infra. Drift monitoring built-in. | ~$200–500/mo |
+| **Authentication (SSO + MFA)** | **Buy: Keycloak (self-hosted ECS)** | OIDC/SAML 2.0, Google + M365 federation built-in. Zero per-user cost (vs Auth0 $0.23/MAU = $1,380/mo at 500 users/tenant × 10 tenants). Full control: custom MFA flows, branding, GDPR DPA. **⚠️ R-C6 requirements:** (1) Min 2 ECS tasks (active-active, not just multi-AZ placement); (2) JWKS caching mandatory — JWT validation must not depend on Keycloak uptime; (3) Keycloak DB separate from app DB. **Alternative (revisit at v1 launch):** If DevSecOps ops capacity is insufficient, evaluate WorkOS/Auth0 (~$500–1,000/mo) before v1.5. | ~$50/mo (ECS only); WorkOS/Auth0 alt: ~$500–1,000/mo |
+| **Compliance automation** | **Buy: Vanta (Startup plan)** | $4–6K/yr vs 3 months engineer time ($60K+ cost). AWS + GitHub + Cloudflare connectors native. Evidence collection 24/7. Auditor portal. SOC 2 Type 1 in 60 days. | $4–6K/yr |
+| **Deepfake detection** | **Buy: Hive Moderation API** | Pay-per-use (<$0.01/check). No training data required. Vendor maintains model updates. Voice + Video. Only SME-accessible tool with a real-time API. | ~$0.01/check |
+| **ML platform** | **Buy: AWS SageMaker** | Managed training jobs, endpoint auto-scaling, model registry, A/B testing. vs 6 months building custom MLOps infra. Drift monitoring built-in. | ~$200–500/mo |
 | **Cloud infrastructure** | **Buy: AWS (ECS, RDS, EventBridge, Step Functions, S3)** | 99.9%+ SLA. Managed scaling. Compliance certifications (ISO 27001, SOC 2) inherited. Single vendor = simplified compliance scope. | ~$2–4K/mo (v1 launch) |
-| **Integration sync engine** | **Build (Go)** | Google Admin SDK rate limits, M365 delta link quirks, Slack tier detection, AWS IAM pagination — tất cả cần custom handling. Đây là core differentiator (shadow IT detection). | 2 engineers × 3 sprints |
-| **Asset inventory + classification** | **Build (Go)** | Không có competitor nào có Shadow AI detection ở SME pricing. Rule-based classification engine là moat. | 1 engineer × 4 sprints |
+| **Integration sync engine** | **Build (Go)** | Google Admin SDK rate limits, M365 delta link quirks, Slack tier detection, AWS IAM pagination — all require custom handling. This is the core differentiator (shadow IT detection). | 2 engineers × 3 sprints |
+| **Asset inventory + classification** | **Build (Go)** | No competitor has Shadow AI detection at SME pricing. Rule-based classification engine is the moat. | 1 engineer × 4 sprints |
 | **Browser extension DLP** | **Build (Chrome MV3 + Edge)** | Local inference (privacy-preserving). Tenant-scoped allow-list. Prompt Security (closest competitor) costs $15–30K/yr. | 1 FE engineer × 3 sprints |
-| **Incident playbook engine** | **Build on Step Functions** | Step Functions = proven orchestration (retry, state, parallel). Build playbook logic + wizard UI. Domain-specific UX cho non-security staff là differentiator. | 2 engineers × 2 sprints |
+| **Incident playbook engine** | **Build on Step Functions** | Step Functions = proven orchestration (retry, state, parallel). Build playbook logic + wizard UI. Domain-specific UX for non-security staff is the differentiator. | 2 engineers × 2 sprints |
 | **Audit logging** | **Build on S3 Object Lock** | S3 Object Lock = WORM compliance-ready at near-zero cost. No vendor to depend on for immutability. | ~$10–50/mo (storage) |
 | **AI phishing detection** | **Buy + Thin wrapper: M365 Defender / Google Workspace security** | Enterprise-grade phishing detection. SMESec adds: alert routing + playbook trigger + compliance evidence. No need to build ML classifier for known phishing. | Included in M365/Google subscription |
-| **Observability** | **Buy: CloudWatch (primary) + Datadog (optional v1.5)** | CloudWatch = zero additional cost (AWS native). Datadog APM nếu budget allows post-v1. | CloudWatch: included; Datadog: ~$200/mo |
+| **Prompt injection detection** | **Buy: Lakera Guard API (v1)** | Production-validated (~$0.001/request). No training data required. Covers known injection patterns + novel variants. **Internal BERT target moved to Sprint 23–24 Enterprise-only evaluation** — not a v1 target. Gate: FPR <2% AND TPR >85% on 30-day production holdout before graduating from beta. | ~$0.001/request; ~$50/mo at 50K daily checks |
+| **Observability** | **Buy: CloudWatch (primary) + Datadog (optional v1.5)** | CloudWatch = zero additional cost (AWS native). Datadog APM if budget allows post-v1. | CloudWatch: included; Datadog: ~$200/mo |
 
 ### 2.2 Build Decision Criteria
 
-Chỉ Build khi đáp ứng ≥2 trong 4 tiêu chí:
+Build only when ≥2 of 4 criteria are met:
 
 ```
-✅ TIÊU CHÍ BUILD:
-  1. Là core differentiator vs competitors (khách hàng trả tiền vì điều này)
-  2. Không có affordable alternative (<$5K/yr) đáp ứng requirements
-  3. Cần deep customization mà SaaS tools không support
-  4. Vendor risk cao (lock-in, price increase, sunset)
+✅ BUILD CRITERIA:
+  1. Is a core differentiator vs competitors (customers pay for this)
+  2. No affordable alternative (<$5K/yr) meets requirements
+  3. Requires deep customization that SaaS tools don't support
+  4. High vendor risk (lock-in, price increase, sunset)
 
-✅ TIÊU CHÍ BUY:
+✅ BUY CRITERIA:
   1. Commodity service (authentication, monitoring, storage)
-  2. Compliance/security domain đã được vendor certify
-  3. Time-to-market: dùng ngay trong Sprint 1
+  2. Compliance/security domain already certified by vendor
+  3. Time-to-market: usable immediately in Sprint 1
   4. Cost < 3 months engineering time
 ```
 
@@ -134,22 +135,22 @@ Revenue at 50 customers (avg $800/mo):
 
 ### 3.1 Approach: Shared Database, Isolated Data
 
-**Quyết định:** PostgreSQL Row-Level Security (RLS) — Shared cluster, data isolation ở database level.
+**Decision:** PostgreSQL Row-Level Security (RLS) — Shared cluster, data isolation at the database level.
 
-**Ba approaches được xem xét:**
+**Three approaches considered:**
 
-| Approach | Mô Tả | SMESec Decision |
+| Approach | Description | SMESec Decision |
 |---|---|---|
-| **Silo (Separate DB per tenant)** | Mỗi tenant có DB riêng | ❌ Quá tốn kém (~$100/mo/tenant), không viable ở SME pricing |
-| **Shared Schema (App-level isolation)** | Chung DB, application code filter theo tenant | ❌ Bug trong application → cross-tenant leak. Không đủ trustworthy. |
-| **Shared Schema (DB-level RLS)** | Chung DB, PostgreSQL RLS enforce isolation | ✅ **Chosen** — Defense in depth: cả DB và app enforce isolation |
+| **Silo (Separate DB per tenant)** | Each tenant has its own DB | ❌ Too costly (~$100/mo/tenant), not viable at SME pricing |
+| **Shared Schema (App-level isolation)** | Shared DB, application code filters by tenant | ❌ Application bug → cross-tenant data leak. Not sufficiently trustworthy. |
+| **Shared Schema (DB-level RLS)** | Shared DB, PostgreSQL RLS enforces isolation | ✅ **Chosen** — Defense in depth: both DB and app enforce isolation |
 
-### 3.2 Schema Design Bắt Buộc
+### 3.2 Mandatory Schema Design
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════
--- RULE: Mọi domain table PHẢI có 2 cột này. Không có exception.
--- Enforced bởi: migration validator script + code review checklist
+-- RULE: Every domain table MUST have these 2 columns. No exceptions.
+-- Enforced by: migration validator script + code review checklist
 -- ═══════════════════════════════════════════════════════════════
 
 CREATE TABLE assets (
@@ -239,11 +240,11 @@ func TenantMiddleware(db *pgxpool.Pool) echo.MiddlewareFunc {
 }
 ```
 
-### 3.4 Tenant Isolation CI Test (Bắt Buộc Xanh Trước Mỗi Merge)
+### 3.4 Tenant Isolation CI Test (Must Be Green Before Every Merge)
 
 ```go
 // tests/integration/tenant_isolation_test.go
-// Chạy trong CI/CD pipeline. Block merge nếu fail.
+// Runs in CI/CD pipeline. Blocks merge on failure.
 
 func TestCrossTenantIsolation(t *testing.T) {
     tenantA := createTestTenant(t)
@@ -314,11 +315,11 @@ Invariant:
 
 ### 4.1 The Core Problem: Accuracy vs Trust
 
-> AI detection sai lầm có hai hậu quả đều tệ:
-> - **False Negative:** Bỏ sót deepfake fraud thực sự → mất tiền, mất data
-> - **False Positive:** Block công việc hợp lệ → frustrate employees → product bị vô hiệu hóa
+> Incorrect AI detection has two equally bad consequences:
+> - **False Negative:** Miss a real deepfake fraud → money lost, data lost
+> - **False Positive:** Block legitimate work → frustrate employees → product becomes ineffective
 
-**Giải pháp:** 2-track architecture với trust gateway riêng biệt cho từng track.
+**Solution:** 2-track architecture with separate trust gateways for each track.
 
 ### 4.2 Track 1 — Deterministic Security Controls
 
@@ -386,11 +387,11 @@ False positive policy: Conservative threshold — unknown apps default to MEDIUM
 #### 4.3.2 LLM Data Leakage Prevention (Browser Extension)
 
 ```
-FEATURE: Real-time DLP trước khi submit vào ChatGPT / Copilot / Gemini
+FEATURE: Real-time DLP before submission to ChatGPT / Copilot / Gemini
 Architecture: Client-side (local) + Server-side (async logging)
 
 Client-side (Chrome Extension Content Script):
-  1. Monitor: input/textarea trong các domain AI tools (chatgpt.com, copilot.microsoft.com, etc.)
+  1. Monitor: input/textarea in AI tool domains (chatgpt.com, copilot.microsoft.com, etc.)
   2. On submit (form submit / Enter keypress):
      → Run local PII detector (Microsoft Presidio compiled to WASM)
          Detects: Email, Phone, Credit Card, SSN, IBAN, IP Address,
@@ -414,7 +415,7 @@ Privacy guarantee: Browser extension NEVER sends content to SMESec servers.
 #### 4.3.3 Deepfake Fraud Defense
 
 ```
-FEATURE: Voice/video verification trước khi thực hiện giao dịch nhạy cảm
+FEATURE: Voice/video verification before executing sensitive transactions
 Use case: "Is this my CEO actually asking me to wire $50K?"
 
 Architecture: Out-of-Band Verification Workflow (AWS Step Functions)
@@ -449,25 +450,23 @@ This is by design — automated interception of calls raises legal concerns in m
 FEATURE: Detect attempts to manipulate AI tools via injected instructions
 Applicable to: SMEs deploying internal AI assistants (Enterprise tier)
 
-v1 — Rule-Based (Sprint 11):
-  Engine: Regex + curated pattern library
-  Patterns: Common injection templates:
-    - "Ignore previous instructions..."
-    - "You are now DAN..."
-    - "Print your system prompt..."
-    - "Act as [unrestricted AI]..."
-  Accuracy: ~75% (covers known patterns)
-  False positive rate: <5%
-  Latency: <10ms
+v1 — Lakera Guard API (Sprint 8, replacing internal rule-based target):
+  Service: Lakera Guard REST API
+  Integration: API call per user-submitted prompt before forwarding to AI assistant
+  Cost: ~$0.001/request
+  Latency: <50ms (p99)
+  Accuracy: Production-validated by Lakera (covers known + novel injection patterns)
+  ⚠️ BS-4 fix: Internal BERT model target was unrealistic for v1 timeline.
+     Lakera Guard is already cited in competitive analysis — use it.
 
-v2 — ML Classifier (Sprint 23–24, Enterprise tier only):
-  Model: Fine-tuned BERT (bert-base-uncased)
-  Training data: PhishTank corpus + synthetic injections + production data (opt-in tenants only)
-  Feature extraction: Input text tokenized, classified as injection/benign
+v2 — Internal BERT Classifier (Sprint 23–24, Enterprise tier only):
+  Trigger: Only if Lakera Guard pricing becomes prohibitive at Enterprise volume
+           AND sufficient labeled production data available (>50K samples)
+  Model: Fine-tuned BERT (bert-base-uncased) on production data (opt-in tenants only)
   Accuracy target: TPR >85%, FPR <2%
   Infrastructure: SageMaker endpoint (async queue for non-real-time use cases)
   Gate: Must achieve FPR <2% AND TPR >85% on 30-day production holdout set
-        before graduating from beta. If not achieved → rule-based remains GA.
+        before graduating from beta. If not achieved → Lakera Guard remains GA.
 ```
 
 ### 4.4 Track 2 Accuracy Gates (Ship Criteria)
@@ -477,16 +476,16 @@ v2 — ML Classifier (Sprint 23–24, Enterprise tier only):
 | Shadow AI classification | >95% AI tool identification | <10% (unknown apps miscategorized as AI) | Sprint 9 production evaluation |
 | LLM DLP (PII detection) | >99% for CRITICAL data (credit card, SSN) | <5% for INTERNAL data | Sprint 8 staging test |
 | Deepfake detection | >80% voice deepfake detection | <15% (ambiguous → escalate, not block) | Sprint 10 evaluation |
-| Prompt injection (rule-based) | >70% known patterns | <5% | Sprint 11 staging |
-| Prompt injection (BERT) | TPR >85% | FPR <2% | Sprint 24 production holdout |
+| Prompt injection (Lakera Guard v1) | Production-validated (vendor SLA) | Vendor-managed | Sprint 8 integration test |
+| Prompt injection (BERT internal) | TPR >85% | FPR <2% | Sprint 24 production holdout (Enterprise only) |
 
-> **Policy:** Nếu không đạt accuracy gate → feature ở trạng thái `beta`, opt-in only. Không bao giờ ship Track 2 feature ở trạng thái GA khi chưa qua accuracy gate.
+> **Policy:** If accuracy gate is not met → feature remains `beta`, opt-in only. Track 2 features are never shipped as GA without passing the accuracy gate.
 
 ---
 
 ## 5. Data Privacy Guarantees
 
-### 5.1 Bốn Cam Kết Cốt Lõi
+### 5.1 Four Core Commitments
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -502,10 +501,13 @@ v2 — ML Classifier (Sprint 23–24, Enterprise tier only):
 ║     PII detection runs via Presidio WASM (fully local).         ║
 ║     Only pseudonymized event metadata sent to SMESec servers.   ║
 ║                                                                  ║
-║  3. IMMUTABLE AUDIT LOGS (tamper-proof)                          ║
-║     S3 Object Lock (WORM) — no deletion, ever.                  ║
+║  3. IMMUTABLE AUDIT LOGS (tamper-proof + GDPR-erasable)          ║
+║     S3 Object Lock (WORM) — ciphertext cannot be deleted by anyone.       ║
 ║     7-year retention for compliance evidence.                    ║
-║     Even SMESec engineers cannot delete customer audit logs.    ║
+║     **GDPR Art. 17 resolution:** Per-tenant KMS envelope         ║
+║     encryption — key destruction = permanent inaccessibility    ║
+║     = "effective erasure" per EDPB Recommendation 01/2020.      ║
+║     Audit ciphertext persists but is permanently unreadable.   ║
 ║                                                                  ║
 ║  4. DATA RESIDENCY ISOLATION                                     ║
 ║     EU tenant data STAYS in eu-west-1. No exceptions.           ║
@@ -546,14 +548,20 @@ Art. 13/14 (Transparency):
 
 Art. 17 (Right to erasure):
   ● /api/v1/gdpr/erasure endpoint: anonymizes PII within 30 days
-  ● Audit logs: pseudonymized (user_id hash retained, PII removed)
+  ● Audit logs: WORM (S3 Object Lock, 7-year) — cannot be deleted through normal means
+  ● **Erasure mechanism for WORM audit logs:** Per-tenant KMS CMK
+    → Customer submits DELETE → Schedule KMS key deletion (7-day pending window)
+    → After key deletion: DEK cannot be decrypted → ciphertext unreadable forever
+    → Issue erasure certificate with key_deletion_timestamp
+    → Satisfies GDPR "effective erasure" standard (EDPB Recommendation 01/2020)
+    → DPA contract must explicitly reference this cryptographic erasure approach
   ● Automated erasure pipeline (Sprint 11): Google → M365 cascade
 
 Art. 20 (Portability):
   ● /api/v1/gdpr/export: JSON export of all tenant data (Sprint 11)
 
 Art. 25 (Privacy by design):
-  ● data_residency column bắt buộc từ Sprint 1
+  ● data_residency column mandatory from Sprint 1
   ● Local inference for browser extension (no data leaves device)
   ● Pseudonymization in ML feature vectors (SHA-256 hash of user IDs)
 
@@ -651,18 +659,18 @@ func (sm *SecretManager) GetOAuthToken(ctx context.Context, tenantID, provider s
 
 ## 6. AI Governance Module
 
-### 6.1 Phạm Vi & Mục Tiêu
+### 6.1 Scope & Objectives
 
-> **Bài toán:** 78% knowledge workers dùng AI tools tại nơi làm việc. 52% dùng tools mà employer không cung cấp. 11% data paste vào ChatGPT là thông tin mật công ty. (Cyberhaven 2025)
+> **The problem:** 75% of knowledge workers use AI tools at work. 78% bring their own tools without employer approval. 11% of data pasted into ChatGPT contains confidential company information. (Cyberhaven, 2024)
 
-SMESec AI Governance Module không nhằm mục đích **cấm** AI — mà nhằm mục đích **nhìn thấy, hiểu, và kiểm soát có chủ đích** việc dùng AI trong tổ chức.
+The SMESec AI Governance Module is not designed to **ban** AI — but to **see, understand, and intentionally control** AI usage in the organization.
 
-**Ba mức độ governance:**
+**Three governance levels:**
 
 ```
 LEVEL 1 — DISCOVER (Passive)
-  Biết nhân viên đang dùng AI tools nào
-  → Không can thiệp, chỉ inventory
+  Know which AI tools employees are using
+  → No intervention, inventory only
 
 LEVEL 2 — GOVERN (Active)
   Policy: approved list, required attestation
@@ -673,10 +681,10 @@ LEVEL 2 — GOVERN (Active)
 LEVEL 3 — PROTECT (Real-time)
   Browser extension: LLM DLP
   → Block submission of sensitive data to AI tools
-  → Alert + educate, không chỉ block
+  → Alert + educate, not just block
 ```
 
-### 6.2 Discovery Layer — Phát Hiện AI Tool Usage
+### 6.2 Discovery Layer — AI Tool Usage Detection
 
 ```
 SIGNAL 1: OAuth App Inventory (Track 1)
@@ -708,7 +716,7 @@ Coverage at v1: Signals 1 + 2 = >80% of AI tool usage detected
 AI Tool Risk Tiers:
 
 CRITICAL — Immediate action required:
-  ● AI tools với data export / training opt-out unclear
+  ● AI tools with unclear data export / training opt-out policies
   ● Apps requesting Google Drive / M365 email READ access
   ● Tools with known CVEs or data breach history
   → Response: Auto-revoke OAuth (dry-run → 2-step confirm), alert IT admin
@@ -794,13 +802,13 @@ DLP Events This Month:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-### 6.6 Risks Introduced by AI Tool Usage (và SMESec Mitigation)
+### 6.6 Risks Introduced by AI Tool Usage (and SMESec Mitigation)
 
-| Rủi Ro | Mô Tả | SMESec Mitigation |
+| Risk | Description | SMESec Mitigation |
 |---|---|---|
 | **Inadvertent IP disclosure** | Developers paste proprietary code into ChatGPT | LLM DLP extension blocks/warns. AI governance policy requires attestation. |
 | **Training data opt-out gap** | Some AI tools train on user input by default | Risk tier system flags tools with unclear training policies as HIGH/CRITICAL. |
-| **Credential leakage** | API keys, passwords paste vào AI prompts | LLM DLP detects credential patterns (API key regex, password patterns) — blocks submission. |
+| **Credential leakage** | API keys, passwords pasted into AI prompts | LLM DLP detects credential patterns (API key regex, password patterns) — blocks submission. |
 | **PII/GDPR violation** | Employee data, customer data paste into AI | LLM DLP blocks PII (email, phone, SSN, IBAN). GDPR evidence logged. |
 | **Shadow AI creating audit gaps** | Decisions made by AI without documentation | AI governance attestation creates audit trail: who used what AI tool, when. |
 | **AI-generated disinformation** | Competitor uses AI to create fake news about company | Out of scope for AI governance module. Covered by brand monitoring (v2 roadmap). |
@@ -814,34 +822,34 @@ DLP Events This Month:
 
 **Rejected:** Separate database per tenant (Silo model)
 
-**Lý do từ chối:**
-- Cost: $100–200/mo/tenant infrastructure × 100 tenants = $10–20K/mo infrastructure chỉ riêng databases — không viable cho SME pricing ($399/mo Starter tier)
+**Reasons for rejection:**
+- Cost: $100–200/mo/tenant infrastructure × 100 tenants = $10–20K/mo infrastructure for databases alone — not viable at SME pricing ($399/mo Starter tier)
 - Operational complexity: 100 databases = 100 patch cycles, 100 backup policies, 100 connection pools
-- Scaling: Adding a new tenant requires provisioning, không phải insert
+- Scaling: Adding a new tenant requires provisioning, not just a database insert
 
-**Tại sao RLS là đủ mạnh:** PostgreSQL RLS với `FORCE ROW LEVEL SECURITY` applies even to table owners. Bypass chỉ có thể nếu: (a) attacker has direct database access (mitigated by VPC private subnet + no public endpoint), hoặc (b) application explicitly runs as superuser (mitigated by `app_role` without BYPASSRLS privilege).
+**Why RLS is sufficient:** PostgreSQL RLS with `FORCE ROW LEVEL SECURITY` applies even to table owners. A bypass is only possible if: (a) an attacker has direct database access (mitigated by VPC private subnet + no public endpoint), or (b) the application explicitly runs as superuser (mitigated by `app_role` without BYPASSRLS privilege).
 
 ### 7.2 Track 2 Integration: Rejected "Unified Service" Approach
 
-**Rejected:** Merge Track 1 và Track 2 thành một service
+**Rejected:** Merging Track 1 and Track 2 into a single service
 
-**Lý do từ chối:**
+**Reasons for rejection:**
 - Track 2 ML models have non-deterministic latency (SageMaker inference: 100ms–2s)
 - Merging would mean Track 1 deterministic operations (offboarding <5 min SLA) could be impacted by Track 2 ML latency
 - Track 2 failure modes (model drift, SageMaker endpoint cold start) would affect Track 1 availability
 
-**Trade-off accepted:** More complex event-driven integration (EventBridge contract between tracks), nhưng Track 1 SLA độc lập hoàn toàn với Track 2.
+**Trade-off accepted:** More complex event-driven integration (EventBridge contract between tracks), but Track 1 SLA is fully independent of Track 2.
 
 ### 7.3 Auth: Rejected Auth0/Cognito
 
-**Rejected:** Auth0 hoặc AWS Cognito (managed auth)
+**Rejected:** Auth0 or AWS Cognito (managed auth)
 
-**Auth0 lý do từ chối:**
-- Cost: $0.23/MAU × 500 users/tenant × 50 tenants = $5,750/mo tại v1 launch — không sustainable với gross margin target
-- SAML 2.0 enterprise feature: Auth0 B2C không support. Auth0 B2B (Enterprise): additional cost.
-- Data residency: Auth0 không guarantee EU data stays in EU at Startup tier
+**Auth0 rejection reasons:**
+- Cost: $0.23/MAU × 500 users/tenant × 50 tenants = $5,750/mo at v1 launch — not sustainable given gross margin target
+- SAML 2.0 enterprise feature: Auth0 B2C does not support it. Auth0 B2B (Enterprise): additional cost.
+- Data residency: Auth0 does not guarantee EU data stays in EU at Startup tier
 
-**Cognito lý do từ chối:**
+**Cognito rejection reasons:**
 - Limited SAML customization (SME IT admins need custom SAML attributes for Google federation)
 - No built-in TOTP MFA enforcement policy per-tenant
 - Cognito User Pools scale poorly for multi-tenant B2B (separate pool per tenant = complexity)
@@ -852,7 +860,7 @@ DLP Events This Month:
 
 **Rejected:** Build custom compliance evidence collection system
 
-**Lý do từ chối:**
+**Reasons for rejection:**
 - Vanta $4–6K/yr vs 3 months engineering ($60K+ cost + ongoing maintenance)
 - Vanta has pre-built auditor relationships — auditor trusts Vanta evidence. Custom-built system requires auditor to validate the tool itself.
 - Vanta AWS + GitHub connectors collect evidence automatically — replaces hundreds of manual screenshots
