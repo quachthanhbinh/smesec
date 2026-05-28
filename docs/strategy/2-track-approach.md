@@ -2,34 +2,34 @@
 
 **Date:** 2026-05-27  
 **Status:** Proposed  
-**Context:** Phân chia development thành 2 tracks song song để giảm risk và tăng confidence
+**Context:** Split development into 2 parallel tracks to reduce risk and increase confidence
 
 ---
 
-## Vấn Đề Với Thiết Kế Trước
+## Problem With the Previous Design
 
-**Critical Risk:** AI threat detection chỉ đạt 85% accuracy → 15% còn lại có thể chứa:
-- **False Negatives**: Bỏ sót deepfake fraud, prompt injection thực sự → mất tiền, mất data
-- **False Positives**: Block nhầm công việc hợp lệ → frustrate employees, giảm productivity
+**Critical Risk:** AI threat detection only achieves 85% accuracy → the remaining 15% may contain:
+- **False Negatives**: Missed real deepfake fraud, prompt injection → financial loss, data loss
+- **False Positives**: Block legitimate work → frustrate employees, reduce productivity
 
-→ **Mất lòng tin khách hàng**, không ai dám dùng nếu không tin tưởng 100%
+→ **Loss of customer trust** — nobody will use the product if they can't trust it 100%
 
 ---
 
-## Chiến Lược Mới: 2 Tracks Song Song
+## New Strategy: 2 Parallel Tracks
 
 ### Track 1: Foundation & Governance (High Confidence)
-**Mục tiêu:** Xây nền tảng vững chắc với accuracy gần 100%
+**Goal:** Build a solid foundation with near-100% accuracy
 
 **Scope:**
 1. **Asset Inventory & Classification** (Requirement 1)
-   - Tự động discover: devices, accounts, SaaS apps, cloud resources
+   - Auto-discover: devices, accounts, SaaS apps, cloud resources
    - Classification: criticality, sensitivity, owner
    - Dependency mapping
    
 2. **Access Governance** (Requirement 3)
    - Least-privilege enforcement (RBAC + JIT access)
-   - Automated offboarding (revoke all access trong <5 phút)
+   - Automated offboarding (revoke all access in <5 minutes)
    - Shadow IT detection (OAuth apps, unapproved SaaS)
    - SSO + MFA enforcement
 
@@ -50,11 +50,11 @@
    - Slack (Admin API, Audit Logs)
    - AWS/Azure/GCP (asset discovery APIs)
 
-**Tại sao Track 1 có High Confidence:**
-- Công nghệ proven: OAuth 2.0, RBAC, API integrations
-- Không phụ thuộc vào ML/AI (deterministic logic)
-- Có thể test 100% với automated tests
-- Immediate value: visibility + control ngay lập tức
+**Why Track 1 has High Confidence:**
+- Proven technology: OAuth 2.0, RBAC, API integrations
+- No dependency on ML/AI (deterministic logic)
+- 100% testable with automated tests
+- Immediate value: visibility + control from day one
 
 **Deliverables:**
 - Web Dashboard: Asset inventory, access management, policy config
@@ -65,7 +65,7 @@
 ---
 
 ### Track 2: AI Threat Detection (High Risk, High Value)
-**Mục tiêu:** R&D để đạt accuracy >95% trước khi launch
+**Goal:** R&D to achieve >95% accuracy before launch
 
 **Scope:**
 1. **Prompt Injection Detection**
@@ -92,11 +92,11 @@
    - Network traffic analysis (DNS, API calls)
    - **Target:** >95% discovery rate
 
-**Tại sao Track 2 cần R&D riêng:**
-- Phụ thuộc vào ML models (non-deterministic)
-- Cần pilot data để tune thresholds
-- False positive/negative trade-offs phức tạp
-- Cần thời gian để validate accuracy
+**Why Track 2 needs its own R&D:**
+- Depends on ML models (non-deterministic)
+- Requires pilot data to tune thresholds
+- Complex false positive/negative trade-offs
+- Requires time to validate accuracy
 
 **Deliverables:**
 - Browser Extension: Prompt interceptor, DLP scanner
@@ -112,7 +112,7 @@
 
 ---
 
-## Phân Chia Team
+## Team Structure
 
 ### Team 1: Foundation & Governance (5 FTE)
 - 1 Tech Lead / Architect
@@ -145,7 +145,7 @@
 
 ---
 
-## Timeline: 6 Tháng Song Song
+## Timeline: 6 Months in Parallel
 
 ### Track 1: Foundation (Launch-Ready sau 6 tháng)
 
@@ -217,15 +217,15 @@ Month 6: VALIDATION & TUNING
 
 ---
 
-## Dependencies Giữa 2 Tracks
+## Dependencies Between 2 Tracks
 
-### Track 1 → Track 2 (Foundation cung cấp cho AI)
+### Track 1 → Track 2 (Foundation provides context to AI)
 - **Asset Inventory:** AI detection cần biết user roles, device context
 - **Access Governance:** AI alerts cần trigger offboarding workflows
 - **Incident Playbooks:** AI threats cần automated response
 - **Integrations:** AI detection cần Google/M365 APIs để revoke access
 
-### Track 2 → Track 1 (AI cung cấp cho Foundation)
+### Track 2 → Track 1 (AI provides signals to Foundation)
 - **AI Threat Events:** Feed vào incident playbook engine
 - **Risk Scores:** Enrich asset classification (high-risk users/devices)
 - **Shadow AI Discovery:** Feed vào access governance (unapproved apps)
@@ -249,9 +249,9 @@ Month 6: VALIDATION & TUNING
 
 ---
 
-## Compliance Requirements cho Track 1
+## Compliance Requirements for Track 1
 
-### ISO 27001 Controls (Cần thiết cho Track 1)
+### ISO 27001 Controls (Required for Track 1)
 
 | Control | Requirement | Implementation |
 |---------|-------------|----------------|
@@ -262,7 +262,7 @@ Month 6: VALIDATION & TUNING
 | **A.9.4** Access Review | Periodic review | Quarterly access review reports |
 | **A.12.4** Logging & Monitoring | Audit trails | All access events logged to S3 |
 
-### GDPR Requirements (Cần thiết cho Track 1)
+### GDPR Requirements (Required for Track 1)
 
 | Article | Requirement | Implementation |
 |---------|-------------|----------------|
@@ -271,7 +271,7 @@ Month 6: VALIDATION & TUNING
 | **Art. 17** Right to Erasure | Delete personal data | Offboarding workflow includes data deletion |
 | **Art. 33** Breach Notification | 72-hour reporting | Incident playbooks include notification workflows |
 
-### SOC 2 Trust Services Criteria (Cần thiết cho Track 1)
+### SOC 2 Trust Services Criteria (Required for Track 1)
 
 | Criteria | Requirement | Implementation |
 |----------|-------------|----------------|
@@ -280,7 +280,7 @@ Month 6: VALIDATION & TUNING
 | **CC6.3** Access Removal | Remove access when no longer needed | JIT access auto-expires |
 | **CC7.2** System Monitoring | Monitor security events | All access events logged + alerted |
 
-**Kết luận:** Track 1 đủ để đạt ISO 27001, GDPR, SOC 2 compliance cho phần Asset + Access Management. Track 2 (AI detection) là bonus, không bắt buộc cho compliance.
+**Conclusion:** Track 1 is sufficient to achieve ISO 27001, GDPR, and SOC 2 compliance for the Asset + Access Management scope. Track 2 (AI detection) is a bonus, not required for compliance.
 
 ---
 
@@ -337,24 +337,24 @@ Month 6: VALIDATION & TUNING
 
 ## Decisions Made
 
-1. **Team size:** TBD - sẽ thảo luận riêng
+1. **Team size:** TBD — to be discussed separately
 
-2. **Pilot customers:** ⚠️ **CRITICAL** - Chưa có sẵn SMEs để pilot
-   - **Action required:** Cần tìm 2-3 SMEs sẵn sàng pilot Track 2 trong Month 4-6
-   - **Criteria:** SMEs có:
-     - 50-200 employees (sweet spot cho pilot)
-     - Đang dùng AI tools (ChatGPT, Copilot, etc.)
-     - Có IT manager/admin có thể collaborate
-     - Sẵn sàng share feedback và telemetry data
-   - **Timeline:** Cần identify pilot customers trước Month 4
+2. **Pilot customers:** ⚠️ **CRITICAL** — No SMEs available for piloting yet
+   - **Action required:** Need to identify 2-3 SMEs willing to pilot Track 2 in Month 4-6
+   - **Criteria:** SMEs with:
+     - 50-200 employees (sweet spot for pilot)
+     - Currently using AI tools (ChatGPT, Copilot, etc.)
+     - Have an IT manager/admin who can collaborate
+     - Willing to share feedback and telemetry data
+   - **Timeline:** Must identify pilot customers before Month 4
 
 3. **Budget Track 2:** ✅ Approved
    - Deepfake detection API ($3K-5K/year)
    - ML training infrastructure (SageMaker)
-   - Labeled datasets (nếu cần mua)
+   - Labeled datasets (if purchase is needed)
 
 4. **Decision criteria:** ⚠️ **QUALITY FIRST**
-   - Nếu Track 2 chỉ đạt 90% accuracy sau 6 tháng → **KHÔNG launch**
-   - Tiếp tục iterate cho đến khi đạt >95% precision, <5% false positive
-   - **Nguyên tắc:** Không đưa sản phẩm chưa hoàn thiện ra thị trường
-   - Track 1 có thể launch độc lập nếu Track 2 chưa sẵn sàng
+   - If Track 2 only reaches 90% accuracy after 6 months → **DO NOT launch**
+   - Continue iterating until >95% precision, <5% false positive is achieved
+   - **Principle:** Never release an unfinished product to market
+   - Track 1 can launch independently if Track 2 is not ready

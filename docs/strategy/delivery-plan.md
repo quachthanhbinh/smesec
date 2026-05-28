@@ -22,6 +22,7 @@
 7. [Riskiest Assumption to Validate First](#7-riskiest-assumption-to-validate-first)
 8. [Compliance Certification Timeline](#8-compliance-certification-timeline)
 9. [External Dependencies & Hard Deadlines](#9-external-dependencies--hard-deadlines)
+10. [Sprint Recovery Protocol](#10-sprint-recovery-protocol)
 
 ---
 
@@ -566,6 +567,89 @@ Month 12 (W52): v2 LAUNCH
 | iOS App Store submission | W50 | App Store review 1–2 weeks | Mobile feature misses v2 window |
 | SOC 2 Type 2 audit sign | W42 | Engage auditor firm | Audit does not complete before W52 |
 | ISO 27001 Stage 2 audit | W45 | Certification 6–8 weeks after audit | Certificate not available at W52 |
+
+---
+
+## 10. Sprint Recovery Protocol
+
+This protocol governs what happens when a sprint cannot deliver its full scope. Sprints are **never extended** — the timebox is fixed at 2 weeks. Scope is adjusted instead.
+
+### 10.1 Triage Decision Tree
+
+Apply in order at the sprint retrospective (or mid-sprint if overrun is detected early):
+
+```
+Sprint cannot finish all scope
+          │
+          ▼
+  Is any unfinished item on the GATE CRITERIA list for this milestone?
+          │
+     YES  │  NO
+          │   └──→ Defer to next sprint. No escalation needed.
+          │         Log in sprint notes. PM updates milestone tracker.
+          ▼
+  Will deferring cause the MILESTONE DATE to slip?
+          │
+     NO   │  YES
+          │   └──→ ESCALATE to PM + Tech Lead immediately.
+          │         Invoke Scope Cut options (see 10.2) before next sprint starts.
+          ▼
+  Defer to next sprint.
+  Flag as MILESTONE RISK in weekly status report.
+```
+
+### 10.2 Scope Cut Options (in priority order)
+
+When a milestone date is at risk, apply cuts in this order — do not skip ahead:
+
+| Priority | Cut Type | Rule |
+|----------|----------|------|
+| **1st** | Defer Track 2 (AI) features | Track 2 never blocks Track 1 milestones. If a Track 2 feature is not gate-critical, it slips to the next milestone. |
+| **2nd** | Reduce polish / non-functional scope | Defer UI polish, PDF export formatting, non-critical error messages, optional test coverage above the CI-required minimum. |
+| **3rd** | Narrow integration scope | Example: S5 cannot finish AWS IAM → defer AWS, ship Slack only. Note in release notes. |
+| **4th** | Split the feature (ship partial) | Ship the read path now, write path in next sprint. Only valid if partial feature is independently usable and does not create a false sense of completeness for customers. |
+| **5th** | Slip the milestone date | Last resort. Requires PM sign-off. Cascade impact on SOC 2 evidence window, pentest timeline, and compliance obligations must be assessed before approving. |
+
+### 10.3 Gate Criteria Are Non-Negotiable
+
+The following items **cannot be deferred or cut**, regardless of sprint pressure. The milestone does not pass until all are green:
+
+| Milestone | Non-negotiable gate items |
+|-----------|---------------------------|
+| **MVP (W12)** | Tenant isolation CI test green · Offboarding timed test <5 min · Grace period cancel + rollback tests pass · M365 webhook renewal skeleton in place |
+| **v1 (W26)** | 0 Critical/High open pentest findings · SOC 2 Type 1 audit engagement signed · 5+ pilot customers on production · S3 Object Lock + envelope encryption verified |
+| **v1.5 (W38)** | Stripe billing live · Chrome Web Store submission done · SOC 2 Type 2 evidence window started at W26 with no gaps |
+| **v2 (W52)** | SOC 2 Type 2 audit fieldwork complete · ISO 27001 Stage 2 audit complete · 0 Critical/High security findings open |
+
+### 10.4 Cascading Risk Rules
+
+Certain delays have mandatory downstream consequences that must be tracked immediately:
+
+| Trigger | Mandatory action |
+|---------|------------------|
+| MVP slips past W14 | Pentest LOI deadline (W14) at risk — PM contacts vendor same day to hold slot |
+| Vanta setup slips past W15 | SOC 2 Type 1 at v1 is no longer achievable — escalate to decision: push v1 to W30 or accept SOC 2 Type 1 at v1.5 |
+| Track 1–Track 2 integration (S11) slips 1 sprint | Activate fallback: manual playbook trigger in v1. Track 2 integration deferred to v1.5. PM updates customer commitments. |
+| Chrome Web Store submission slips past W34 | Browser extension misses v1.5. Accepted — document in v1.5 release notes. Next window: W44. |
+| SOC 2 Type 2 evidence gap at any point after W26 | PM escalates immediately. Vanta gap must be closed within 72 hours or observation window restarts. |
+
+### 10.5 Sprint Recovery Cadence
+
+```
+Day 1 of each sprint:
+  PM reviews previous sprint completion vs gate criteria
+  Any deferred gate items → immediately added to current sprint as P0
+
+Day 5 (mid-sprint check-in):
+  If >40% of sprint scope incomplete → PM + Tech Lead assess triage options
+  Do not wait for retrospective if a milestone is at risk
+
+Day 10 (retrospective):
+  Unfinished items triaged per 10.2
+  Cascade risks assessed per 10.4
+  Sprint notes updated with deferred items + rationale
+  Next sprint scope adjusted before Day 1 of next sprint
+```
 
 ---
 
