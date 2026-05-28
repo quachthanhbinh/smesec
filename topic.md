@@ -1,7 +1,7 @@
 A Software System to Protect SME Assets & Resources in the AI Era
 Context
 Small and medium enterprises (SMEs) are increasingly exposed to AI-driven risks: automated spear-phishing, AI-generated disinformation targeting brand reputation, adversarial use of internal data leaked to public LLMs, shadow AI tool adoption by employees, and supply-chain compromise via AI-powered attacks. Unlike enterprises, SMEs lack dedicated security teams and large budgets.
-
+  
 Your Task
 Design a unified protection platform for SMEs (10–500 employees) covering their most critical assets: data, people, intellectual property, financial accounts, and operational continuity. The system must be economically viable and operable without a full-time security team.
 
