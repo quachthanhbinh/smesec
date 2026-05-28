@@ -1,0 +1,144 @@
+digraph root {
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=13;
+	label="SMESec — Logical Architecture (Clean Architecture)";
+	nodesep=0.6;
+	pad=2;
+	rankdir=TB;
+	ranksep=0.75;
+	splines=ortho;
+	adthzwbp->afiawokc[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	pwmyutjt->afiawokc[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	yernpcym->afiawokc[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ldugqdal->afiawokc[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	adthzwbp->eliirukp[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	dvshocup->adthzwbp[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	dvshocup->pwmyutjt[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	pwmyutjt->eliirukp[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	dvshocup->epeiscan[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	fkeiuzzn->afiawokc[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	epeiscan->afiawokc[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	yernpcym->eliirukp[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ldugqdal->eliirukp[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	dvshocup->yernpcym[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	dvshocup->fkeiuzzn[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	fkeiuzzn->eliirukp[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	epeiscan->eliirukp[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	dvshocup->ldugqdal[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ehqhgnmw->afiawokc[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	nwswzint->afiawokc[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ritbzbwl->afiawokc[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ilvibcrj->afiawokc[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	poxqmale->dvshocup[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	zxrjffeq->dvshocup[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	oixwoabe->dvshocup[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	subgraph cluster_api {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="API Layer";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	dvshocup [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/network/kong.png", imagescale=true, label="API Gateway
+(REST + gRPC + WS)
+JWT Auth · Rate Limit", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_application {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Application Layer — Use Cases";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	adthzwbp [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/fargate.png", imagescale=true, label="Compliance
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	epeiscan [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/fargate.png", imagescale=true, label="Asset Inventory
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	fkeiuzzn [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/fargate.png", imagescale=true, label="Integration Sync
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	ldugqdal [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/fargate.png", imagescale=true, label="Incident Playbook
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	pwmyutjt [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/fargate.png", imagescale=true, label="Threat Detection
+Service (Track 2)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	yernpcym [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/fargate.png", imagescale=true, label="Access Governance
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_domain {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Domain Layer — Entities &amp; Domain Services (zero external dependencies)";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	afiawokc [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/database/postgresql.png", imagescale=true, label="Domain Entities
+Asset · TenantUser · ThreatEvent
+Playbook · ComplianceControl
+AccessPolicy · TenantConfig", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	eliirukp [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/container/docker.png", imagescale=true, label="Domain Services
+RiskScorer · AccessGovernor
+ComplianceAuditor · PlaybookExecutor", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_infra {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Infrastructure Layer — Adapters &amp; Repositories";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	ehqhgnmw [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/network/internet.png", imagescale=true, label="External Clients
+VantaClient · HiveModerationClient
+SageMakerClient · KeycloakClient", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	ilvibcrj [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/integration/eventbridge.png", imagescale=true, label="Event Publishers
+EventBridgePublisher
+SNSNotificationPublisher", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	nwswzint [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/database/rds.png", imagescale=true, label="Repositories
+PostgresAssetRepo · PostgresUserRepo
+PostgresPlaybookRepo
+[tenant_id RLS enforced]", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	ritbzbwl [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/network/internet.png", imagescale=true, label="Integration Adapters
+GoogleWorkspaceAdapter
+M365Adapter · SlackAdapter
+AWSIAMAdapter", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_interface {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Interface Layer — Controllers &amp; Presenters";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	oixwoabe [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/network/internet.png", imagescale=true, label="Web App
+(React/Next.js)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	poxqmale [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/network/internet.png", imagescale=true, label="Mobile App
+(Flutter)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	zxrjffeq [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/network/internet.png", imagescale=true, label="Browser Extension
+(Chrome MV3)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+
+}

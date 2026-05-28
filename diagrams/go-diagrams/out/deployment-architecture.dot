@@ -1,0 +1,322 @@
+digraph root {
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=13;
+	label="SMESec — AWS Deployment Architecture";
+	nodesep=0.6;
+	pad=2;
+	rankdir=TB;
+	ranksep=0.75;
+	splines=ortho;
+	coethqrb->dtceoevx[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	qhvpowci->kturvqiw[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	teejekpb->wistcpnj[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	xbummutm->trnxwlmg[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	trnxwlmg->coethqrb[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	tzliaqol->gpedhsok[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	qhvpowci->rnqvxqpe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	rnqvxqpe->wclgyrbq[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	hrdwdoxe->daxoqfzq[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ciuiawrb->soseulym[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	dtceoevx->tzliaqol[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	dtceoevx->gpedhsok[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	qhvpowci->gucolpfv[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	qhvpowci->pjkvslru[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	xyuusfzj->qmghjkeo[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	eudqojac->wwutrepe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->gpedhsok[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	izvzvrat->qhvpowci[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	wclgyrbq->nxexgxnr[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	teejekpb->nxexgxnr[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	izvzvrat->nxexgxnr[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->teejekpb[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	wclgyrbq->pjitfbnh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	eudqojac->pjitfbnh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->glpfsqtd[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->nxexgxnr[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ffuwirnt->nxexgxnr[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	teejekpb->wwutrepe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->izvzvrat[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->pjitfbnh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	teejekpb->qhvpowci[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->qhvpowci[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	izvzvrat->wwutrepe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	izvzvrat->pjitfbnh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->wwutrepe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	teejekpb->glpfsqtd[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->ffuwirnt[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->eudqojac[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	teejekpb->pjitfbnh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	wclgyrbq->glpfsqtd[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	wclgyrbq->qhvpowci[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	gpedhsok->wclgyrbq[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ffuwirnt->pjitfbnh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	izvzvrat->glpfsqtd[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ffuwirnt->glpfsqtd[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ffuwirnt->qhvpowci[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ffuwirnt->wwutrepe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	wclgyrbq->wwutrepe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	eudqojac->glpfsqtd[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	eudqojac->qhvpowci[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	eudqojac->nxexgxnr[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	pjkvslru->pjitfbnh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	brsfioku->hrdwdoxe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	pjkvslru->nxexgxnr[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	xyuusfzj->nxexgxnr[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	pjkvslru->wwutrepe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	brsfioku->pjitfbnh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	xyuusfzj->pjitfbnh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	pjkvslru->hrdwdoxe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	xyuusfzj->hrdwdoxe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	brsfioku->nxexgxnr[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	brsfioku->wwutrepe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	xyuusfzj->wwutrepe[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	pfkeutwv->trnxwlmg[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	nlqwhtub->trnxwlmg[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	igvixkyq->trnxwlmg[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	subgraph cluster_auth {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Auth Tier — Private Subnet";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	tzliaqol [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Keycloak
+(OIDC + SAML 2.0
+MFA TOTP mandatory)
+Multi-AZ", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_clients {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label=Clients;
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	igvixkyq [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/network/internet.png", imagescale=true, label="Mobile App
+(Flutter)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	nlqwhtub [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/network/internet.png", imagescale=true, label="Web App
+(React/Next.js)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	pfkeutwv [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/network/internet.png", imagescale=true, label="Browser Extension
+(Chrome MV3)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_data {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Data Tier — Private Subnet";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	glpfsqtd [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/database/elasticache.png", imagescale=true, label="ElastiCache Redis
+(Sessions · Cache
+Rate Limit tokens)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	iaobepqs [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/elastic-container-service.png", imagescale=true, label="ECR
+(Container Registry
+Image scanning)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	pjitfbnh [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/database/rds.png", imagescale=true, label="RDS PostgreSQL
+(Multi-AZ
+tenant_id RLS
+data_residency column)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	soseulym [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/storage/simple-storage-service-s3.png", imagescale=true, label="S3
+(Object Lock WORM
+7-year retention
+Audit logs)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_edge {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Edge Zone — AWS Global + us-east-1";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	coethqrb [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/security/waf.png", imagescale=true, label="WAF
+(OWASP Top 10
+Rate Limiting)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	dtceoevx [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/network/elastic-load-balancing.png", imagescale=true, label="ALB
+(Layer 7
+Multi-AZ)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	jyqwfrnb [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/security/certificate-manager.png", imagescale=true, label="ACM
+(TLS Certificates)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	trnxwlmg [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/network/cloudfront.png", imagescale=true, label="CloudFront
+(CDN + SSL Termination)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	xbummutm [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/network/route-53.png", imagescale=true, label="Route 53
+(DNS + Health Check)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_events {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Event / Orchestration — AWS Managed Services";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	gucolpfv [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/integration/simple-notification-service-sns.png", imagescale=true, label="SNS
+(Email · Slack Webhook
+PagerDuty Alerts)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	kturvqiw [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/integration/simple-queue-service-sqs.png", imagescale=true, label="SQS
+(Integration Sync Queue
+Retry + DLQ)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	qhvpowci [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/integration/eventbridge.png", imagescale=true, label="EventBridge
+(Event Bus
+Domain Events routing)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	rnqvxqpe [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/integration/step-functions.png", imagescale=true, label="Step Functions
+(Playbook Engine
+Workflow Orchestration)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_external {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="External Services (SaaS)";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	qmghjkeo [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/internet.png", imagescale=true, label="Hive Moderation
+(Deepfake Detection API
+Pay-per-use)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	wistcpnj [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/internet.png", imagescale=true, label="Vanta
+(Compliance Automation
+SOC 2 + ISO 27001)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_ml {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="AI / ML — SageMaker";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	daxoqfzq [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/ml/sagemaker-model.png", imagescale=true, label="Model Registry
+(shadow-ai-scorer-v1
+bert-injection-v1)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	hrdwdoxe [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/ml/sagemaker.png", imagescale=true, label="SageMaker
+(Shadow AI Risk Model
+Prompt Injection BERT
+Inference Endpoints)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_observability {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Observability — AWS Managed";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	ciuiawrb [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/management/cloudtrail.png", imagescale=true, label="CloudTrail
+(Immutable API audit
+All regions enabled)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	wwutrepe [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/management/cloudwatch.png", imagescale=true, label="CloudWatch
+(Metrics · Alarms
+Logs · Dashboards)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_security {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Security Services — AWS Managed";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	cdccqozp [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/security/key-management-service.png", imagescale=true, label="KMS
+(CMK for RDS
+S3 SSE-KMS
+Secrets encryption)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	gmqjvukn [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/security/identity-and-access-management-iam.png", imagescale=true, label="IAM
+(Service Roles
+Least Privilege
+SCPs)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	nxexgxnr [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/security/secrets-manager.png", imagescale=true, label="Secrets Manager
+(OAuth tokens
+DB passwords
+API keys — auto-rotate)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	zskqaeed [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/security/guardduty.png", imagescale=true, label="GuardDuty
+(Threat Intelligence
+Anomaly Detection)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_track1 {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Application Tier — Track 1 Services (ECS Fargate, Private Subnet)";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	eudqojac [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/fargate.png", imagescale=true, label="Access Governance
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	ffuwirnt [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/fargate.png", imagescale=true, label="Asset Inventory
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	gpedhsok [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/kong.png", imagescale=true, label="API Gateway
+(JWT Validation
+Routing · Rate Limit)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	izvzvrat [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/fargate.png", imagescale=true, label="Integration Sync
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	teejekpb [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Compliance
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	wclgyrbq [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Incident Playbook
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_track2 {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Application Tier — Track 2 Services (ECS Fargate, Private Subnet)";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	brsfioku [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/compute/fargate.png", imagescale=true, label="LLM DLP
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	pjkvslru [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Threat Detection
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	xyuusfzj [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Deepfake Defense
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+
+}

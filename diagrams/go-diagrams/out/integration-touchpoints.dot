@@ -1,0 +1,195 @@
+digraph root {
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=13;
+	label="SMESec — Integration Touchpoints";
+	nodesep=0.6;
+	pad=2;
+	rankdir=LR;
+	ranksep=0.75;
+	splines=ortho;
+	flxywvcq->hhguqxup[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	zhyxhhit->doxcshtx[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	cmesspex->doxcshtx[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	vynkgfgq->edujacxh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	cmesspex->kxplkqgg[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	cmesspex->flxywvcq[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	atjshisu->unmqdxmu[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	edujacxh->hhguqxup[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	edujacxh->cmesspex[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	hhguqxup->kxplkqgg[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	hhguqxup->flxywvcq[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	hhguqxup->oeatwmvn[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	zcolqbzx->hhguqxup[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	doxcshtx->czcfxtbj[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	doxcshtx->atjshisu[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	edujacxh->djlipkmt[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	hhguqxup->zcolqbzx[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	kxplkqgg->hhguqxup[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	hhguqxup->doxcshtx[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	czcfxtbj->jjxysfbm[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	czcfxtbj->ahvgwlqi[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	fyfsgbzz->czcfxtbj[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	djlipkmt->xxdgddvl[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	edujacxh->zhyxhhit[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	doxcshtx->ygfiivgs[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	cmesspex->zcolqbzx[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	cmesspex->oeatwmvn[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	cryaqxqb->hhguqxup[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	wxqsltey->edujacxh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	unmqdxmu->edujacxh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	fyfsgbzz->edujacxh[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	edujacxh->kxyeufda[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	djlipkmt->kxyeufda[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	doxcshtx->kxyeufda[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	czcfxtbj->kxyeufda[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	ygfiivgs->kxyeufda[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	kxyeufda->kxyeufda[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	atjshisu->kxyeufda[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	hhguqxup->kxyeufda[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	zhyxhhit->kxyeufda[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	cmesspex->kxyeufda[ color="#7B8894", dir=forward, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13 ];
+	subgraph cluster_clients {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Client Applications";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	fyfsgbzz [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/internet.png", imagescale=true, label="Browser Extension
+(Chrome MV3 + Edge)
+LLM DLP (local inference)
+Shadow AI detection
+PII interception blocking", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	unmqdxmu [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/internet.png", imagescale=true, label="Mobile App
+(Flutter)
+iOS + Android
+Incident alerts
+Playbook approval", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	wxqsltey [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/apps/network/internet.png", imagescale=true, label="Web App
+(React/Next.js)
+Admin dashboard
+Compliance reports
+Inventory view", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_core {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="SMESec Core Platform";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	atjshisu [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/integration/simple-notification-service-sns.png", imagescale=true, label="SNS
+(Alerts)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	cmesspex [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Access Governance
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	czcfxtbj [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Threat Detection
+Service (Track 2)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	djlipkmt [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Compliance
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	doxcshtx [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/integration/eventbridge.png", imagescale=true, label="EventBridge
+(Event Bus)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	edujacxh [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/kong.png", imagescale=true, label="API Gateway
+(JWT · Rate Limit)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	hhguqxup [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Integration Sync
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	kxyeufda [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=1.7999999999999998, image="assets/aws/database/rds.png", imagescale=true, label="PostgreSQL
+(Multi-tenant RLS)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	ygfiivgs [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/integration/step-functions.png", imagescale=true, label="Playbook Engine
+(Step Functions)", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	zhyxhhit [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Asset Inventory
+Service", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_idp {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Identity &amp; Productivity Providers";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	flxywvcq [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/internet.png", imagescale=true, label="Slack
+(Admin API + Events API)
+OAuth 2.0
+→ Users · Channels · Apps · Audit Logs
+Write: Deactivate user (Business+)
+Sync: 15-min poll + webhooks", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	kxplkqgg [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/internet.png", imagescale=true, label="Microsoft 365
+(Graph API + Azure AD)
+OAuth 2.0 App Registration
+Delta Link + Webhooks
+→ Users · Groups · OAuth Apps
+→ SignIn Logs · Devices
+Write: Block signin · Revoke sessions
+Sync: 15-min delta", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	oeatwmvn [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/security/identity-and-access-management-iam.png", imagescale=true, label="AWS IAM
+(Assumed Role)
+→ Users · Roles · Policies
+→ Access Keys · CloudTrail
+Write: Disable key (dry-run first)
+Sync: 30-min full pull", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	zcolqbzx [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/internet.png", imagescale=true, label="Google Workspace
+(Admin SDK)
+OAuth 2.0 Service Account
+Workspace Events API
+→ Users · Groups · OAuth Apps
+→ Audit Logs · Devices
+Write: Suspend user · Revoke OAuth
+Sync: 15-min delta", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+	subgraph cluster_security {
+	bgcolor="#E5F5FD";
+	fontcolor="#2D3436";
+	fontname="Sans-Serif";
+	fontsize=12;
+	label="Security &amp; Compliance Services";
+	labeljust=l;
+	pencolor="#AEB6BE";
+	shape=box;
+	style=rounded;
+	ahvgwlqi [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/ml/sagemaker.png", imagescale=true, label="SageMaker
+(ML Inference)
+shadow-ai-scorer-v1
+bert-injection-v1
+Async inference queue", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	cryaqxqb [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/security/secrets-manager.png", imagescale=true, label="Secrets Manager
+(Token Vault)
+OAuth refresh tokens
+Auto-rotation enabled
+No plaintext env vars", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	jjxysfbm [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/internet.png", imagescale=true, label="Hive Moderation
+(Deepfake Detection)
+REST API (pay-per-use)
+&lt;$0.01 per check
+Voice + Video analysis", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	vynkgfgq [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/aws/compute/fargate.png", imagescale=true, label="Keycloak
+(Self-hosted ECS)
+OIDC / SAML 2.0
+Google + M365 federation
+MFA TOTP (mandatory)
+JWT RS256", labelloc=b, shape=none, style=rounded, width=1.4 ];
+	xxdgddvl [ fixedsize=true, fontcolor="#2D3436", fontname="Sans-Serif", fontsize=13, height=2.1999999999999997, image="assets/apps/network/internet.png", imagescale=true, label="Vanta
+(Compliance Automation)
+OAuth → AWS + GitHub
+SOC 2 Type 1 (Month 6)
+ISO 27001 (Month 12)
+Evidence collection", labelloc=b, shape=none, style=rounded, width=1.4 ];
+
+}
+;
+
+}
