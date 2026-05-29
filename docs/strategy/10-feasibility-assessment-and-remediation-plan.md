@@ -1,10 +1,20 @@
 # SMESec — Feasibility Assessment & Remediation Plan
 
-**Ngày:** 2026-05-28  
-**Phiên bản:** 1.0  
+**Ngày:** 2026-05-29  
+**Phiên bản:** 1.1  
 **Trạng thái:** Working Document  
 **Nguồn:** Tổng hợp đánh giá 3-agent (Product Owner · Technical Advisor · Project Manager)  
-**Liên quan:** [system-architecture.md](system-architecture.md) · [design-document.md](design-document.md) · [delivery-plan.md](delivery-plan.md)
+**Liên quan:** [01-system-architecture.md](01-system-architecture.md) · [02-design-document.md](02-design-document.md) · [04-delivery-plan-original.md](04-delivery-plan-original.md) · [06-delivery-plan-adjusted-2x.md](06-delivery-plan-adjusted-2x.md) · [07-delivery-plan-realistic-hiring.md](07-delivery-plan-realistic-hiring.md)
+
+---
+
+## ⚠️ Timeline Context
+
+Risk assessments reference the **original 12-month plan**. For adjusted timelines:
+- **[2x Adjusted Plan](06-delivery-plan-adjusted-2x.md)** — Multiply week/month references by ~2x
+- **[Realistic Hiring Plan](07-delivery-plan-realistic-hiring.md)** — See specific hiring timeline in that document
+
+**Key difference:** Realistic Hiring Plan has ML Engineer #1 joining Month 8 (not Day 1), significantly impacting Track 2 risks.
 
 ---
 
@@ -717,11 +727,13 @@ Replace with: "Lakera Guard integration at Sprint 8, internal model evaluation a
 
 | # | Quyết định | Hạn chót | Lý do bắt buộc ngay |
 |---|---|---|---|
-| 🔴 **1** | **Split S1 thành S1a + S1b** → điều chỉnh MVP date thành W14. Communicate với tất cả stakeholders. | **Day 1** | S1 đang overscoped 230%; không split = false confidence dẫn đến cascade delay toàn Phase 1 |
+| 🔴 **1** | **Submit Google Workspace + Microsoft 365 verification** (Week -3, before project start) → OAuth consent screen + publisher verification | **Week -3** | Google: 2-4 weeks lead time. Microsoft: 3-6 weeks lead time. Delay → S2/S3 blocked → use unverified (limited users) → production delayed to W16-18. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gates 1 & 2. |
 | 🔴 **2** | **Post ML Engineer JD ngay hôm nay** + đặt W6 go/no-go checkpoint (nếu chưa có candidate → engage ML contractor) | **Day 1** | Lead time hire ML Eng = 8–15 tuần; post W4 = arrive W13–18 = Track 2 delayed 4–9 tuần |
-| 🔴 **3** | **Engage BD consultant** (3 days/week từ W1) để own pilot customer pipeline. Define funnel: 100 leads → 30 qualified → 15 demo → 5 pilot | **Day 3** | Pipeline cần bắt đầu W1 để close 5 customers ở W30. 0.5 FTE PM không thể vừa run sprints vừa do sales |
-| 🟠 **4** | **Add M365 webhook renewal service vào S1a scope** + resolve GDPR Article 17 vs S3 Object Lock bằng envelope encryption architecture | **Day 1** | Cả hai là irreversible architecture decisions. Phát hiện ở S3 = costly rework. Phát hiện sau EU launch = GDPR penalty |
-| 🟠 **5** | **Engage legal counsel** cho Module B/D/F liability review và EU voice biometric opinion. Target: opinion delivered trước S8 (W17) để không block Track 2 design | **Week 1** | Nếu legal opinion W8 = "yes biometric" và không có sprint buffer → Track 2 stalls với không có plan |
+| 🔴 **3** | **Submit all Category B 3rd-party API access requests** (Slack, Hive, Lakera, Apple, Google Play) Day 1-2 of Sprint 1 | **Week 1 Day 1-2** | 1-2 week lead time each. Delay → S5/S8/S10 features blocked or cut. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category B. |
+| 🔴 **4** | **Engage BD consultant** (3 days/week từ W1) để own pilot customer pipeline. Define funnel: 100 leads → 30 qualified → 15 demo → 5 pilot | **Day 3** | Pipeline cần bắt đầu W1 để close 5 customers ở W30. 0.5 FTE PM không thể vừa run sprints vừa do sales |
+| 🟠 **5** | **Add M365 webhook renewal service vào S1a scope** + resolve GDPR Article 17 vs S3 Object Lock bằng envelope encryption architecture | **Day 1** | Cả hai là irreversible architecture decisions. Phát hiện ở S3 = costly rework. Phát hiện sau EU launch = GDPR penalty |
+| 🟠 **6** | **Engage legal counsel** cho Module B/D/F liability review và EU voice biometric opinion. Target: opinion delivered trước S8 (W17) để không block Track 2 design | **Week 1** | Nếu legal opinion W8 = "yes biometric" và không có sprint buffer → Track 2 stalls với không có plan |
+| 🟠 **7** | **Vanta account setup** (Week 8) + pentest vendor RFP (Week 8) + pentest LOI signed (Week 14 hard deadline) | **Week 8 start, Week 14 LOI** | Vanta: 2-3 weeks to active. Pentest: 6-8 weeks from RFP to kickoff. Delay → SOC 2 Type 1 insufficient evidence OR pentest delayed → v1 delayed. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gates 4 & 5. |
 
 ---
 
@@ -743,8 +755,12 @@ Replace with: "Lakera Guard integration at Sprint 8, internal model evaluation a
 | R-H6 | Shadow AI score formula gameable | HIGH | TA | Fix `app_age_days` direction; annual weight review | S4 |
 | R-H7 | Test tenants not in S1 | HIGH | PM | Add to S1a scope | S1a |
 | R-H8 | M4 onboarding shock (3 new hires) | HIGH | PM | Onboarding docs ready W12; S7 scoped conservatively | Pre-S7 |
-| R-H9 | Pentest timeline insufficient | HIGH | PM | Start pentest W21 (not W21 scoping + W21 start) | W21 |
-| R-H10 | Chrome Web Store review risk | HIGH | PM | Submit stripped v0 extension at W18 | S8 |
+| R-H9 | Pentest timeline insufficient | HIGH | PM | Start pentest W21 (not W21 scoping + W21 start). **LOI must be signed W14 (hard gate).** See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 4. | W21 |
+| R-H10 | Chrome Web Store review risk | HIGH | PM | Submit stripped v0 extension at W18. **Register developer account W10.** See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category B. | S8 |
+| R-H11 | Google Workspace verification delayed >6 weeks | HIGH | PM | Submitted Week -3. **Fallback:** Unverified OAuth (100 user limit) for pilot, defer production to W16. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 1. | Week -3 → Week 2-4 |
+| R-H12 | Microsoft 365 publisher verification delayed >8 weeks | HIGH | PM | Submitted Week -3. **Fallback:** Unverified app (10 user limit) for pilot, defer production to W18. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 2. | Week -3 → Week 3-6 |
+| R-H13 | Lakera Guard pricing not viable (>$0.05/request) | MEDIUM | PM + ML Eng | **Go/No-go decision Week 2 (S1 end).** Fallback: WASM-only BERT (TPR ~75%, FPR ~10%). See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 3. | Week 2 |
+| R-H14 | Vanta setup delayed >3 weeks | MEDIUM | PM | Start Week 8. **Fallback:** Manual evidence collection (higher PM workload ~20h/week). See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 5. | Week 8 → Week 11 |
 | BS-1 | Alert fatigue Day 2 | HIGH | PO | 14-day calibration + curated alert strategy | S4 |
 | BS-2 | Module F legal trap | HIGH | PO | Remove from v1; admin-only transparency | Pre-launch |
 | BS-3 | Zero switching cost | MEDIUM | PO | Playbook builder in MVP as primary retention feature | S6 |

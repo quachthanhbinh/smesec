@@ -11,8 +11,13 @@ Small and medium enterprises (10–500 employees) face escalating AI-driven secu
 
 **Two-Track Strategy:** All development splits into parallel tracks to eliminate the accuracy risk of AI detection.
 
-- **Track 1 — Foundation & Governance (deterministic, ~100% accuracy):** Asset inventory, access governance, automated offboarding, incident playbooks, compliance reporting. Ships at MVP (Month 3) and v1 (Month 6) independently.
+- **Track 1 — Foundation & Governance (deterministic, ~100% accuracy):** Asset inventory, access governance, automated offboarding, incident playbooks, compliance reporting. Ships at MVP and v1 independently.
 - **Track 2 — AI Threat Detection (ML-gated):** Browser DLP, shadow AI governance, deepfake defense, prompt injection detection. **Starts Sprint 1 in parallel with Track 1.** ML Engineer #1 onboards Day 1 to begin R&D (research, dataset collection, prototype models). Merges into product only after four accuracy validation gates. If gates not met, Track 1 ships alone.
+
+**Timeline Options:** Three delivery plans available based on constraints:
+- **Original (12 months):** Aggressive timeline, requires full team Day 1, 75-90% sprint utilization
+- **2x Adjusted (26 months):** Sustainable timeline, 50-60% sprint utilization, realistic external dependencies
+- **Realistic Hiring (36+ months):** Tech Lead starts solo, progressive team build-up, ML Eng #1 joins Month 8
 
 This document covers all four deliverables: System Architecture, Design Document, Team & Delivery Plan, and AI Governance Module.
 

@@ -1,9 +1,28 @@
-# SMESec Platform — Delivery Plan
+# SMESec Platform — Delivery Plan (Original - 12 months)
 
 **Date:** 2026-05-28  
 **Status:** Approved — Synthesized from 3 agents (Product Owner · Project Manager · Technical Advisor)  
 **Version:** 1.0  
 **Scope:** Full roadmap from Sprint 1 to v2 (12 months)
+
+---
+
+## ⚠️ Timeline Options Available
+
+This is the **original aggressive 12-month plan**. Two additional timeline options are available:
+
+- **[2x Adjusted Plan](06-delivery-plan-adjusted-2x.md)** — 26 months, sustainable 50-60% sprint utilization
+- **[Realistic Hiring Plan](07-delivery-plan-realistic-hiring.md)** — 36+ months, progressive team build-up from solo TL
+
+**See [README.md](README.md) for comparison and recommendations.**
+
+This original plan assumes:
+- ✅ Full team (7 FTE) available Day 1
+- ✅ ML Engineer #1 joins Day 1 (critical for Track 2)
+- ⚠️ High sprint utilization (75-90%)
+- ⚠️ Aggressive external dependency timeline
+
+**Recommendation:** Consider the 2x Adjusted Plan for more sustainable execution.
 
 ---
 
@@ -142,16 +161,18 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 
 ---
 
-#### S1 — W1–2: Infrastructure & Auth + Track 2 Kickoff
+#### S1 — W1–2: Infrastructure & Auth + Track 2 Kickoff + 3rd-Party Setup
 
 | | |
 |---|---|
-| **Goal** | Technical foundation: deployable, users can log in. Track 2 R&D officially begins. |
-| **Sprint deliverable** | Engineer logs into web app with real Google/M365. Staging deployed from CI automatically. Track 2: literature review complete + dataset collection plan approved. |
+| **Goal** | Technical foundation: deployable, users can log in. Track 2 R&D officially begins. **3rd-party integrations initiated.** |
+| **Sprint deliverable** | Engineer logs into web app with real Google/M365. Staging deployed from CI automatically. Track 2: literature review complete + dataset collection plan approved. **All Category B/C 3rd-party access requests submitted.** |
 | **Scope — Track 1** | AWS VPC + ECS Fargate + RDS PostgreSQL Multi-AZ · S3 Object Lock (audit log, envelope encryption per-tenant KMS key) · Keycloak SSO (Google + M365) · JWKS cache (6-hour TTL, serve-stale-on-failure) · MFA TOTP mandatory · CI/CD GitHub Actions · Multi-tenant schema (`tenant_id` + `data_residency` on all tables, RLS enforced) · **⚠️ R-C3 (Mandatory):** `subscription_registry` table schema for M365 webhook renewal service · EventBridge Scheduler skeleton for 12-hour renewal job · **R-C2 (Design):** Google rate limit strategy — per-cluster GCP service account layout, quota distribution algorithm |
 | **Scope — Track 2** | `ThreatDetectionEvent` schema contract v0.1 (joint T1+T2 design, finalized with Tech Lead) · Literature review: OWASP LLM Top 10, prompt injection research papers, DLP benchmark datasets · Dataset collection plan: identify public datasets (PromptBench, LLM Attacks repo, PII-Bench) · SageMaker workspace setup (training environment, experiment tracking) · Shadow AI tool registry v0.1 (seed list of 100+ known AI tools from public sources) |
-| **Key risks** | Auth provider decision (Auth0 vs Cognito vs Keycloak self-host) must be finalized Day 1. ML Eng #1 must onboard Day 1 — recruiting must complete before project start. |
-| **PM action** | **ML Eng #1 must already be hired — this is a Day-1 requirement, not a future hire.** BD Consultant (contract 3 days/week) onboards Week 1 (R-C5). Prepare pilot customer list. |
+| **Scope — 3rd-Party** | **Slack:** Create app, submit Admin API access request (1-2 week lead time) · **Hive Moderation:** Sign up, submit API access request (1-2 week lead time) · **Lakera Guard:** Sign up, submit API access request + pricing confirmation (1-2 week lead time) · **Apple Developer:** Register program ($99/yr, 1-2 week verification) · **Google Play Console:** Register ($25 one-time, immediate) · **AWS IAM:** Design cross-account role template · **Cloudflare R2:** Sign up, enable storage (immediate) |
+| **Key risks** | Auth provider decision (Auth0 vs Cognito vs Keycloak self-host) must be finalized Day 1. ML Eng #1 must onboard Day 1 — recruiting must complete before project start. **3rd-party access delays could block S2-S10 deliverables.** |
+| **PM action** | **ML Eng #1 must already be hired — this is a Day-1 requirement, not a future hire.** BD Consultant (contract 3 days/week) onboards Week 1 (R-C5). Prepare pilot customer list. **Submit all Category B/C 3rd-party access requests Day 1-2. Track verification status weekly.** |
+| **3rd-Party Gate** | **Week 2 (S1 end):** Lakera Guard pricing decision (Go/No-go) — must confirm <$0.05/request viable. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 3. |
 
 > **Mandatory gate:** `data_residency` column present from S1. Tenant isolation CI test green. `ThreatDetectionEvent` schema v0.1 drafted and reviewed by both tracks.
 
@@ -165,9 +186,10 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 | **Sprint deliverable** | Dashboard displays user list + OAuth apps from real Google tenant. First-value demo <30 min from OAuth grant. Track 2: baseline accuracy benchmarks for prompt injection + PII detection on public datasets. |
 | **Scope — Track 1** | Google Admin SDK: user/group/device sync · OAuth app discovery (scope risk analysis) · 15-min incremental sync (delta pull) · Asset inventory DB schema v1 · Shadow IT detection rules v1 (high-risk OAuth scopes) · Dashboard skeleton (data visible, no styling required) |
 | **Scope — Track 2** | Dataset labeling: prompt injection test cases (PromptBench) + PII benchmark (Presidio test suite) · Baseline model evaluation: BERT-tiny (HuggingFace) + regex rules vs labeled dataset · Record baseline F1, precision, recall — establishes accuracy improvement targets · Shadow AI tool registry v0.2: risk scoring rubric design (scope sensitivity, DPA availability, app age) |
-| **Key risks** | Google Admin SDK pagination + rate limits — validate on real tenant >100 users in S1 skeleton. Baseline model accuracy may be lower than expected — this is expected at S2, not a blocker. |
-| **PM action** | Pilot outreach begins. Target 3–5 SMEs (50–200 employees) for Month 3 onboard. |
+| **Key risks** | Google Admin SDK pagination + rate limits — validate on real tenant >100 users in S1 skeleton. Baseline model accuracy may be lower than expected — this is expected at S2, not a blocker. **Google Workspace OAuth verification delayed >6 weeks → use unverified OAuth (100 user limit) for pilot.** |
+| **PM action** | Pilot outreach begins. Target 3–5 SMEs (50–200 employees) for Month 3 onboard. **Monitor Google Workspace verification status (submitted Week -3, target approval Week 2-4).** |
 | **Track 2 gate** | Baseline accuracy benchmarks documented. Accuracy improvement gap identified. Research plan updated with concrete targets. |
+| **3rd-Party Dependency** | **CRITICAL:** Google Workspace OAuth consent screen verification (submitted Week -3) must be approved by Week 2-4. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 1. **Fallback:** Unverified OAuth for pilot (100 user limit), defer production to W16. |
 
 ---
 
@@ -179,9 +201,10 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 | **Sprint deliverable** | Dashboard displays assets from both Google + M365. Risk indicators per user/app. Export CSV. Track 2: prompt injection prototype achieving TPR >75% / FPR <10% on test dataset (early baseline). |
 | **Scope — Track 1** | Microsoft Graph API + Azure AD: user/app/device sync · M365 delta link + webhook · **⚠️ R-C3: Deploy webhook renewal job** (already designed from S1 schema) — 410 Gone handler + DLQ + polling fallback + staleness UI indicator · Cross-provider identity matching (email canonical) · Unified risk indicators (per-provider, not composite) · Dashboard polish: filter, search, sort |
 | **Scope — Track 2** | Prompt injection detection prototype v0.1: fine-tuned BERT-tiny on labeled dataset (HuggingFace Trainer) · Evaluate vs baseline: TPR, FPR, F1 on held-out test set · PII detection: Microsoft Presidio integration test + WASM compile pipeline (onnxruntime-web) setup · **Lakera Guard API: account setup, rate limit test, cost-per-request baseline measured — designated primary production v1 implementation** |
-| **Key risks** | M365 OAuth permission consent — need detailed IT Admin guide. **Webhook renewal CANNOT be skipped.** BERT fine-tuning requires labeled data — Lakera Guard API is the designated primary (not fallback). |
-| **PM action** | Pilot customer list must have at least 5 leads. Confirm Lakera Guard API pricing and SLA. |
-| **Track 2 gate** | Prompt injection baseline TPR/FPR documented. Gap vs production gate (TPR >85%, FPR <2%) quantified. WASM compile pipeline confirmed working in browser environment. |
+| **Key risks** | M365 OAuth permission consent — need detailed IT Admin guide. **Webhook renewal CANNOT be skipped.** BERT fine-tuning requires labeled data — Lakera Guard API is the designated primary (not fallback). **Microsoft 365 publisher verification delayed >8 weeks → use unverified app (10 user limit) for pilot.** |
+| **PM action** | Pilot customer list must have at least 5 leads. **Confirm Lakera Guard API pricing and SLA (Go/No-go decision made in S1 end).** **Monitor Microsoft 365 verification status (submitted Week -3, target approval Week 3-6).** |
+| **Track 2 gate** | Prompt injection baseline TPR/FPR documented. Gap vs production gate (TPR >85%, FPR <2%) quantified. WASM compile pipeline confirmed working in browser environment. **Lakera Guard pricing confirmed viable (<$0.05/request).** |
+| **3rd-Party Dependency** | **CRITICAL:** Microsoft 365 publisher verification (submitted Week -3) must be approved by Week 3-6. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 2. **Fallback:** Unverified app for pilot (10 user limit), defer production to W18. |
 
 ---
 
@@ -206,9 +229,10 @@ Month 10–12 (Phase 4):             + Compliance Consultant (contract)
 | **Sprint deliverable** | Unified inventory 4 providers. Least-privilege recommendations displayed. Slack deactivation tested. Track 2: Accuracy Gate 1 report — prompt injection Lakera Guard: TPR >85%, FPR <2% on 30-day holdout (independently evaluated by SMESec ML team). |
 | **Scope — Track 1** | Slack Admin API: users, apps, channels · Slack tier detection (Free/Pro/Business+ gating) · AWS IAM inventory: users, roles, policies · RBAC model: role assignment, permission diff engine · Least-privilege recommendations (rule-based) · Composite identity graph (cross-provider) |
 | **Scope — Track 2** | **Track 2 Accuracy Gate 1 (Week 10) — Prompt Injection:** Lakera Guard API: TPR >85%, FPR <2% verified on 30-day holdout test set (independently evaluated by SMESec ML team — not vendor-asserted; production gate criteria) · DLP browser extension v0.2: Tier 2 BERT-tiny ONNX semantic detection active in Chrome · **Track 2 Accuracy Gate 2 (Week 10) — LLM DLP:** Critical PII detection >99%, FP <5% on Presidio benchmark · Shadow AI tool classification: >95% of top-100 known AI tools correctly identified from OAuth scope signals · SageMaker endpoint v0.1 deployed (shadow AI risk scorer) — not production, staging only · Deepfake detection: Hive Moderation API account live, rate limits verified, first test audio clip analyzed |
-| **Key risks** | Slack API tier limitation — Business+ required for automated offboarding. Gate 1 failure: if Lakera Guard FPR >2% or TPR <85% → feature stays beta (opt-in, no SLA), Track 1 unaffected. |
-| **PM action** | ⚠️ **Sign pentest vendor LOI before end of W14 — begin discussion now.** Begin Vanta account setup planning. |
+| **Key risks** | Slack API tier limitation — Business+ required for automated offboarding. Gate 1 failure: if Lakera Guard FPR >2% or TPR <85% → feature stays beta (opt-in, no SLA), Track 1 unaffected. **Slack Admin API access delayed >2 weeks → read-only integration only (no user deactivation).** **Hive Moderation API access delayed >2 weeks → defer deepfake to S10.** |
+| **PM action** | ⚠️ **Sign pentest vendor LOI before end of W14 — begin discussion now.** Begin Vanta account setup planning. **Monitor Slack/Hive API access status (submitted Week 1, target approval Week 2-3).** |
 | **Track 2 gates 1 & 2** | ✅ Gate 1 — Prompt injection: Lakera Guard TPR >85%, FPR <2% on holdout · ✅ Gate 2 — LLM DLP: Critical PII >99%, FP <5% · ✅ Shadow AI classification >95% on top-100 tool list |
+| **3rd-Party Dependency** | **Slack Admin API** (submitted Week 1, 1-2 week lead time) must be approved by Week 2-3. **Hive Moderation API** (submitted Week 1, 1-2 week lead time) must be approved by Week 2-3. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category B. **Fallback:** Slack read-only integration (no user mgmt), defer Hive to S10. |
 
 ---
 
@@ -578,18 +602,25 @@ Month 12 (W52): v2 LAUNCH
 
 ## 9. External Dependencies & Hard Deadlines
 
-| Deadline | Week | Description | Consequence if delayed |
-|----------|------|--------|----------------|
-| Auth provider decision | W1D1 | Choose Keycloak self-host vs Auth0 vs Cognito | Delay S1 → cascade all sprints |
-| **ML Engineer #1 onboard** | **W1D1** | Must be hired before project kick-off | Track 2 cannot start in parallel; 3 months of R&D lost |
-| Google test tenant available | W3 | Internal Google Workspace tenant for S2 development | S2 cannot demo |
-| Pilot customer #1 onboard | W8 | At least 1 real customer using staging | MVP has no real validation |
-| **Pentest vendor LOI signed** | **W14** | Hard deadline — 7-week lead time | Pentest does not start W21 → v1 delay |
-| **Vanta setup active** | **W13** | Need 60+ days evidence for SOC 2 Type 1 | SOC 2 Type 1 insufficient evidence at v1 |
-| Chrome Web Store submission | W29 | Browser extension needs 1–2 weeks review | Extension misses v1.5 launch |
-| iOS App Store submission | W50 | App Store review 1–2 weeks | Mobile feature misses v2 window |
-| SOC 2 Type 2 audit sign | W42 | Engage auditor firm | Audit does not complete before W52 |
-| ISO 27001 Stage 2 audit | W45 | Certification 6–8 weeks after audit | Certificate not available at W52 |
+| Deadline | Week | Description | Consequence if delayed | Reference |
+|----------|------|--------|----------------|-----------|
+| **Google Workspace OAuth verification** | **Week -3** | Submit OAuth consent screen for verification | S2 blocked → use unverified (100 user limit) → defer production to W16 | [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 1 |
+| **Microsoft 365 Publisher verification** | **Week -3** | Submit publisher verification | S3 blocked → use unverified (10 user limit) → defer production to W18 | [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 2 |
+| Auth provider decision | W1D1 | Choose Keycloak self-host vs Auth0 vs Cognito | Delay S1 → cascade all sprints | — |
+| **ML Engineer #1 onboard** | **W1D1** | Must be hired before project kick-off | Track 2 cannot start in parallel; 3 months of R&D lost | — |
+| **3rd-party API access requests** | **W1D1-2** | Submit Slack, Hive, Lakera, Apple, Google Play access requests | S5/S8/S10 blocked → features delayed or cut | [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category B |
+| **Lakera Guard pricing decision** | **W2 (S1 end)** | Confirm <$0.05/request viable | S8 prompt injection → fallback to WASM-only (lower accuracy) | [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 3 |
+| Google test tenant available | W3 | Internal Google Workspace tenant for S2 development | S2 cannot demo | — |
+| **Vanta account setup** | **W8** | Sign up, connect AWS + GitHub | W13 evidence collection delayed → SOC 2 Type 1 insufficient | [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category A |
+| Pilot customer #1 onboard | W8 | At least 1 real customer using staging | MVP has no real validation | — |
+| **Pentest vendor RFP** | **W8** | Send RFP to 3-5 vendors | LOI signing delayed → pentest delayed | [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category A |
+| Chrome Web Store account | W10 | Register developer account ($5) | W23 extension submission delayed | [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category B |
+| **Vanta setup active** | **W13** | Evidence collection running continuously | SOC 2 Type 1 insufficient evidence at v1 | [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category A |
+| **Pentest vendor LOI signed** | **W14** | Hard deadline — 7-week lead time from RFP | Pentest does not start W21 → v1 delay | [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 4 |
+| Chrome Web Store submission | W29 | Browser extension needs 1–2 weeks review | Extension misses v1.5 launch | — |
+| SOC 2 Type 2 audit sign | W42 | Engage auditor firm | Audit does not complete before W52 | — |
+| ISO 27001 Stage 2 audit | W45 | Certification 6–8 weeks after audit | Certificate not available at W52 | — |
+| iOS App Store submission | W50 | App Store review 1–2 weeks | Mobile feature misses v2 window | — |
 
 ---
 

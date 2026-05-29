@@ -2,7 +2,7 @@
 
 > **Language note:** This document is written in Vietnamese (target audience: Vietnamese-speaking stakeholders). For the English-language summary of the same content, see [design-document.md § AI Governance Module](design-document.md#6-ai-governance-module).
 >
-> **Summary (English):** This module details SMESec's approach to detecting and governing employee use of external AI tools (e.g., ChatGPT, GitHub Copilot). It covers: (1) a 3-layer control framework (detect → govern → respond), (2) six specific modules — AI Submission Gate (browser DLP), Prompt Injection Detection, Shadow AI Governance, Deepfake Fraud Defense, AI Phishing Defense, and Employee Privacy transparency — (3) zero-knowledge DLP architecture (local Presidio WASM, no content leaves the browser), and (4) build/buy decisions per component. The delivery sequence aligns with the 13-sprint roadmap in [delivery-plan.md](delivery-plan.md) (Track 2, Sprints 4–11).
+> **Summary (English):** This module details SMESec's approach to detecting and governing employee use of external AI tools (e.g., ChatGPT, GitHub Copilot). It covers: (1) a 3-layer control framework (detect → govern → respond), (2) six specific modules — AI Submission Gate (browser DLP), Prompt Injection Detection, Shadow AI Governance, Deepfake Fraud Defense, AI Phishing Defense, and Employee Privacy transparency — (3) zero-knowledge DLP architecture (local Presidio WASM, no content leaves the browser), and (4) build/buy decisions per component. The delivery sequence aligns with the 13-sprint roadmap in [04-delivery-plan-original.md](04-delivery-plan-original.md) (Track 2, Sprints 4–11).
 
 ---
 
@@ -13,7 +13,7 @@
 **Trạng thái:** Approved  
 **Nguồn:** Multi-agent research synthesis (Product Owner × Technical Advisor × Project Manager × 4 iterations)  
 **Deliverable gốc:** Topic.md #4 — "Detail your approach to detecting and governing employee use of external AI tools (e.g., ChatGPT, Copilot) and the risks this introduces."  
-**Liên quan:** [design-document.md](design-document.md) · [system-architecture.md](system-architecture.md) · [delivery-plan.md](delivery-plan.md)
+**Liên quan:** [02-design-document.md](02-design-document.md) · [01-system-architecture.md](01-system-architecture.md) · [04-delivery-plan-original.md](04-delivery-plan-original.md)
 
 ---
 
@@ -1080,7 +1080,7 @@ export class ChatGPTAdapter {
 | **LLM DLP patterns (PII)** | **Augment open-source: Presidio + custom rules** | Presidio = production-grade, MIT license, 50+ entity types. Thêm: AWS credentials, GitHub tokens, source code patterns | $0 (FOSS) |
 | **Shadow AI app catalog** | **Build + curate** | Không có off-the-shelf AI-specific risk scoring cho SME context. 100 top AI tools, quarterly maintenance | 0.5 engineer-day/quarter |
 | **Prompt injection (browser)** | **Build: ONNX BERT-tiny WASM** | WASM viable for browser scanning. No server round-trip = better privacy + latency | Engineering cost only |
-| **Prompt injection (server-side)** | **White-label: Lakera Guard** | Production-hardened, continuously updated. SMESec differentiator = Layer 3 context scoring, not pattern library | <$0.05/request |
+| **Prompt injection (server-side)** | **White-label: Lakera Guard** | Production-hardened, continuously updated. SMESec differentiator = Layer 3 context scoring, not pattern library. **Lead time:** 1-2 weeks (API access). **Go/No-go Week 2 (S1 end):** Must confirm <$0.05/request. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 3. | <$0.05/request |
 | **AI phishing detection** | **Partner: M365 Defender (Graph API)** | Enterprise-grade detection already in M365. SMESec adds: context enrichment + playbook trigger | Included in M365 |
 | **OAuth inventory** | **Build on Google/M365 APIs** | Core differentiator — AI-specific risk scoring không có competitor | 1 engineer × 2 sprints |
 | **Attestation workflow** | **Build** | Domain-specific UX requirement. SurveyMonkey/Typeform không có HR/OAuth cross-reference | 0.5 engineer × 2 sprints |
@@ -1096,19 +1096,19 @@ export class ChatGPTAdapter {
 | **R3** | Employee privacy trust erosion (EU adoption) | 🔴 High in EU | 🔴 High | Zero-knowledge architecture; open-source extension code; F1 transparency dashboard; F2 pause; Works Council engagement | Sprint 5 consent flow |
 | **R4** | WASM 17MB exceeds Chrome Web Store 10MB limit | 🔴 65% | 🟠 Medium | Lazy-load WASM post-install via CDN với integrity hash; extension package <2MB | Sprint 12 Store submission |
 | **R5** | GDPR Article 9 (voice = biometric) legal risk | 🟠 Medium | 🔴 High | Legal opinion Day 1; employee-initiated only; zero audio retention; US launch first | Legal opinion by Sprint 4 |
-| **R6** | Lakera Guard unit economics not viable at SME scale | 🟠 35% | 🟠 Medium | Validate pricing Sprint 1; WASM-only fallback always built regardless of Lakera decision | **Sprint 1 decision (June 13)** |
+| **R6** | Lakera Guard unit economics not viable at SME scale | 🟠 35% | 🟠 Medium | **Submit API access Week 1. Go/No-go decision Week 2 (S1 end):** Confirm <$0.05/request viable. WASM-only fallback always built regardless of Lakera decision. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 3. | **Sprint 1 decision (June 13)** |
 | **R7** | Track 1 data dependency cho B3 context scoring | 🟠 45% | 🟠 Medium | Ship B3 với directory-role approximation in v1; full Track 1 integration Sprint 10 | Sprint 10 integration |
 
 ---
 
 ## 14. Delivery Sequence: 13-Sprint Roadmap
 
-> Đây là roadmap riêng cho AI Governance Module, tích hợp với [delivery-plan.md](delivery-plan.md) tổng thể.
+> Đây là roadmap riêng cho AI Governance Module, tích hợp với [04-delivery-plan-original.md](04-delivery-plan-original.md) tổng thể.
 
 | Sprint | Tuần | Focus | Deliverables Chính | Critical Gate |
 |---|---|---|---|---|
-| **S1** | W1–2 | Foundation | B1 regex engine; MV3 prototype; FastAPI scaffold | **MV3 persistence by June 6** |
-| **S2** | W3–4 | Extension scaffold | B1 server-push updates; extension site adapter (ChatGPT); C1 OAuth inventory start | Lakera Guard pricing decision (June 13) |
+| **S1** | W1–2 | Foundation + 3rd-Party Setup | B1 regex engine; MV3 prototype; FastAPI scaffold; **Submit Hive + Lakera API access requests Day 1-2** | **MV3 persistence by June 6** |
+| **S2** | W3–4 | Extension scaffold | B1 server-push updates; extension site adapter (ChatGPT); C1 OAuth inventory start | **Lakera Guard pricing decision (June 13) — Go/No-go Gate 3** |
 | **S3** | W5–6 | **A1 complete** | Prompt interception 100% ChatGPT + Copilot + Gemini + Claude; C1 complete | A1 intercepts 100% of ChatGPT/Copilot submits |
 | **S4** | W7–8 | **A2 complete** | Redaction Review UI; B2 WASM BERT-tiny integration; F2 Pause capability | A2 default-redact flow end-to-end |
 | **S5** | W9–10 | B3 + B4 + C2 | Context risk scoring; Action engine (4 tiers); Attestation workflow; E1 M365 alerts | B4 injection → correct response tier |

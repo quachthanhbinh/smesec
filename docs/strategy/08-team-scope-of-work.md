@@ -1,9 +1,21 @@
 # SMESec Platform — Team Scope of Work
 
-**Date:** 2026-05-28  
+**Date:** 2026-05-29  
 **Status:** Approved  
-**Version:** 1.0  
-**Related:** [delivery-plan.md](delivery-plan.md) · [metrics-scorecard.md](metrics-scorecard.md) · [design-document.md](design-document.md)
+**Version:** 1.1  
+**Related:** [04-delivery-plan-original.md](04-delivery-plan-original.md) · [06-delivery-plan-adjusted-2x.md](06-delivery-plan-adjusted-2x.md) · [07-delivery-plan-realistic-hiring.md](07-delivery-plan-realistic-hiring.md) · [13-metrics-scorecard.md](13-metrics-scorecard.md) · [02-design-document.md](02-design-document.md)
+
+---
+
+## ⚠️ Timeline Context
+
+This document describes team roles and responsibilities. **Timeline references are based on the original 12-month plan.**
+
+For adjusted timelines, see:
+- **[2x Adjusted Plan](06-delivery-plan-adjusted-2x.md)** — 26 months (multiply all month references by ~2x)
+- **[Realistic Hiring Plan](07-delivery-plan-realistic-hiring.md)** — 36+ months with progressive team build-up
+
+**Key difference in Realistic Hiring Plan:** ML Engineer #1 joins Month 8 (not Day 1), causing 8-month delay in Track 2 development.
 
 ---
 

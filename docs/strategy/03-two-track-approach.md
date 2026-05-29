@@ -1,8 +1,19 @@
 # SMESec Platform - 2-Track Development Strategy
 
-**Date:** 2026-05-27  
-**Status:** Proposed  
+**Date:** 2026-05-29  
+**Status:** Approved  
 **Context:** Split development into 2 parallel tracks to reduce risk and increase confidence
+
+---
+
+## ⚠️ Timeline Note
+
+This document describes the 2-track strategy. **Timeline references are illustrative.**
+
+For actual delivery timelines, see:
+- **[Original Plan](04-delivery-plan-original.md)** — 12 months (aggressive)
+- **[2x Adjusted Plan](06-delivery-plan-adjusted-2x.md)** — 26 months (sustainable)
+- **[Realistic Hiring Plan](07-delivery-plan-realistic-hiring.md)** — 36+ months (progressive hiring)
 
 ---
 
@@ -213,6 +224,7 @@ Month 3 — S5–6: CORE DETECTION ENGINE
 ├── LLM DLP extension v0.3: tested vs real ChatGPT/Gemini (staging)
 ├── DLP false negative rate <1% on critical data
 ├── Deepfake detection: Hive API account live, rate limits verified
+│   ⚠️ Hive API access: 1-2 week lead time (submitted Week 1)
 └── ThreatDetectionEvent schema v1 draft ready for S10 freeze
 [ Accuracy gate 2 (W12): DLP false negative <1% on critical data ]
 
@@ -221,6 +233,9 @@ Month 4–5 — S7–11: INTEGRATION & ADVANCED FEATURES
 ├── LLM DLP extension v1 (full Tier 1+2+3 pipeline)
 ├── Deepfake defense v1 (Hive + out-of-band verification)
 ├── Prompt injection (Lakera Guard API, Sprint 8)
+│   ⚠️ Lakera Guard: 1-2 week lead time (submitted Week 1)
+│   ⚠️ Go/No-go decision Week 2: pricing <$0.05/request
+│   See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Gate 3
 └── T1-T2 integration: ThreatDetectionEvent → EventBridge → playbook
 [ Accuracy gate 3 (W18): Deepfake detection >85% on benchmark dataset ]
 

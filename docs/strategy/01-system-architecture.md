@@ -340,10 +340,10 @@ Async Flow:
 
 | Provider | Protocol | Data Collected | Write Operations | Sync Frequency |
 |---|---|---|---|---|
-| **Google Workspace** | OAuth 2.0 (Admin SDK) | Users, Groups, OAuth Apps, Devices, Audit Logs | Disable user, Revoke OAuth, Suspend account | 15-min delta via Workspace Events API. **⚠️ R-C2:** Quota = 1,500 req/100s per GCP project (shared). At 50+ tenants, must distribute sync across window + use per-cluster GCP service accounts (20 tenants/project). Aggregate monitoring required. |
-| **Microsoft 365** | OAuth 2.0 (Graph API) | Users, Groups, OAuth Apps, Devices, SignIn Logs | Disable user, Revoke sessions, Block signin | 15-min delta via Delta Link + Webhooks. **⚠️ R-C3:** Webhook subscriptions expire every **3 days** — renewal job mandatory. 410 Gone → full delta sync fallback. Renewal failure → DLQ + alert + polling mode. |
-| Slack | OAuth 2.0 (Admin API) | Users, Channels, OAuth Apps, Audit Logs | Deactivate user (**Business+ only** — Free/Pro tiers: read-only, offboarding not supported; UI must show tier warning) | 15-min poll + Events API webhooks |
-| **AWS IAM** | AWS SDK (assumed role) | Users, Roles, Policies, Access Keys, CloudTrail | Disable access key, Remove policy (dry-run first) | 30-min full pull |
+| **Google Workspace** | OAuth 2.0 (Admin SDK) | Users, Groups, OAuth Apps, Devices, Audit Logs | Disable user, Revoke OAuth, Suspend account | 15-min delta via Workspace Events API. **⚠️ R-C2:** Quota = 1,500 req/100s per GCP project (shared). At 50+ tenants, must distribute sync across window + use per-cluster GCP service accounts (20 tenants/project). Aggregate monitoring required. **⚠️ Lead time:** 2-4 weeks (OAuth consent screen verification). Must submit Week -3. See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Gate 1. |
+| **Microsoft 365** | OAuth 2.0 (Graph API) | Users, Groups, OAuth Apps, Devices, SignIn Logs | Disable user, Revoke sessions, Block signin | 15-min delta via Delta Link + Webhooks. **⚠️ R-C3:** Webhook subscriptions expire every **3 days** — renewal job mandatory. 410 Gone → full delta sync fallback. Renewal failure → DLQ + alert + polling mode. **⚠️ Lead time:** 3-6 weeks (publisher verification). Must submit Week -3. See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Gate 2. |
+| Slack | OAuth 2.0 (Admin API) | Users, Channels, OAuth Apps, Audit Logs | Deactivate user (**Business+ only** — Free/Pro tiers: read-only, offboarding not supported; UI must show tier warning) | 15-min poll + Events API webhooks. **⚠️ Lead time:** 1-2 weeks (Admin API access approval). Submit Week 1. See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Category B. |
+| **AWS IAM** | AWS SDK (assumed role) | Users, Roles, Policies, Access Keys, CloudTrail | Disable access key, Remove policy (dry-run first) | 30-min full pull. **Lead time:** <1 week (customer self-service setup). See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Category C. |
 
 ### 5.1.1 M365 Webhook Renewal Service (Required in S1a)
 
@@ -414,11 +414,11 @@ Slack (App):
 
 | Service | Purpose | Integration Type | Data Shared |
 |---|---|---|---|
-| **Vanta** | Compliance automation (SOC 2, ISO 27001) | API + OAuth (AWS, GitHub) | Infrastructure metadata, not customer data |
-| **Hive Moderation** | Deepfake detection (voice/video) | REST API (pay-per-use) | Audio/video hash, not raw content |
-| **Keycloak** | SSO + MFA (self-hosted on ECS) | Internal service | Session tokens, user credentials |
-| **SageMaker** | ML model inference (shadow AI, risk scoring) | AWS SDK | Anonymized feature vectors, not PII |
-| **Cloudflare R2** | Audit log archive, asset storage | S3-compatible API | Encrypted audit logs |
+| **Vanta** | Compliance automation (SOC 2, ISO 27001) | API + OAuth (AWS, GitHub) | Infrastructure metadata, not customer data. **Lead time:** 2-3 weeks (setup + connectors). Start Week 8. See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Category A, Gate 5. |
+| **Hive Moderation** | Deepfake detection (voice/video) | REST API (pay-per-use) | Audio/video hash, not raw content. **Lead time:** 1-2 weeks (API access approval). Submit Week 1. See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Category B. |
+| **Keycloak** | SSO + MFA (self-hosted on ECS) | Internal service | Session tokens, user credentials. **Lead time:** <1 week (infrastructure setup). See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Category C. |
+| **SageMaker** | ML model inference (shadow AI, risk scoring) | AWS SDK | Anonymized feature vectors, not PII. **Lead time:** <1 week (AWS service, immediate). |
+| **Cloudflare R2** | Audit log archive, asset storage | S3-compatible API | Encrypted audit logs. **Lead time:** Immediate. See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Category C. |
 
 ---
 
