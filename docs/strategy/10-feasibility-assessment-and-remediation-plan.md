@@ -1,10 +1,11 @@
 # SMESec — Feasibility Assessment & Remediation Plan
 
-**Ngày:** 2026-05-29  
-**Phiên bản:** 1.1  
-**Trạng thái:** Working Document  
-**Nguồn:** Tổng hợp đánh giá 3-agent (Product Owner · Technical Advisor · Project Manager)  
-**Liên quan:** [01-system-architecture.md](01-system-architecture.md) · [02-design-document.md](02-design-document.md) · [04-delivery-plan-original.md](04-delivery-plan-original.md) · [06-delivery-plan-adjusted-2x.md](06-delivery-plan-adjusted-2x.md) · [07-delivery-plan-realistic-hiring.md](07-delivery-plan-realistic-hiring.md)
+
+**Date:** 2026-05-29  
+**Version:** 1.1  
+**Status:** Working Document  
+**Source:** Synthesis of 3-agent assessment (Product Owner · Technical Advisor · Project Manager)  
+**Related:** [01-system-architecture.md](01-system-architecture.md) · [02-design-document.md](02-design-document.md) · [04-delivery-plan-original.md](04-delivery-plan-original.md) · [06-delivery-plan-adjusted-2x.md](06-delivery-plan-adjusted-2x.md) · [07-delivery-plan-realistic-hiring.md](07-delivery-plan-realistic-hiring.md)
 
 ---
 
@@ -18,130 +19,133 @@ Risk assessments reference the **original 12-month plan**. For adjusted timeline
 
 ---
 
-## Mục Lục
 
-1. [Verdict Tổng Quan](#1-verdict-tổng-quan)
-2. [Rủi Ro CRITICAL — Có thể kill sản phẩm](#2-rủi-ro-critical--có-thể-kill-sản-phẩm)
-3. [Rủi Ro HIGH — Có thể derail kế hoạch](#3-rủi-ro-high--có-thể-derail-kế-hoạch)
-4. [Vùng Sương Mù — Blind Spots Chưa Được Tính Tới](#4-vùng-sương-mù--blind-spots-chưa-được-tính-tới)
-5. [Giải Pháp Theo Từng Rủi Ro](#5-giải-pháp-theo-từng-rủi-ro)
+## Table of Contents
+
+1. [Overall Verdict](#1-overall-verdict)
+2. [CRITICAL Risks — Product Killers](#2-critical-risks--product-killers)
+3. [HIGH Risks — Plan Derailers](#3-high-risks--plan-derailers)
+4. [Blind Spots — Unaddressed Issues](#4-blind-spots--unaddressed-issues)
+5. [Remediation Solutions by Risk](#5-remediation-solutions-by-risk)
 6. [Revised Sprint Plan](#6-revised-sprint-plan)
-7. [Missing Components Checklist Trước Launch](#7-missing-components-checklist-trước-launch)
-8. [Top 5 Quyết Định Tuần 1](#8-top-5-quyết-định-tuần-1)
+7. [Missing Components Checklist Before Launch](#7-missing-components-checklist-before-launch)
+8. [Top 5 Decisions in Week 1](#8-top-5-decisions-in-week-1)
 
 ---
 
-## 1. Verdict Tổng Quan
+## 1. Overall Verdict
 
-**Confidence tổng hợp:** PO: 6/10 · TA: 8/10 · PM: 5.5/10
+**Aggregate confidence:** PO: 6/10 · TA: 8/10 · PM: 5.5/10
 
-| Track | Khả thi? | Điều kiện |
+| Track | Feasible? | Conditions |
 |---|---|---|
-| **Track 1 MVP (T3)** | ✅ Có, với thu hẹp scope | Chỉ Google WS + M365; defer Slack/AWS IAM sang T4 |
-| **Track 1 v1 (T6)** | ⚠️ Có nhưng thực tế W30–32 | Phải giải quyết 5 blockers kỹ thuật + legal trước |
-| **Track 2 AI (T9+)** | ⚠️ Có điều kiện | Phụ thuộc accuracy gate; không được overmarket trước khi qua gate |
-| **SOC 2 Type 2 + ISO 27001 (T12)** | ❌ Rủi ro cao | Nếu Type 1 audit trễ quá W30, observation window 6 tháng không đủ |
+| **Track 1 MVP (T3)** | ✅ Yes, with reduced scope | Only Google WS + M365; defer Slack/AWS IAM to T4 |
+| **Track 1 v1 (T6)** | ⚠️ Possible but realistically W30–32 | Must resolve 5 technical + legal blockers first |
+| **Track 2 AI (T9+)** | ⚠️ Conditional | Depends on accuracy gate; cannot overmarket before passing gate |
+| **SOC 2 Type 2 + ISO 27001 (T12)** | ❌ High risk | If Type 1 audit is delayed past W30, 6-month observation window is insufficient |
 
-**Xác suất thực tế (PM estimate):**
-- MVP tại W12: **35–45%** (W14–16 là kết quả khả dĩ hơn)
-- v1 tại W26 với 5+ customers: **25–35%** (W30–32 là kết quả khả dĩ hơn)
-- v1.5 tại W38: **40–50%**
-- v2 (SOC 2 Type 2 + ISO 27001) tại W52: **30–40%**
+**Realistic probability (PM estimate):**
+- MVP at W12: **35–45%** (W14–16 is more likely)
+- v1 at W26 with 5+ customers: **25–35%** (W30–32 is more likely)
+- v1.5 at W38: **40–50%**
+- v2 (SOC 2 Type 2 + ISO 27001) at W52: **30–40%**
 
 ---
 
-## 2. Rủi Ro CRITICAL — Có thể kill sản phẩm
+
+## 2. CRITICAL Risks — Product Killers
 
 ### R-C1: False Positive Automated Offboarding → Legal Liability
 
-**Nguồn:** Technical Advisor + Product Owner  
-**Mô tả:** Hệ thống tự động revoke access của nhân viên trong <5 phút khi HR trigger. Không có manual approval gate, không có rollback workflow, không có grace period.
+**Source:** Technical Advisor + Product Owner  
+**Description:** The system automatically revokes employee access within <5 minutes when triggered by HR. There is no manual approval gate, rollback workflow, or grace period.
 
-**Kịch bản thực tế:**
-- HR sync error → CEO mất access trong board meeting → kiện
-- Nhân viên bị offboard nhầm → access bị revoke trước khi check → compliance incident
+**Real-world scenarios:**
+- HR sync error → CEO loses access during a board meeting → lawsuit
+- Employee mistakenly offboarded → access revoked before verification → compliance incident
 
-**Thiếu hoàn toàn trong design hiện tại:**
+**Completely missing in current design:**
 - Rollback/re-enable workflow
-- Grace period (e.g., 30 phút) với override capability
+- Grace period (e.g., 30 minutes) with override capability
 - Manual approval gate (optional per policy)
-- ToS liability cap cho automated actions
-- Audit trail liên kết revocation với HR event cụ thể
+- ToS liability cap for automated actions
+- Audit trail linking revocation to specific HR event
 
 ---
 
-### R-C2: Google Workspace API Rate Limit — Sẽ breach ở scale
+### R-C2: Google Workspace API Rate Limit — Will Breach at Scale
 
-**Nguồn:** Technical Advisor  
-**Mô tả:** Google Admin SDK quota: **1,500 requests/100s per project** (không phải per tenant — toàn bộ SMESec GCP project share quota này).
+**Source:** Technical Advisor  
+**Description:** Google Admin SDK quota: **1,500 requests/100s per project** (not per tenant — the entire SMESec GCP project shares this quota).
 
 ```
 v1 target: 1,000 tenants / 20 tenants per GCP project = 50 GCP projects required
-1 project: 20 tenants × 15-min sync × ~30 API calls/sync = 900 calls/15 phút (60% quota)
+1 project: 20 tenants × 15-min sync × ~30 API calls/sync = 900 calls/15 min (60% quota)
 → Each GCP project handles 20 tenants safely within 1,500 req/100s quota.
 ```
 
-Giải pháp: **GCP project pool bắt buộc từ Sprint 1.** 50 GCP projects, mỗi project 20 tenants, mỗi project có service account riêng. Không phải future concern — đây là thiết kế ngày 1 vì v1 target là 1K tenants.
+Solution: **GCP project pool is mandatory from Sprint 1.** 50 GCP projects, each with 20 tenants, each with its own service account. This is not a future concern — it is a day-1 design for the v1 target of 1K tenants.
 
-**Hậu quả nếu không làm từ Sprint 1:** Sync fails → stale inventory → offboarding trigger không fire → ex-employee vẫn có access. Đây là lý do cốt lõi khách hàng mua sản phẩm.
-
----
-
-### R-C3: M365 Webhook Subscription Expiry 3 Ngày — Silent Failure
-
-**Nguồn:** Technical Advisor + Project Manager  
-**Mô tả:** Microsoft Graph webhook subscriptions expire mỗi **3 ngày** và phải renew. Nếu renewal job fail → toàn bộ M365 change events ngừng mà **không có error, không có alert, chỉ im lặng.**
-
-**Hậu quả:** Inventory đóng băng trong khi IT admin nghĩ data đang fresh. Offboarding triggers miss M365 deprovisioning → SOC 2 evidence gaps.
-
-**Đây là known Microsoft Graph gotcha** mà mọi sản phẩm dùng delta sync đều gặp. Phải thiết kế ở S1 (infra), không phải phát hiện ở S3.
+**Consequence if not implemented from Sprint 1:** Sync fails → stale inventory → offboarding trigger does not fire → ex-employee still has access. This is the core reason customers buy the product.
 
 ---
 
-### R-C4: GDPR Article 17 vs. S3 Object Lock — Mâu Thuẫn Kiến Trúc
+### R-C3: M365 Webhook Subscription Expiry 3 Days — Silent Failure
 
-**Nguồn:** Technical Advisor + Product Owner  
-**Mô tả:** S3 Object Lock WORM = không ai xóa được trong 7 năm. GDPR Article 17 = quyền erasure. Hai yêu cầu này trực tiếp mâu thuẫn.
+**Source:** Technical Advisor + Project Manager  
+**Description:** Microsoft Graph webhook subscriptions expire every **3 days** and must be renewed. If the renewal job fails → all M365 change events stop with **no error, no alert, just silence.**
 
-Legal workaround (encrypt data + destroy key → data becomes unreadable = effective erasure) phải được thiết kế vào kiến trúc **trước khi onboard customer EU đầu tiên.** Hiện tại không có mention nào trong design.
+**Consequence:** Inventory freezes while IT admin thinks data is fresh. Offboarding triggers miss M365 deprovisioning → SOC 2 evidence gaps.
+
+**This is a known Microsoft Graph gotcha** for all products using delta sync. Must be designed in S1 (infra), not discovered in S3.
 
 ---
 
-### R-C5: Không có Customer Acquisition Plan — CAC Model Rỗng
+### R-C4: GDPR Article 17 vs. S3 Object Lock — Architectural Conflict
 
-**Nguồn:** Product Owner  
-**Mô tả:** Ở $399/mo (LTV ~$7,500 tại 24 tháng): CAC tối đa $2,500 để viable.
+**Source:** Technical Advisor + Product Owner  
+**Description:** S3 Object Lock WORM = nothing can be deleted for 7 years. GDPR Article 17 = right to erasure. These requirements directly conflict.
+
+Legal workaround (encrypt data + destroy key → data becomes unreadable = effective erasure) must be designed into the architecture **before onboarding the first EU customer.** Currently not mentioned in the design.
+
+---
+
+### R-C5: No Customer Acquisition Plan — Empty CAC Model
+
+**Source:** Product Owner  
+**Description:** At $399/mo (LTV ~$7,500 over 24 months): CAC must be <$2,500 to be viable.
 
 | Channel | Estimated CAC | Viable? |
 |---|---|---|
-| Outbound SDR | $3,000–8,000 | ❌ Không |
+| Outbound SDR | $3,000–8,000 | ❌ Not viable |
 | Google/LinkedIn ads | $800–2,000 | ⚠️ Barely, zero margin |
 | MSP channel | $500–1,500 | ✅ Viable |
 | Freemium/PLG | $50–300 | ✅ Viable |
 
-**Hiện trạng:** Team không có sales/BD resource. PM là 0.5 FTE. Không có pipeline, không có owner cho 5 pilot customers. Margin 91% là vô nghĩa nếu không thể acquire customers profitably.
+**Current state:** Team has no sales/BD resource. PM is 0.5 FTE. No pipeline, no owner for 5 pilot customers. 91% margin is meaningless if customers cannot be acquired profitably.
 
 ---
 
 ### R-C6: Keycloak Self-Hosted — Single Point of Failure Authentication
 
-**Nguồn:** Technical Advisor  
-**Mô tả:** Toàn bộ auth đi qua Keycloak ECS. Nếu Keycloak crash → không ai login được, kể cả IT admin đang cần revoke access khẩn cấp.
+**Source:** Technical Advisor  
+**Description:** All authentication goes through Keycloak ECS. If Keycloak crashes → no one can log in, including IT admin needing to urgently revoke access.
 
-**Thiếu:**
-- JWKS caching cho JWT validation độc lập với Keycloak uptime
-- HA config (multiple task instances, không chỉ multi-AZ)
-- RTO/RPO không được định nghĩa
-- DevSecOps contract = không ai patch quarterly CVEs
+**Missing:**
+- JWKS caching for JWT validation independent of Keycloak uptime
+- HA config (multiple task instances, not just multi-AZ)
+- RTO/RPO not defined
+- DevSecOps contract = no one patches quarterly CVEs
 
 ---
 
-## 3. Rủi Ro HIGH — Có thể derail kế hoạch
+
+## 3. HIGH Risks — Plan Derailers
 
 ### R-H1: S1 Sprint Over-Scoped 230%
 
-**Nguồn:** Project Manager  
-**Mô tả:** AWS infra + Keycloak OIDC + multi-tenant schema + CI/CD trong 2 tuần với 4 người.
+**Source:** Project Manager  
+**Description:** AWS infra + Keycloak OIDC + multi-tenant schema + CI/CD in 2 weeks with 4 people.
 
 ```
 Required: 50–65 dev-days
@@ -149,22 +153,22 @@ Available: 4 FTE × 7 effective days = 28 dev-days
 Utilization: 179–232%
 ```
 
-**Kết quả thực tế:** MVP trễ W14–W16 thay vì W12. Toàn bộ Phase 2 cascade theo.
+**Actual result:** MVP delayed to W14–W16 instead of W12. All of Phase 2 cascades as a result.
 
 ---
 
 ### R-H2: Chrome MV3 Service Worker Kill mid-WASM-scan
 
-**Nguồn:** Technical Advisor  
-**Mô tả:** Chrome giết service worker sau ~5 phút idle. Nếu WASM BERT-tiny inference đang chạy bị kill → scan interrupted. Fail-closed behavior khi interrupted không được spec rõ — nếu default là "allow" thì đây là bypass vector hoàn chỉnh.
+**Source:** Technical Advisor  
+**Description:** Chrome kills the service worker after ~5 minutes idle. If WASM BERT-tiny inference is running and gets killed → scan interrupted. Fail-closed behavior when interrupted is not clearly specified — if default is "allow" this is a complete bypass vector.
 
-Thêm: First-scan latency sau idle = **2–4 giây** (service worker cold start + WASM compilation), không phải 50–80ms như spec — chỉ đúng sau warm-up.
+Additionally: First-scan latency after idle = **2–4 seconds** (service worker cold start + WASM compilation), not 50–80ms as spec'd — only true after warm-up.
 
 ---
 
-### R-H3: PgBouncer Không Được Nhắc Đến
+### R-H3: PgBouncer Not Mentioned
 
-**Nguồn:** Technical Advisor  
+**Source:** Technical Advisor  
 **Math:**
 ```
 100 tenants × 10 concurrent req × 10 ECS tasks × 4 pg connections = 40,000 connections
@@ -172,169 +176,169 @@ RDS PostgreSQL db.r6g.2xlarge max connections: ~3,200
 Oversubscription: 12.5×
 ```
 
-PgBouncer (transaction-pooling mode) hoặc RDS Proxy là **bắt buộc** để đạt 50+ tenants.
+PgBouncer (transaction-pooling mode) or RDS Proxy is **mandatory** to support 50+ tenants.
 
 ---
 
 ### R-H4: EventBridge At-Least-Once → Duplicate Offboarding
 
-**Nguồn:** Technical Advisor  
-**Mô tả:** EventBridge guarantee là at-least-once. Duplicate `OffboardingTriggered` → 2 offboarding workflows chạy concurrent cho cùng user → duplicate access revocation entries trong audit log, potential customer alert noise.
+**Source:** Technical Advisor  
+**Description:** EventBridge guarantee is at-least-once. Duplicate `OffboardingTriggered` → 2 offboarding workflows run concurrently for the same user → duplicate access revocation entries in audit log, potential customer alert noise.
 
-**Fix đơn giản:** `StartExecution` với deterministic `name` parameter (derived từ event correlation ID). Không được mention.
+**Simple fix:** `StartExecution` with deterministic `name` parameter (derived from event correlation ID). Not mentioned.
 
 ---
 
-### R-H5: WASM Model Update Mechanism Không Tồn Tại
+### R-H5: WASM Model Update Mechanism Missing
 
-**Nguồn:** Technical Advisor  
-**Mô tả:** ONNX model BERT-tiny được nhúng vào extension. Khi có model mới:
-- Chrome Web Store review: 2–7 ngày để ship update
-- Model trong production lag hàng tuần so với server
-- Không có hot-swap mechanism, không có model versioning
-- Không có signature verification khi download model từ S3 → **supply chain attack vector**
+**Source:** Technical Advisor  
+**Description:** ONNX model BERT-tiny is embedded in the extension. When a new model is available:
+- Chrome Web Store review: 2–7 days to ship update
+- Model in production lags weeks behind server
+- No hot-swap mechanism, no model versioning
+- No signature verification when downloading model from S3 → **supply chain attack vector**
 
 ---
 
 ### R-H6: Shadow AI Risk Score Formula — Gameable + Wrong Direction
 
-**Nguồn:** Technical Advisor  
-**Vấn đề:**
-1. Weights (30%/20%/15%...) chọn theo intuition, chưa validated empirically
-2. `vendor_DPA_available` (20%) + `security_certifications` (15%) = self-reported bởi vendors → predatory vendor có thể publish DPA + mua ISO cert để score tốt
-3. `app_age_days` direction **sai**: app mới = rủi ro cao hơn, phải tăng score, không giảm
+**Source:** Technical Advisor  
+**Issues:**
+1. Weights (30%/20%/15%...) chosen by intuition, not empirically validated
+2. `vendor_DPA_available` (20%) + `security_certifications` (15%) = self-reported by vendors → predatory vendor can publish DPA + buy ISO cert to score well
+3. `app_age_days` direction **wrong**: newer app = higher risk, should increase score, not decrease
 
 ---
 
-### R-H7: S1 Không Bao Gồm Test Tenant Provisioning
+### R-H7: S1 Does Not Include Test Tenant Provisioning
 
-**Nguồn:** Project Manager  
-**Mô tả:** CI gate tại S6 yêu cầu timed offboarding test (<5 phút) end-to-end. Test này cần mock hoặc dedicated test tenants cho cả 4 providers. Nếu dùng real test tenants (preferred), phải provision từ S1 (không có trong scope S1).
-
----
-
-### R-H8: M4 Onboarding Shock — 3 New Hires Đồng Thời
-
-**Nguồn:** Project Manager  
-**Mô tả:** ML Eng + BE#3 + FE#2 đều join M4 trong cùng sprint S7. Tech Lead mất 2–3 ngày per person cho onboarding = **25–40% capacity loss** trong S7, trong khi S7 đã scoped JIT access (feature phức tạp).
+**Source:** Project Manager  
+**Description:** CI gate at S6 requires timed offboarding test (<5 minutes) end-to-end. This test needs mock or dedicated test tenants for all 4 providers. If using real test tenants (preferred), must provision from S1 (not in S1 scope).
 
 ---
 
-### R-H9: Pentest Timeline Không Đủ
+### R-H8: M4 Onboarding Shock — 3 New Hires Simultaneously
 
-**Nguồn:** Project Manager  
+**Source:** Project Manager  
+**Description:** ML Eng + BE#3 + FE#2 all join in M4 in the same sprint S7. Tech Lead loses 2–3 days per person for onboarding = **25–40% capacity loss** in S7, while S7 is already scoped for JIT access (complex feature).
+
+---
+
+### R-H9: Pentest Timeline Insufficient
+
+**Source:** Project Manager  
 **Math:**
 ```
-Scoping + kickoff: 1 tuần
-Active testing (multi-tenant SaaS): 2+ tuần
-Report delivery: 1 tuần
-Remediation: 1–3 tuần
-Retest: 1 tuần
-Minimum: 6–8 tuần
+Scoping + kickoff: 1 week
+Active testing (multi-tenant SaaS): 2+ weeks
+Report delivery: 1 week
+Remediation: 1–3 weeks
+Retest: 1 week
+Minimum: 6–8 weeks
 ```
 
-Hiện tại plan: W21 → W26 = **5 tuần**. Không đủ nếu có critical finding (và gần như chắc chắn sẽ có với multi-tenant SaaS).
+Current plan: W21 → W26 = **5 weeks**. Not enough if there is a critical finding (and there almost certainly will be with multi-tenant SaaS).
 
 ---
 
-### R-H10: Chrome Web Store Review — Ngoài tầm kiểm soát
+### R-H10: Chrome Web Store Review — Out of Control
 
-**Nguồn:** Project Manager  
-**Mô tả:** Security extension với `tabs`, `webRequest`, `scripting`, `host permissions` và LLM DLP content scanning sẽ kích hoạt manual security review của Google. Timeline: **2–6 tuần**. Submit S12 (W24), cần approval W26 = **window 2 tuần** = xác suất miss ~50%.
+**Source:** Project Manager  
+**Description:** Security extension with `tabs`, `webRequest`, `scripting`, `host permissions` and LLM DLP content scanning will trigger manual security review by Google. Timeline: **2–6 weeks**. Submit S12 (W24), need approval by W26 = **2-week window** = ~50% chance of missing.
 
 ---
 
-## 4. Vùng Sương Mù — Blind Spots Chưa Được Tính Tới
+## 4. Blind Spots — Unaddressed Issues
 
 ### BS-1: Alert Fatigue (Critical UX blind spot)
 
-Ngày 2, IT admin mở dashboard thấy 847 shadow IT flags. Reaction: panic → gọi support, hoặc dismiss all → không mở lại. Không có trong design:
-- Calibration period (14 ngày đầu = learning mode, không alert)
+Day 2, IT admin opens dashboard and sees 847 shadow IT flags. Reaction: panic → calls support, or dismisses all → never opens again. Not in design:
+- Calibration period (first 14 days = learning mode, no alerts)
 - Smart default suppression rules
-- Phân biệt "act today" vs "review monthly"
+- Distinguish "act today" vs "review monthly"
 - Noise baseline per tenant
 
-Đây là **#1 lý do security tools bị ignore** trong 30 ngày đầu. Module C (Shadow AI) fires từ Day 1 — cần thiết kế alert strategy trước khi MVP.
+This is the **#1 reason security tools are ignored** in the first 30 days. Module C (Shadow AI) fires from Day 1 — alert strategy must be designed before MVP.
 
 ---
 
 ### BS-2: Module F (Employee Privacy Dashboard) — GDPR + Labor Law Trap
 
-Module F transparent dashboard cho employees về monitoring data tạo:
-1. **GDPR Article 13/14:** Explicitly acknowledges SMESec là data processor. Customer phải có documented lawful basis. Hầu hết SME không có.
-2. **Employment law variance:** France (rất restrictive), Germany (works council approval required), UK, US (state by state) — không thể có one-size-fits-all design.
-3. **HR liability trigger:** Employee thấy DLP log → biết bị monitor → không có trong employment contract → SMESec tạo legal exposure cho customer.
+Module F transparent dashboard for employees about monitoring data creates:
+1. **GDPR Article 13/14:** Explicitly acknowledges SMESec as data processor. Customer must have documented lawful basis. Most SMEs do not.
+2. **Employment law variance:** France (very restrictive), Germany (works council approval required), UK, US (state by state) — cannot have one-size-fits-all design.
+3. **HR liability trigger:** Employee sees DLP log → knows they are being monitored → not in employment contract → SMESec creates legal exposure for customer.
 
-**Đề xuất:** Remove Module F khỏi v1 hoàn toàn. Admin-only transparency report thay thế. Reintroduce ở Enterprise tier sau legal review per geography.
-
----
-
-### BS-3: Switching Cost Gần Bằng 0
-
-Customer có thể connect Google Workspace OAuth trong 30 phút với competitor và rời đi. Không có gì giữ lại ngoài custom playbooks đã tuned (switching cost duy nhất đáng kể trong design hiện tại).
-
-Playbook builder là feature tạo switching cost cao nhất → phải vào MVP scope và được marketing là "your company's security procedures, automated," không phải "access management tool."
+**Recommendation:** Remove Module F from v1 entirely. Replace with admin-only transparency report. Reintroduce in Enterprise tier after legal review per geography.
 
 ---
 
-### BS-4: Prompt Injection BERT Target (TPR >85%, FPR <2%) — Không Thực Tế Trong 6 Tháng
+### BS-3: Switching Cost Nearly Zero
 
-Cần: ~50,000+ labeled examples đa dạng (GPT-4/Claude/Gemini/open-source), adversarial test set, fine-tuning infrastructure, production feedback loop. Dataset này không tồn tại publicly ở đủ quality.
+Customer can connect Google Workspace OAuth in 30 minutes with a competitor and leave. Nothing keeps them except custom playbooks already tuned (the only meaningful switching cost in current design).
 
-**Practical alternative:** Dùng Lakera Guard (đã cited ở Tier 3) cho prompt injection, bỏ internal BERT model target ở v1.
+Playbook builder is the feature that creates the highest switching cost → must be in MVP scope and marketed as "your company's security procedures, automated," not "access management tool."
 
 ---
 
-### BS-5: Deepfake Detection Liability — Không Có Insurance Coverage
+### BS-4: Prompt Injection BERT Target (TPR >85%, FPR <2%) — Not Realistic in 6 Months
 
-Không có cyber insurance nào cover AI-assisted false positive liability trong security tooling (market gap 2026).
+Requires: ~50,000+ diverse labeled examples (GPT-4/Claude/Gemini/open-source), adversarial test set, fine-tuning infrastructure, production feedback loop. This dataset does not exist publicly at sufficient quality.
 
-Kịch bản: Module D flag legitimate CEO video call là deepfake → IT admin không proceed → deal falls through → CEO sues → demand letter > annual revenue.
+**Practical alternative:** Use Lakera Guard (already cited in Tier 3) for prompt injection, drop internal BERT model target for v1.
 
-**Required trước EU/US launch:**
+---
+
+### BS-5: Deepfake Detection Liability — No Insurance Coverage
+
+No cyber insurance covers AI-assisted false positive liability in security tooling (market gap 2026).
+
+Scenario: Module D flags legitimate CEO video call as deepfake → IT admin does not proceed → deal falls through → CEO sues → demand letter > annual revenue.
+
+**Required before EU/US launch:**
 - E&O insurance covering AI decision outputs
-- UI language: "advisory only — human verification required" (không phải "deepfake detected")
-- ToS liability cap tại 1 month subscription
+- UI language: "advisory only — human verification required" (not "deepfake detected")
+- ToS liability cap at 1 month subscription
 - Customer acknowledgment: all AI alerts require human verification before action
 
 ---
 
 ### BS-6: New AI Tool Recognition Lag
 
-Khi GPT-5, Claude-next, hoặc enterprise AI tool mới ra mắt, extension không recognize form fields / URL patterns. Server-push rule update cần bypass Chrome Web Store review (declarativeNetRequest dynamic rules trong MV3 có giới hạn). Trong window đó DLP không hoạt động với tool mới nhất.
+When GPT-5, Claude-next, or a new enterprise AI tool launches, the extension does not recognize form fields / URL patterns. Server-push rule update needs to bypass Chrome Web Store review (declarativeNetRequest dynamic rules in MV3 are limited). During that window, DLP does not work with the newest tool.
 
-Extension là **Chrome-only DLP cho AI tools đã biết** — không phải universal DLP layer. Cần honest marketing và expectation setting.
+Extension is **Chrome-only DLP for known AI tools** — not a universal DLP layer. Honest marketing and expectation setting required.
 
 ---
 
 ### BS-7: Compliance Report Quality ≠ Audit-Ready Evidence
 
-Growth tier customer ($799/mo) mua SMESec để pass ISO 27001. Auditor reject evidence format (SMESec chưa có auditor relationships như Vanta). Customer churn với chargeback demand.
+Growth tier customer ($799/mo) buys SMESec to pass ISO 27001. Auditor rejects evidence format (SMESec does not have auditor relationships like Vanta). Customer churns with chargeback demand.
 
-**Disclaimer bắt buộc trong sales materials:** "compliance preparation assistance — not audit-ready evidence without auditor validation."
+**Mandatory disclaimer in sales materials:** "compliance preparation assistance — not audit-ready evidence without auditor validation."
 
 ---
 
 ### BS-8: EU Legal Opinion → Track 2 Architecture Risk
 
-EU legal opinion về voice deepfake = biometric (Article 9) commissioned Day 1. Nếu opinion đến W6–W8 với kết quả "yes = biometric" → Track 2 deepfake detection phải redesign. Không có sprint capacity reserve cho kịch bản này trong plan hiện tại.
+EU legal opinion on voice deepfake = biometric (Article 9) commissioned Day 1. If opinion arrives W6–W8 with result "yes = biometric" → Track 2 deepfake detection must be redesigned. No sprint capacity reserve for this scenario in current plan.
 
 ---
 
-### BS-9: Không Có QA Role Trong Phase 1
+### BS-9: No QA Role in Phase 1
 
-Phase 1 không có dedicated QA engineer. Không rõ:
-- Ai viết integration tests cho Google/M365/Slack API mocks?
-- Ai owns test coverage standards?
-- Ai validates 2 playbooks end-to-end trước S6?
+Phase 1 has no dedicated QA engineer. Unclear:
+- Who writes integration tests for Google/M365/Slack API mocks?
+- Who owns test coverage standards?
+- Who validates 2 playbooks end-to-end before S6?
 
-Thực tế: engineers test code của chính mình = acceptable cho unit tests, không đủ cho multi-tenant offboarding system integration test.
+Reality: engineers test their own code = acceptable for unit tests, not enough for multi-tenant offboarding system integration test.
 
 ---
 
-### BS-10: Slack Tier Constraint Không Được Acknowledge
+### BS-10: Slack Tier Constraint Not Acknowledged
 
-Slack Admin API (user management + offboarding) yêu cầu **Business+ tier** ($12.50/user/month). ~80% SME Slack users dùng Free/Pro tier → Slack offboarding silently fails cho 80% target market mà không có error hay notification. UI phải detect tier và communicate limitation rõ ràng.
+Slack Admin API (user management + offboarding) requires **Business+ tier** ($12.50/user/month). ~80% of SME Slack users are on Free/Pro tier → Slack offboarding silently fails for 80% of target market with no error or notification. UI must detect tier and communicate limitation clearly.
 
 ---
 

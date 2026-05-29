@@ -9,13 +9,14 @@
 
 ## ⚠️ Timeline Context
 
+
 This document describes team roles and responsibilities. **Timeline references are based on the original 12-month plan.**
 
 For adjusted timelines, see:
 - **[2x Adjusted Plan](06-delivery-plan-adjusted-2x.md)** — 26 months (multiply all month references by ~2x)
 - **[Realistic Hiring Plan](07-delivery-plan-realistic-hiring.md)** — 36+ months with progressive team build-up
 
-**Key difference in Realistic Hiring Plan:** ML Engineer #1 joins Month 8 (not Day 1), causing 8-month delay in Track 2 development.
+**Key difference in Realistic Hiring Plan:** ML Engineer #1 joins Month 8 (not Day 1), causing an 8-month delay in Track 2 development. All onboarding dates, critical gates, and cross-document dependencies are aligned with the latest delivery plans and integration principles.
 
 ---
 

@@ -10,20 +10,21 @@
 
 ## Executive Summary
 
-Bản kế hoạch này điều chỉnh timeline gốc (12 tháng) ra **2x = 24 tháng** để đảm bảo tính bền vững và giảm thiểu rủi ro burnout. Đây là timeline thực tế cho team nhỏ với workload hợp lý.
 
-**Thay đổi chính so với plan 1.5x:**
+This plan extends the original 12-month timeline to **2x = 24 months** to ensure sustainability and minimize burnout risk. This is a realistic timeline for a small team with a reasonable workload.
+
+**Key changes compared to the 1.5x plan:**
 - **MVP**: W18 → **W24** (Month 4.5 → Month 6)
 - **v1**: W39 → **W52** (Month 9.75 → Month 13)
 - **v1.5**: W57 → **W76** (Month 14.25 → Month 19)
 - **v2**: W78 → **W104** (Month 19.5 → Month 26)
 
-**Lý do điều chỉnh thêm:**
-- Sprint utilization trong plan 1.5x vẫn còn 70-80% (vẫn cao)
-- Cần thêm buffer cho integration testing và bug fixing
-- Thêm thời gian cho team onboarding và knowledge transfer
-- Realistic về compliance audit timeline (SOC 2 Type 2 cần 6+ tháng observation)
-- Buffer cho external dependencies (Google/M365 API verification, pentest scheduling)
+**Additional reasons for adjustment:**
+- Sprint utilization in the 1.5x plan was still 70-80% (still high)
+- Added buffer for integration testing and bug fixing
+- More time for team onboarding and knowledge transfer
+- Realistic compliance audit timeline (SOC 2 Type 2 requires 6+ months of evidence)
+- Buffer for external dependencies (Google/M365 API verification, pentest scheduling)
 
 ---
 

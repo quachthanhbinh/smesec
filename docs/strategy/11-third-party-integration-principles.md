@@ -288,6 +288,7 @@ If a hard gate is missed → milestone date slips automatically (no negotiation)
 
 ## Document Synchronization Requirements
 
+
 **This document is canonical.** All other documents must align with the lead times, gates, and timelines defined here.
 
 **Documents that must be synchronized:**

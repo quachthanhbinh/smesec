@@ -10,19 +10,20 @@
 
 ## Executive Summary
 
-Bản kế hoạch này điều chỉnh timeline gốc (12 tháng) ra **1.5x = 19.5 tháng** để giảm rủi ro và tăng tính khả thi. Các thay đổi chính:
+
+This plan adjusts the original 12-month timeline to **1.5x = 19.5 months** to reduce risk and increase feasibility. Key changes:
 
 - **MVP**: W12 → **W18** (Month 3 → Month 4.5)
 - **v1**: W26 → **W39** (Month 6 → Month 9.75)
 - **v1.5**: W38 → **W57** (Month 9 → Month 14.25)
 - **v2**: W52 → **W78** (Month 12 → Month 19.5)
 
-**Lý do điều chỉnh:**
-- Giảm sprint overload (nhiều sprint trong plan gốc có utilization >85%)
-- Thêm buffer cho tuyển dụng và onboarding
-- Thêm thời gian cho pentest remediation và compliance audit
-- Realistic về Google/M365 API rate limit handling
-- Buffer cho Chrome Web Store review delays
+**Reasons for adjustment:**
+- Reduce sprint overload (many sprints in the original plan had utilization >85%)
+- Add buffer for recruitment and onboarding
+- Add more time for pentest remediation and compliance audit
+- More realistic handling of Google/M365 API rate limits
+- Buffer for Chrome Web Store review delays
 
 ---
 

@@ -458,4 +458,4 @@ Enterprise tier sales → ARR target $480K (Tier 5)
 
 ---
 
-*This document is a living scorecard. Update thresholds if the business model or architecture changes materially. Last updated: 2026-05-28.*
+*This document is a living scorecard. Update thresholds if the business model or architecture changes materially.*

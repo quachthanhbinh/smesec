@@ -10,27 +10,28 @@
 
 ## Executive Summary
 
-Đây là kế hoạch thực tế nhất cho scenario: **Tech Lead bắt đầu với 0 nhân sự, vừa làm vừa tuyển**.
 
-**Giả định thực tế về tuyển dụng:**
-- **Sourcing + Interview:** 2-4 tuần mỗi vị trí
-- **Notice period:** 30 ngày (2-4 tuần) sau khi offer accepted
-- **Onboarding:** 1-2 tuần mỗi người
-- **Total time to productivity:** 6-10 tuần từ khi bắt đầu tuyển đến khi người đó productive
+This is the most realistic plan for the scenario: **Tech Lead starts with zero team, recruiting while building**.
 
-**Timeline tổng thể:**
-- **Month 1-3:** TL solo, infrastructure + tuyển người đầu tiên
-- **Month 4-6:** 2-3 người, foundation work
-- **Month 7-12:** 4-5 người, MVP development
-- **Month 13-18:** 6-7 người, v1 development
-- **Month 19-24:** 8-9 người, v1.5 development
-- **Month 25-30+:** 10-11 người, v2 development
+**Realistic hiring assumptions:**
+- **Sourcing + Interview:** 2-4 weeks per position
+- **Notice period:** 30 days (2-4 weeks) after offer accepted
+- **Onboarding:** 1-2 weeks per person
+- **Total time to productivity:** 6-10 weeks from start of recruiting to productive contributor
+
+**Overall timeline:**
+- **Month 1-3:** TL solo, infrastructure + first hire
+- **Month 4-6:** 2-3 people, foundation work
+- **Month 7-12:** 4-5 people, MVP development
+- **Month 13-18:** 6-7 people, v1 development
+- **Month 19-24:** 8-9 people, v1.5 development
+- **Month 25-30+:** 10-11 people, v2 development
 
 **Milestones:**
-- **MVP**: Month 12 (vs Month 6 trong plan 2x)
-- **v1**: Month 20 (vs Month 13 trong plan 2x)
-- **v1.5**: Month 28 (vs Month 19 trong plan 2x)
-- **v2**: Month 36+ (vs Month 26 trong plan 2x)
+- **MVP**: Month 12 (vs Month 6 in 2x plan)
+- **v1**: Month 20 (vs Month 13 in 2x plan)
+- **v1.5**: Month 28 (vs Month 19 in 2x plan)
+- **v2**: Month 36+ (vs Month 26 in 2x plan)
 
 ---
 

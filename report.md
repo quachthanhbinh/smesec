@@ -14,10 +14,11 @@ Small and medium enterprises (10–500 employees) face escalating AI-driven secu
 - **Track 1 — Foundation & Governance (deterministic, ~100% accuracy):** Asset inventory, access governance, automated offboarding, incident playbooks, compliance reporting. Ships at MVP and v1 independently.
 - **Track 2 — AI Threat Detection (ML-gated):** Browser DLP, shadow AI governance, deepfake defense, prompt injection detection. **Starts Sprint 1 in parallel with Track 1.** ML Engineer #1 onboards Day 1 to begin R&D (research, dataset collection, prototype models). Merges into product only after four accuracy validation gates. If gates not met, Track 1 ships alone.
 
-**Timeline Options:** Three delivery plans available based on constraints:
-- **Original (12 months):** Aggressive timeline, requires full team Day 1, 75-90% sprint utilization
-- **2x Adjusted (26 months):** Sustainable timeline, 50-60% sprint utilization, realistic external dependencies
-- **Realistic Hiring (36+ months):** Tech Lead starts solo, progressive team build-up, ML Eng #1 joins Month 8
+**Timeline Options:** Four delivery plans available. **1.5x Adjusted is the recommended plan:**
+- **✅ 1.5x Adjusted (19.5 months) — RECOMMENDED:** Lean 5-FTE start → commercial v1 (Track 1 only + Stripe billing) at M4.5 → full v1 with AI features at M9.75. 60–75% sprint utilization. Best balance of speed-to-market and execution risk.
+- **Original (12 months):** Aggressive timeline, requires 7 FTE Day 1, 75–90% sprint utilization. High burnout and cascade-failure risk.
+- **2x Adjusted (26 months):** Sustainable timeline, 50–60% sprint utilization, for teams needing additional hiring runway.
+- **Realistic Hiring (36+ months):** Tech Lead starts solo, progressive team build-up, ML Eng #1 joins Month 8.
 
 This document covers all four deliverables: System Architecture, Design Document, Team & Delivery Plan, and AI Governance Module.
 
@@ -179,7 +180,7 @@ Go API middleware injects `tenant_id` into every PostgreSQL session via `SET LOC
 | Over-provisioning | RBAC diff engine: actual permissions vs defined role policy | Least-privilege recommendation |
 | Compliance violations | ISO 27001 / SOC 2 / GDPR control mapping checklist | Compliance gap finding |
 
-**Track 2 — ML/AI Detection (ships Month 6, gated by accuracy):**
+**Track 2 — ML/AI Detection (ships Month 9.75/v1 full, gated by accuracy):**
 
 | Feature | Technology | Accuracy Gate | Ship Condition |
 |---|---|---|---|
@@ -205,7 +206,7 @@ Four contractual, architecturally-enforced commitments:
 
 **GDPR alignment:** Art. 17 (erasure) via `/api/v1/gdpr/erasure` endpoint — PII anonymized within 30 days + KMS CMK scheduled for deletion (7-day AWS pending window); ciphertext permanently inaccessible after key deletion; erasure certificate issued (EDPB Recommendation 01/2020). Art. 20 (portability) via JSON export endpoint. Art. 25 (privacy by design) via `data_residency` from day 1 and local inference architecture. [R-C4]
 
-**Compliance roadmap:** SOC 2 Type 1 at v1 (Month 6, Vanta evidence from Week 13). SOC 2 Type 2 + ISO 27001 at v2 (Month 12, 6-month observation window from Week 26).
+**Compliance roadmap:** Vanta setup at M4.5 (W18), evidence officially active W20. SOC 2 Type 1 at v1 (M9.75/W39, evidence window W20→W39 = 19 weeks). SOC 2 Type 2 + ISO 27001 at v2 (M19.5/W78, evidence window W39→W68 = 29 weeks — 5-week buffer above 24-week minimum).
 
 ---
 
@@ -215,16 +216,18 @@ Four contractual, architecturally-enforced commitments:
 
 | Phase | Months | FTE | Team Composition | Milestone |
 |---|---|---|---|---|
-| **Phase 1** | 1–3 | **7 + BD** | Tech Lead · BE#1 · BE#2 · FE#1 · Flutter · **ML Eng #1 (Day 1)** · DevSecOps(contract) + PM(0.5) + **BD Consultant (contract, Week 1, 3 days/wk) [R-C5]** | **MVP** (W12) |
-| **Phase 2** | 4–6 | **9** | +BE#3 Python (M4) · +FE#2 Browser Ext (M4.5) | **v1** (W26) |
-| **Phase 3** | 7–9 | **11** | +Customer Success Eng (M7) · +ML Eng #2 (M8, opt.) · DevSecOps → FTE | **v1.5** (W38) |
-| **Phase 4** | 10–12 | **11.5** | +Compliance Consultant (contract M10–M12) | **v2** (W52) |
+| **Phase 1** | 1–4.5 | **5** | Tech Lead · BE#1 · BE#2 · FE#1 · DevSecOps(contract) + PM(0.5) + **BD Consultant (contract, Week 1, 3 days/wk) [R-C5]** | **Commercial v1** (W18/M4.5) — Track 1 only · Stripe Starter tier live |
+| **Phase 2** | 5–9.75 | **7 → 9** | +Flutter Eng (M5) · **+ML Eng #1 (M5 — Track 2 R&D begins)** · +BE#3 Python (M8) · +FE#2 Browser Ext (M9) | **v1 full** (W39/M9.75) — AI features added |
+| **Phase 3** | 10–14.25 | **11** | +Customer Success Eng (M10.5) · +ML Eng #2 (M12, opt.) · DevSecOps → FTE | **v1.5** (W57/M14.25) |
+| **Phase 4** | 15–19.5 | **11.5** | +Compliance Consultant (contract M15–M19.5) | **v2** (W78/M19.5) |
 
 **Phase 3+ team split (2-stream):** Luồng A (65%): new features + SOC 2 Type 2 prep + AI accuracy improvements. Luồng B (35%): pilot feedback, bug fixes, UX polish. Converge at each milestone.
 
-### 3.2 6-Month v1 Delivery Sequence (26 Sprints, 2-week each)
+### 3.2 19.5-Month Delivery Sequence — 1.5x Adjusted Plan (39 Sprints, 2-week each)
 
-#### Phase 1: Foundation → MVP (S1–S6, Month 1–3)
+#### Phase 1: Foundation → Commercial v1 (S1–S9, Month 1–4.5) — 5 FTE, Track 1 Only
+
+> **Track 2 (AI/ML) is deferred to Phase 2.** ML Eng #1 joins at M5. This gives Phase 1 a lean 5-FTE team, 60% sprint utilization, and a shippable commercial product with Stripe billing at W18 — without the risk of an 88% utilization sprint or a Day-1 ML hire constraint.
 
 | Sprint | Track 1 | Track 2 | Gate |
 |---|---|---|---|
@@ -235,40 +238,46 @@ Four contractual, architecturally-enforced commitments:
 | **S5** (W9–10) | Slack + AWS IAM discovery, RBAC model + least-privilege recommendations, composite identity graph | **Track 2 Accuracy Gates 1 & 2 (W10):** Gate 1 — Prompt injection: Lakera Guard TPR >85%, FPR <2% on 30-day holdout (independently evaluated by SMESec ML team) · Gate 2 — LLM DLP: Critical PII >99%, FP <5% · Shadow AI classification >95% on top-100 tools · Hive API live | 4 providers unified · Track 2: Gates 1 & 2 accuracy report |
 | **S6** (W11–12) | **🏁 MVP**: Automated offboarding <5 min (Step Functions) + **grace period 30 min configurable (emergency=0) + rollback 24h + idempotency key [R-C1]**, 2 incident playbooks (wizard UI), immutable audit log (envelope encrypted), mobile app beta | DLP extension v0.3 tested vs real ChatGPT/Gemini (staging) · `ThreatDetectionEvent` schema v1 draft · Track 2 Phase 1 retrospective | Offboarding timed test <5 min in CI · grace period/rollback tests pass · Track 2: DLP confirmed end-to-end in staging |
 
-**MVP = "Can you revoke all access for a departing employee in 5 minutes?"**
+**Commercial v1 (W18/M4.5) = Track 1 only. Stripe Starter ($399/mo) billing live. "Can you revoke all access for a departing employee in 5 minutes?" — and charge for it.**
 
-#### Phase 2: MVP → v1 (S7–S13, Month 4–6)
+> **S7–S9 additions (beyond original S6 scope):** S7 = Slack basic + pilot onboarding (3+ customers). S8 = Stripe billing integration + compliance audit log polish. S9 = hardening + commercial launch gate (0 Critical/High pentest findings from initial scan).
+
+#### Phase 2: Commercial v1 → Full v1 (S10–S20, Month 5–9.75) — 7→9 FTE, Track 2 R&D Begins
 
 | Sprint | Track 1 | Track 2 | Gate |
 |---|---|---|---|
-| **S7** | JIT access + auto-revoke, access reviews | Shadow AI governance v1 on live OAuth data (ML Eng has 3 months of R&D to work from) | Vanta evidence collection active |
-| **S8** | Playbook engine (Step Functions), 3 playbooks | LLM DLP browser extension v1 (Presidio + Tier 2 BERT local inference) | Extension detects PII in text field |
-| **S9** | 5 playbooks complete, mobile push notifications | Shadow AI governance v1: AI tool classification + risk scores + attestation workflow | Shadow AI risk scores live |
-| **S10** | ISO 27001 + SOC 2 compliance dashboard, Vanta integration | Deepfake defense POC (Hive API), `ThreatDetectionEvent` schema v1 **frozen** | Schema locked — no breaking changes |
-| **S11** | Compliance reports (PDF export), GDPR automation | T1-T2 integration: AI threat events → EventBridge → Step Functions playbook auto-trigger | **Highest-risk sprint** — Tech Lead full-time |
-| **S12** | SaaS dependency map, penetration test remediation (all Critical/High) | Full T1-T2 end-to-end integration test (automated), Chrome Web Store submission | Pentest: 0 Critical/High open |
-| **S13** | **🏁 v1**: Production launch, 5+ pilot customers, SOC 2 Type 1 audit engagement signed | Track 2 features: Shadow AI + LLM DLP extension in v1 | No new features — hardening only |
+| **S10** | JIT access + auto-revoke, access reviews · Vanta setup W20 | ML Eng #1 + Flutter Eng onboard M5 — Shadow AI R&D on live OAuth data | Vanta evidence active W20 |
+| **S11** | Playbook engine (Step Functions), 3 playbooks | LLM DLP browser extension v0.1 (Presidio + Tier 2 BERT local inference) | Extension detects PII in text field |
+| **S12** | 5 playbooks complete, mobile push notifications | Shadow AI governance v1: AI tool classification + risk scores + attestation | Shadow AI >95% accuracy gate |
+| **S13** | ISO 27001 + SOC 2 compliance dashboard, Vanta integration | Deepfake defense POC (Hive API), `ThreatDetectionEvent` schema v1 **frozen** | Schema locked — no breaking changes |
+| **S14** | Compliance reports (PDF export), GDPR automation · **Pentest begins W27** | T1-T2 integration: AI threat events → EventBridge → Step Functions | Pentest LOI signed W21 (hard deadline) |
+| **S15** | **Pentest Remediation #1** — Critical/High findings | T1-T2 integration testing | Critical/High findings fixed |
+| **S16** | **Pentest Remediation #2** — retest + Vanta dry run | Full T1-T2 end-to-end integration test (automated) | 0 Critical/High open |
+| **S17** | SaaS dependency map · Vanta >90% pass rate | Shadow AI policy enforcement mode | Vanta evidence dry run ✅ |
+| **S18** | **Chrome Extension submit to Web Store** | Extension full version submitted | 2-week review buffer |
+| **S19** | Store review buffer · hardening | Track 2 hardening | Extension approved or fallback plan |
+| **S20** | **🏁 v1 FULL LAUNCH (W39)**: Production, 5+ paying customers, SOC 2 Type 1 signed | Shadow AI + LLM DLP in v1 | No new features — hardening only |
 
-**v1 gate:** All 7 key requirements delivered. 5+ customers on production. SOC 2 Type 1 audit scheduled.
+**v1 gate (W39/M9.75):** All 7 key requirements delivered. 5+ paying customers on production. SOC 2 Type 1 audit scheduled.
 
-#### Phase 3 & 4: v1 → v1.5 → v2 (S14–S26, Month 7–12)
+#### Phase 3 & 4: v1 → v1.5 → v2 (S21–S39, Month 10–19.5)
 
 | Milestone | Month | Key Additions |
 |---|---|---|
-| **v1.5** (W38) | 9 | AWS deep integration (CloudTrail), deepfake v2 + AI phishing (M365 Defender), browser extension on Chrome Web Store, pricing tiers enforced, Stripe billing live, 10+ paying customers |
-| **v2** (W52) | 12 | SOC 2 Type 2 ✅ · ISO 27001 ✅ · BERT prompt injection (TPR >85%, FPR <2%) · Enterprise tier (SIEM, custom RBAC, dedicated CSM) · All Track 2 features graduate from beta |
+| **v1.5** (W57) | 14.25 | AWS deep integration (CloudTrail), deepfake v2 + AI phishing (M365 Defender), browser extension on Chrome Web Store, Growth/Business pricing tiers enforced, Stripe billing live, 10+ paying customers |
+| **v2** (W78) | 19.5 | SOC 2 Type 2 ✅ · ISO 27001 ✅ · BERT prompt injection (TPR >85%, FPR <2%) · Enterprise tier (SIEM, custom RBAC, dedicated CSM) · All Track 2 features graduate from beta |
 
 ### 3.3 Key Requirements Coverage
 
 | Requirement | Milestone | Sprint | Notes |
 |---|---|---|---|
-| **Asset inventory & classification** | v1 (T6) | S2–S4 core | Google+M365 at MVP. Slack+AWS at S5. Shadow AI detection (Track 2) at S9. |
-| **AI-specific threat surface** | v1 (T6) | S7–S11 (Track 2) | Shadow AI governance S9. LLM DLP S8–S9. Deepfake defense + prompt injection S11. |
-| **Access governance** | v1 (T6) | S5–S7 | RBAC S5. Offboarding S6 (MVP). JIT access S7. Shadow IT remediation S9. |
-| **Continuous compliance posture** | v1 report-ready (T6) | S10–S11 | SOC 2 Type 1 + ISO 27001 reportable at v1. Certification audit at v2 (Month 12). |
-| **Incident playbooks** | v1 (T6) | S6 (2), S8–S9 (5 total) | 5 playbooks, AWS Step Functions, wizard UI for non-security staff. |
-| **Cost model (tiered pricing)** | v1.5 billing live (T9) | S13 code-ready; S18 Stripe | Starter ($399/mo) · Growth ($799/mo) · Business ($1,499/mo) · Enterprise (custom). |
-| **SME tool integrations** | v1 (T6) | S2–S5 | Google Workspace + M365 at MVP. Slack + AWS at S5. QuickBooks deferred to v2. |
+| **Asset inventory & classification** | v1 full (M9.75) | S2–S4 core | Google+M365 at commercial v1 (M4.5). Slack+AWS at S5. Shadow AI detection (Track 2) added in Phase 2. |
+| **AI-specific threat surface** | v1 full (M9.75) | Phase 2 S10–S19 | Shadow AI governance, LLM DLP, deepfake defense + prompt injection all delivered in Phase 2. |
+| **Access governance** | commercial v1 (M4.5) | S5–S10 | RBAC + offboarding at commercial v1 (M4.5). JIT access + access reviews in Phase 2 (S10). |
+| **Continuous compliance posture** | v1 report-ready (M9.75) | Phase 2 S13–S20 | SOC 2 Type 1 + ISO 27001 reportable at v1. Certification at v2 (M19.5). |
+| **Incident playbooks** | commercial v1 (M4.5) → full v1 (M9.75) | S6 (3 playbooks); Phase 2 (5 total) | 3 playbooks at commercial v1. 5 playbooks complete in Phase 2 (S11–S12). |
+| **Cost model (tiered pricing)** | Starter live commercial v1 (M4.5); Growth/Business v1.5 (M14.25) | S8–S9 Stripe Starter; Phase 3 tiers | Starter ($399/mo) billing live M4.5 · Growth ($799/mo) + Business ($1,499/mo) at v1.5 (M14.25) · Enterprise (custom) at v2. |
+| **SME tool integrations** | v1 full (M9.75) | S2–S5 + Phase 2 | Google Workspace + M365 at commercial v1. Slack at S5. AWS IAM in Phase 2. QuickBooks deferred to v2. |
 
 ### 3.4 Riskiest Assumption to Validate First
 
@@ -287,7 +296,7 @@ Four contractual, architecturally-enforced commitments:
 | # | Risk | Phase | Probability | Impact | Mitigation |
 |---|---|---|---|---|---|
 | 1 | OAuth wizard >30 min for non-technical IT admin | MVP | High | Critical | Usability test W4. IT admin setup guide. Minimum-permission scope explainer. |
-| 2 | ML Engineer #1 not hired before project kick-off | Pre-start | High | Critical | **Must be hired before Day 1. No project start without ML Eng #1.** Recruiting begins during founding phase. |
+| 2 | ML Engineer #1 not hired by Month 5 (Phase 2 start) | Phase 2 | Medium | High | Recruiting begins M3. Must be productive by M5 when Track 2 R&D starts. 3-month delay vs original — reduces pressure vs Day-1 hire requirement. |
 | 3 | Track 1–Track 2 integration at S11 delayed >1 sprint | Phase 2 | High | High | Tech Lead full-time S11. API contract frozen S10. Fallback: manual playbook trigger for v1. |
 | 4 | Pentest vendor LOI not signed before W14 | Phase 2 | Low | High | PM locks calendar W8. Backup vendor list ready. Hard deadline: no extensions. |
 | 5 | SOC 2 Type 2 evidence gap at Month 9 review | Phase 3 | Low | High | Vanta weekly review from W13. PM owns Vanta. Zero-gap policy from W22 onward. |
@@ -453,19 +462,23 @@ Employee uploads ≤60 second audio clip → Hive Moderation API analyzes (audio
 ## Appendix: Compliance Certification Timeline
 
 ```
-Month 3  (W12): Vanta provisioned, compliance evidence collection begins (silent)
-Month 4  (W13): Vanta active — SOC 2 control mapping starts
-Month 5  (W21): Penetration test begins (vendor LOI signed W14)
-Month 6  (W26): v1 LAUNCH → SOC 2 Type 1 audit engagement signed
-Month 7  (W27): ISO 27001 gap analysis begins
-Month 8  (W33): ISO 27001 Stage 1 audit (documentation review)
-Month 9  (W38): v1.5 LAUNCH → SOC 2 Type 2 evidence running since W26
-Month 10 (W41): ISO 27001 Stage 2 audit (implementation review)
-Month 11 (W46): SOC 2 Type 2 audit fieldwork
-Month 12 (W52): v2 LAUNCH → SOC 2 Type 2 ✅ + ISO 27001 ✅ both certified
+Month 4.5  (W18): Commercial v1 LAUNCH — Vanta account setup, evidence collection begins
+Month 5    (W20): Vanta OFFICIALLY active — SOC 2 control mapping begins
+Month 5.25 (W21): Penetration test vendor LOI signed (HARD DEADLINE)
+Month 7    (W27): Penetration test begins
+Month 9.75 (W39): v1 FULL LAUNCH
+                  → SOC 2 Type 1 audit engagement signed
+                  → Evidence window W20→W39 = ~19 weeks (sufficient for Type 1)
+Month 10.5 (W42): ISO 27001 gap analysis begins
+Month 12   (W48): ISO 27001 Stage 1 audit (documentation review)
+Month 14.25(W57): v1.5 LAUNCH → SOC 2 Type 2 evidence accumulating since W39
+Month 15   (W60): ISO 27001 Stage 2 audit (implementation review)
+Month 17   (W68): SOC 2 Type 2 audit fieldwork begins
+                  → Evidence window W39→W68 = 29 weeks ✅ (exceeds 24-week minimum by 5 weeks)
+Month 19.5 (W78): v2 LAUNCH → SOC 2 Type 2 ✅ + ISO 27001 ✅ both certified
 ```
 
-**Note:** SOC 2 Type 2 requires a minimum 6-month observation window. Evidence collection **must start no later than W26** (v1 production launch date) to complete audit by W52. Starting W13 provides a 10-week buffer over the minimum.
+**Note:** SOC 2 Type 2 requires a minimum 6-month (24-week) observation window. Evidence window W39→W68 = **29 weeks** — provides a 5-week buffer above the minimum, significantly safer than the original plan (26-week window with no buffer).
 
 ---
 
@@ -500,7 +513,7 @@ Month 12 (W52): v2 LAUNCH → SOC 2 Type 2 ✅ + ISO 27001 ✅ both certified
 
 | Item | Target | Notes |
 |---|---|---|
-| **EU deepfake (Module D1)** | Month 15–18 | Voice biometric = GDPR Article 9 special category data. Requires independent legal opinion + explicit employee consent mechanism before EU deployment. Commission legal review by Month 6 (alongside EU v1 launch). UK/AU ship at v2; EU ships only after legal clearance. |
+| **EU deepfake (Module D1)** | Month 15–18 | Voice biometric = GDPR Article 9 special category data. Requires independent legal opinion + explicit employee consent mechanism before EU deployment. Commission legal review by Month 10 (ahead of v1.5 EU launch). UK/AU ship at v2; EU ships only after legal clearance. |
 | **EU AI Act compliance** | Month 15–18 | If SMESec's threat detection features are classified as "high-risk AI" under EU AI Act (Annex III) for EU Enterprise customers: conformity assessment, technical documentation, human oversight controls, and registration in EU database required. Engage specialist counsel by Month 10. |
 | **QuickBooks / accounting integrations** | Month 14–18 | Deferred from v2. For SMEs with finance teams: invoice fraud detection + payment authorization anomaly detection (complements deepfake defense). Requires separate PCI DSS scoping analysis. |
 | **MSSP / white-label product** | Month 15+ | v2 ships foundation (multi-tenant Enterprise, SIEM integration). Post-v2: white-label UI, MSP management console, usage-based billing API, partner portal. MSP partner program seeded from Month 1 (BD Consultant) — product must be ready when first MSSP deal closes. |

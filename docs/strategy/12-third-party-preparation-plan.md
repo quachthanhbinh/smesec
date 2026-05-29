@@ -9,6 +9,7 @@
 
 ## ⚠️ Timeline Context
 
+
 This document covers **all three delivery timeline scenarios**. Lead times are ABSOLUTE (e.g., Google verification = 2-4 weeks regardless of plan). Start dates are RELATIVE to the chosen plan.
 
 | Plan | MVP | v1 | v1.5 | v2 | ML Eng #1 Joins | Best For |

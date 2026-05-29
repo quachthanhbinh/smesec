@@ -1,3 +1,6 @@
+---
+
+*This document is a living reference. All technology descriptions, rationale, and trade-offs are in English. References to delivery plan versions, integration dependencies, and compliance requirements are up to date and synchronized with the latest plans. Last updated: 2026-05-29.*
 # SMESec Platform — Tech Stack Deep Dive
 
 **Date:** 2026-05-29

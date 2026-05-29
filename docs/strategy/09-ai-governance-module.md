@@ -1,37 +1,30 @@
+
 # SMESec — AI Governance Module
 
-> **Language note:** This document is written in Vietnamese (target audience: Vietnamese-speaking stakeholders). For the English-language summary of the same content, see [design-document.md § AI Governance Module](design-document.md#6-ai-governance-module).
->
-> **Summary (English):** This module details SMESec's approach to detecting and governing employee use of external AI tools (e.g., ChatGPT, GitHub Copilot). It covers: (1) a 3-layer control framework (detect → govern → respond), (2) six specific modules — AI Submission Gate (browser DLP), Prompt Injection Detection, Shadow AI Governance, Deepfake Fraud Defense, AI Phishing Defense, and Employee Privacy transparency — (3) zero-knowledge DLP architecture (local Presidio WASM, no content leaves the browser), and (4) build/buy decisions per component. The delivery sequence aligns with the 13-sprint roadmap in [04-delivery-plan-original.md](04-delivery-plan-original.md) (Track 2, Sprints 4–11).
+**Date:** 2026-05-28  
+**Version:** 1.0  
+**Status:** Approved  
+**Source:** Multi-agent research synthesis (Product Owner × Technical Advisor × Project Manager × 4 iterations)  
+**Original Deliverable:** Topic.md #4 — "Detail your approach to detecting and governing employee use of external AI tools (e.g., ChatGPT, Copilot) and the risks this introduces."  
+**Related:** [02-design-document.md](02-design-document.md) · [01-system-architecture.md](01-system-architecture.md) · [04-delivery-plan-original.md](04-delivery-plan-original.md)
 
 ---
 
-# SMESec — AI Governance Module: Phân Tích Chuyên Sâu
+## Table of Contents
 
-**Ngày tạo:** 2026-05-28  
-**Phiên bản:** 1.0  
-**Trạng thái:** Approved  
-**Nguồn:** Multi-agent research synthesis (Product Owner × Technical Advisor × Project Manager × 4 iterations)  
-**Deliverable gốc:** Topic.md #4 — "Detail your approach to detecting and governing employee use of external AI tools (e.g., ChatGPT, Copilot) and the risks this introduces."  
-**Liên quan:** [02-design-document.md](02-design-document.md) · [01-system-architecture.md](01-system-architecture.md) · [04-delivery-plan-original.md](04-delivery-plan-original.md)
-
----
-
-## Mục Lục
-
-1. [Bối Cảnh & Mức Độ Khẩn Cấp](#1-bối-cảnh--mức-độ-khẩn-cấp)
-2. [Phân Tích Thị Trường & Khoảng Trống Giải Pháp](#2-phân-tích-thị-trường--khoảng-trống-giải-pháp)
-3. [Threat Model: 8 Rủi Ro AI SME Phải Đối Mặt](#3-threat-model-8-rủi-ro-ai-sme-phải-đối-mặt)
-4. [AI Governance Framework: 3 Tầng Kiểm Soát](#4-ai-governance-framework-3-tầng-kiểm-soát)
+1. [Background & Urgency](#1-background--urgency)
+2. [Market Analysis & Solution Gaps](#2-market-analysis--solution-gaps)
+3. [Threat Model: 8 AI Risks for SMEs](#3-threat-model-8-ai-risks-for-smes)
+4. [AI Governance Framework: 3-Layer Controls](#4-ai-governance-framework-3-layer-controls)
 5. [Module A — AI Submission Gate (Browser DLP)](#5-module-a--ai-submission-gate-browser-dlp)
 6. [Module B — Prompt Injection Detection Engine](#6-module-b--prompt-injection-detection-engine)
 7. [Module C — Shadow AI Governance](#7-module-c--shadow-ai-governance)
 8. [Module D — Deepfake Fraud Defense](#8-module-d--deepfake-fraud-defense)
 9. [Module E — AI Phishing Defense](#9-module-e--ai-phishing-defense)
 10. [Module F — Employee Privacy & Transparency](#10-module-f--employee-privacy--transparency)
-11. [Kiến Trúc Kỹ Thuật: Zero-Knowledge DLP](#11-kiến-trúc-kỹ-thuật-zero-knowledge-dlp)
-12. [Build vs Buy: Quyết Định Từng Component](#12-build-vs-buy-quyết-định-từng-component)
-13. [Risk Register: 7 Rủi Ro Triển Khai Chính](#13-risk-register-7-rủi-ro-triển-khai-chính)
+11. [Technical Architecture: Zero-Knowledge DLP](#11-technical-architecture-zero-knowledge-dlp)
+12. [Build vs Buy: Component Decisions](#12-build-vs-buy-component-decisions)
+13. [Risk Register: 7 Key Implementation Risks](#13-risk-register-7-key-implementation-risks)
 14. [Delivery Sequence: 13-Sprint Roadmap](#14-delivery-sequence-13-sprint-roadmap)
 15. [Key Performance Indicators](#15-key-performance-indicators)
 16. [Open Questions & Hard Gates](#16-open-questions--hard-gates)
