@@ -134,7 +134,7 @@ Team:   1  1  1  2  3  3  4  5  5  5  6  6  7  7  8  8  8  8  8  8  9  9  9  9  
 
 | Milestone | Month | Team Size | Description | Delay vs 2x Plan |
 |-----------|-------|-----------|-------------|------------------|
-| **Infrastructure** | M3 | 1 FTE | AWS, Keycloak, CI/CD, multi-tenant schema | +2 months |
+| **Infrastructure** | M3 | 1 FTE | AWS (VPC, ECS, RDS + RDS Proxy, Redis r6g.large), 50 GCP projects, Keycloak (4 ECS tasks), CI/CD, multi-tenant schema (`gcp_project_id`, `shard_id`, `renewal_bucket` from day 1) | +2 months |
 | **Foundation** | M6 | 3 FTE | Google/M365 sync, basic dashboard | +3 months |
 | **MVP** | M12 | 6 FTE | Asset inventory + offboarding + shadow IT | +6 months |
 | **v1** | M20 | 8 FTE | All key requirements, SOC 2 Type 1 | +7 months |
@@ -188,16 +188,18 @@ Team:   1  1  1  2  3  3  4  5  5  5  6  6  7  7  8  8  8  8  8  8  9  9  9  9  
 **Team:** Tech Lead (1 FTE)
 
 **TL Activities:**
-- **Week 1-4:** AWS infrastructure (VPC, ECS, RDS, S3 Object Lock)
-- **Week 5-8:** Keycloak setup, multi-tenant schema, RLS policies
-- **Week 9-12:** CI/CD pipeline, basic integration skeleton
+- **Week 1-4:** AWS infrastructure (VPC, ECS, RDS + **RDS Proxy mandatory**, Redis **r6g.large**, S3 Object Lock) + **50 GCP projects provisioned** (Terraform)
+- **Week 5-8:** Keycloak setup (4 ECS tasks), multi-tenant schema (`tenant_id`, `data_residency`, **`gcp_project_id`**, **`shard_id`** on `tenant_config`), RLS policies, **batch secrets schema** (1 JSON/tenant), M365 webhook schema
+- **Week 9-12:** CI/CD pipeline, **bounded sync worker pool scaffold** (200-worker pool, job queue), basic integration skeleton
 
 **Parallel:** Recruiting BE1, BE2, FE1 (3 roles in parallel)
 
 **Deliverables:**
-- Deployable infrastructure
-- Multi-tenant database schema
-- Keycloak SSO working
+- Deployable infrastructure (RDS Proxy + Redis r6g.large provisioned for 1K tenant capacity)
+- Multi-tenant database schema (`gcp_project_id`, `shard_id`, `renewal_bucket` columns from day 1)
+- 50 GCP projects provisioned (Terraform), each with dedicated service account
+- Bounded sync worker pool (200-worker) scaffold ready for Google/M365 sync
+- Keycloak SSO working (4 ECS tasks, HA)
 - CI/CD green
 
 **Risks:**

@@ -102,8 +102,8 @@ Month 20–26 (Phase 4):             + Compliance Consultant (contract)
 
 | Sprint | Week | Focus | Key Deliverables | Utilization |
 |--------|------|-------|------------------|-------------|
-| **S1** | W1–2 | Infrastructure Foundation | AWS VPC, ECS, RDS, CI/CD, multi-tenant schema | 50% |
-| **S2** | W3–4 | Auth + Security | Keycloak HA, JWT JWKS caching, RLS policies | 55% |
+| **S1** | W1–2 | Infrastructure Foundation | AWS VPC, ECS, RDS + **RDS Proxy**, Redis **r6g.large**, CI/CD, multi-tenant schema (`tenant_id`, `data_residency`, **`gcp_project_id`**, **`shard_id`** on `tenant_config`), M365 webhook schema, **50 GCP projects provisioned**, **bounded sync worker pool (200 workers)**, **batch secrets schema** | 55% |
+| **S2** | W3–4 | Auth + Security | Keycloak HA (4 ECS tasks), JWT JWKS caching, RLS policies, WAF, GCP project assignment logic in SyncScheduler | 55% |
 | **S3** | W5–6 | Google Workspace Sync | User/OAuth sync, dashboard skeleton | 60% |
 | **S4** | W7–8 | M365 Sync | M365 delta link, webhook renewal | 60% |
 | **S5** | W9–10 | Dashboard + Classification | Unified dashboard, asset classification | 55% |

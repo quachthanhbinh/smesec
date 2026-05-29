@@ -340,7 +340,7 @@ Async Flow:
 
 | Provider | Protocol | Data Collected | Write Operations | Sync Frequency |
 |---|---|---|---|---|
-| **Google Workspace** | OAuth 2.0 (Admin SDK) | Users, Groups, OAuth Apps, Devices, Audit Logs | Disable user, Revoke OAuth, Suspend account | 15-min delta via Workspace Events API. **⚠️ R-C2:** Quota = 1,500 req/100s per GCP project (shared). At 50+ tenants, must distribute sync across window + use per-cluster GCP service accounts (20 tenants/project). Aggregate monitoring required. **⚠️ Lead time:** 2-4 weeks (OAuth consent screen verification). Must submit Week -3. See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Gate 1. |
+| **Google Workspace** | OAuth 2.0 (Admin SDK) | Users, Groups, OAuth Apps, Devices, Audit Logs | Disable user, Revoke OAuth, Suspend account | 15-min delta via Workspace Events API. **⚠️ R-C2 (Sprint 1 mandatory):** Quota = 1,500 req/100s per GCP project. v1 targets 1K tenants — requires 50 GCP projects (1K / 20 tenants per project). GCP project pool provisioned in Sprint 1; `gcp_project_id` in `tenant_config` schema from day 1. SyncScheduler assigns tenants to projects at onboarding. Quota monitoring per project: alert at 80% utilization. **⚠️ Lead time:** 2-4 weeks (OAuth consent screen verification). Must submit Week -3. See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Gate 1. |
 | **Microsoft 365** | OAuth 2.0 (Graph API) | Users, Groups, OAuth Apps, Devices, SignIn Logs | Disable user, Revoke sessions, Block signin | 15-min delta via Delta Link + Webhooks. **⚠️ R-C3:** Webhook subscriptions expire every **3 days** — renewal job mandatory. 410 Gone → full delta sync fallback. Renewal failure → DLQ + alert + polling mode. **⚠️ Lead time:** 3-6 weeks (publisher verification). Must submit Week -3. See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Gate 2. |
 | Slack | OAuth 2.0 (Admin API) | Users, Channels, OAuth Apps, Audit Logs | Deactivate user (**Business+ only** — Free/Pro tiers: read-only, offboarding not supported; UI must show tier warning) | 15-min poll + Events API webhooks. **⚠️ Lead time:** 1-2 weeks (Admin API access approval). Submit Week 1. See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Category B. |
 | **AWS IAM** | AWS SDK (assumed role) | Users, Roles, Policies, Access Keys, CloudTrail | Disable access key, Remove policy (dry-run first) | 30-min full pull. **Lead time:** <1 week (customer self-service setup). See [3rd-party-integration-principles.md](../strategy/3rd-party-integration-principles.md) Category C. |
@@ -648,7 +648,7 @@ Keycloak Ops Runbook (required before v1 launch):
   - Owner: DevSecOps FTE (converted from contract at M3, not M7)
 
 Alternative considered for v1 (if DevSecOps capacity is insufficient):
-  WorkOS or Auth0 as managed alternative (~$500-1,000/mo at 50 customers)
+  WorkOS or Auth0 as managed alternative (~$500-1,000/mo at early stage; ~$115K+/mo at 1K tenants — not viable long-term)
   Trade-off: operational simplicity vs cost
   Decision: revisit at v1 launch — if Keycloak ops proves too costly in engineer time,
   migrate to WorkOS before v1.5

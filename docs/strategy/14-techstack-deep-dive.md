@@ -289,7 +289,7 @@ Keycloak is an open-source Identity and Access Management (IAM) solution by Red 
 - Admin UI complexity can slow onboarding for engineers new to Keycloak
 
 **Trade-offs:**
-- Keycloak vs Auth0/WorkOS: At small scale (<1,000 users), Auth0 is operationally simpler. At SMESec's projected scale (50 tenants × 200 users = 10,000 MAU), Keycloak saves ~$25K/yr. The operational cost of running Keycloak is ~1 engineer-day/quarter. The math strongly favors Keycloak.
+- Keycloak vs Auth0/WorkOS: At SMESec's v1 target (1K tenants × 200 users = 200K MAU), Keycloak saves ~$500K+/yr vs Auth0 (200K MAU × $0.23/MAU × 12 = $552K/yr). The operational cost of running Keycloak is ~1 engineer-day/quarter. The math decisively favors Keycloak at 1K+ tenants.
 - Fallback decision point: If DevSecOps capacity is insufficient at v1 launch, re-evaluate WorkOS (~$500-1,000/mo) before v1.5.
 
 **SA likely asks:** *"What happens if Keycloak goes down?"*
@@ -334,7 +334,7 @@ SET LOCAL app.tenant_id = '<uuid>';
 
 **Trade-offs:**
 - PostgreSQL vs DynamoDB: DynamoDB has no RLS concept — tenant isolation must be fully implemented in application code. That's a single point of failure. PostgreSQL RLS provides a second isolation layer. For a security product, this extra safety is worth the operational complexity.
-- Shared DB + RLS vs separate DB per tenant: Separate DB costs ~$100/mo per tenant at RDS pricing. At 50 tenants = $5,000/mo vs ~$200/mo for shared Multi-AZ RDS. Shared + RLS wins at SME scale.
+- Shared DB + RLS vs separate DB per tenant: Separate DB costs ~$100/mo per tenant at RDS pricing. At 1K tenants = $100K/mo vs ~$500/mo for shared Multi-AZ RDS + RDS Proxy. Shared + RLS wins decisively — a 200× cost penalty for silo architecture.
 
 **SA likely asks:** *"How do you prevent RLS bypass?"*
 Answer: (1) `FORCE ROW LEVEL SECURITY` applies even to table owners. (2) The app connects as `app_role`, not a superuser. (3) CI tests assert cross-tenant isolation on every PR. (4) `data_residency` column enforces EU data never goes to US-region queries.
@@ -488,7 +488,7 @@ Hive Moderation is an AI API provider specializing in content moderation. Their 
 - Resemblyzer (open-source, ~78-82% voice deepfake accuracy) used as fallback until Hive contract signed, and as permanent fallback if Hive becomes unavailable. DeepfakeDetector abstraction interface defined in Week 1 to allow hot-swap.
 
 **Trade-offs:**
-- Build vs Buy: Building a custom deepfake detection model requires a dedicated ML research team (6-12 months to match Hive accuracy). At SME pricing ($0.01/check × 1,000 checks/mo × 50 customers = $500/mo), Buy is unambiguously correct.
+- Build vs Buy: Building a custom deepfake detection model requires a dedicated ML research team (6-12 months to match Hive accuracy). At v1 target ($0.01/check × 1,000 checks/mo × 1K customers = $10,000/mo), Buy is unambiguously correct vs a $6-12M build cost.
 
 ---
 
@@ -501,7 +501,7 @@ Lakera Guard is an AI security API that detects prompt injection attacks — att
 - Production-validated: Covers known injection patterns + novel variants via continuous red-team updates
 - Accuracy: TPR >85%, FPR <2% (validated targets)
 - Lead time only 1-2 weeks
-- ~$50/mo at 50K daily checks (50 customers × 1K checks/day)
+- ~$1,000/mo at 1K tenants (rate-capped per tenant). Starter plan uses WASM-only fallback ($0 Lakera cost); Lakera enabled only on Growth+ plans. At uncapped full usage (1K checks/day/tenant), cost would reach ~$30K/mo — rate cap is a mandatory cost control.
 
 **Pricing hard gate:**
 - Target: <$0.05/request
@@ -664,7 +664,7 @@ Cloudflare R2 is an S3-compatible object storage service. Key differentiator: **
 - Cloudflare's network reduces latency for European customers (EU data residency)
 
 **Pros:**
-- Zero egress fees (saves ~$50-200/mo vs S3 at 50 customers)
+- Zero egress fees (meaningful savings vs S3 at scale — R2 zero egress vs S3 $0.09/GB)
 - S3-compatible (drop-in replacement)
 - Global network (Cloudflare has more edge locations than AWS)
 
@@ -674,7 +674,7 @@ Cloudflare R2 is an S3-compatible object storage service. Key differentiator: **
 - Adds a second storage vendor (small operational complexity)
 
 **Trade-offs:**
-- Cloudflare R2 vs AWS S3 only: Using only S3 simplifies operations but adds egress cost. At 50 customers with regular report downloads, R2 saves ~$50-200/mo. Worth maintaining R2 for static assets and extension distribution.
+- Cloudflare R2 vs AWS S3 only: Using only S3 simplifies operations but adds egress cost. For regular report downloads at scale, R2 zero-egress saves $100-500/mo. Worth maintaining R2 for static assets and extension distribution.
 
 ---
 
@@ -720,7 +720,7 @@ If budget allows post-v1, Datadog APM would add distributed tracing (critical fo
 
 | Approach | Description | Decision |
 |----------|-------------|----------|
-| **Silo** (DB per tenant) | Each tenant has its own RDS instance | ❌ ~$100/mo per tenant; 50 tenants = $5,000/mo |
+| **Silo** (DB per tenant) | Each tenant has its own RDS instance | ❌ ~$100/mo per tenant; 1K tenants = $100K/mo |
 | **Shared Schema, App isolation** | One DB, app code filters by tenant_id | ❌ Single bug = data breach |
 | **Shared Schema, DB-level RLS** | PostgreSQL RLS enforces isolation | ✅ Defense-in-depth |
 
@@ -786,7 +786,7 @@ Microsoft Presidio is an open-source PII detection library. In the browser exten
 | **DynamoDB** | No Row-Level Security concept; tenant isolation fully in application code = single point of failure for data breach |
 | **MongoDB** | No RLS; weaker consistency guarantees for compliance evidence; PostgreSQL JSONB handles flexible metadata natively |
 | **Kafka / MSK** | ~$500/mo for MSK + operational complexity; EventBridge at near-zero cost handles SMESec's event volumes. Revisit at >1M events/day |
-| **Silo DB per tenant** | ~$5,000/mo at 50 tenants (vs ~$200/mo shared RDS). Not viable for SME pricing tier |
+| **Silo DB per tenant** | ~$100/mo per tenant; 1K tenants = $100K/mo (vs ~$500/mo shared RDS + RDS Proxy). 200× cost penalty — not viable for SME pricing tier |
 | **Lambda for sync workers** | 15-minute execution limit; sync workers run for hours. ECS Fargate is appropriate for long-running workloads |
 | **Vue.js / SvelteKit** | React ecosystem depth (component libraries, talent pool, shadcn/ui) outweighs framework elegance at v1 speed |
 | **React Native** | JS bridge latency vs Flutter's direct GPU rendering. Flutter more reliable for biometric auth and real-time security alerts |
@@ -839,8 +839,8 @@ A: No. This is a hard architectural guarantee, not a policy: ML models are train
 
 ### Scalability
 
-**Q: What is the bottleneck at 500 customers?**
-A: Integration Sync service is the likely bottleneck: 500 tenants × 4 providers = 2,000 sync connections. Current design: dedicated sync worker goroutine per tenant. At 500 tenants, we'd need to migrate to a task-queue model (SQS → sync worker pool) to prevent goroutine explosion. This architectural change is planned for v2 (after v1 at 50 customers is validated).
+**Q: What is the bottleneck at 1K tenants?**
+A: Two components are critical and solved in Sprint 1: (1) **Google API quota** — breaks at ~70 tenants, 1K tenants requires 50 GCP projects provisioned from Sprint 1. (2) **RDS connections** — breaks at ~500 tenants, RDS Proxy mandatory in Sprint 1 (1K × 10 tasks × 4 connections = 40K >> 3,200 limit). Integration Sync service uses a bounded worker pool (200 max goroutines) from Sprint 1 to handle 384K sync jobs/day efficiently. The next bottleneck threshold is PostgreSQL at ~2,000 tenants (sharding), addressed in v1.5.
 
 **Q: Does your PostgreSQL RLS approach scale?**
 A: RLS adds a negligible overhead (~1-3ms per query in benchmarks). At 500 tenants with 10,000 assets each (5M rows), PostgreSQL with proper indexing on `(tenant_id, asset_type)` sustains >10,000 queries/second. Vertical scaling of RDS (r6g.2xlarge) handles 500 tenants comfortably. Horizontal read replicas for reporting queries. Physical DB per tenant becomes necessary only above ~10,000 tenants.
@@ -874,4 +874,4 @@ A: For v1, single AWS provides: (1) simpler compliance scope (all certifications
 | Backup Storage | Cloudflare R2 | ~$50/mo |
 | Observability | CloudWatch + GuardDuty + Security Hub | Included/minimal |
 | Local DLP | Presidio WASM | Free (open-source) |
-| **Total Infrastructure (v1, 50 customers)** | | **~$3,700/mo** |
+| **Total Infrastructure (v1, 1K tenants)** | | **~$6,500/mo** |

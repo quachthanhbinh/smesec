@@ -76,12 +76,14 @@ Risk assessments reference the **original 12-month plan**. For adjusted timeline
 **Mô tả:** Google Admin SDK quota: **1,500 requests/100s per project** (không phải per tenant — toàn bộ SMESec GCP project share quota này).
 
 ```
-50 tenants × 15-min sync × ~30 API calls/sync = 1,500 calls/15 phút
+v1 target: 1,000 tenants / 20 tenants per GCP project = 50 GCP projects required
+1 project: 20 tenants × 15-min sync × ~30 API calls/sync = 900 calls/15 phút (60% quota)
+→ Each GCP project handles 20 tenants safely within 1,500 req/100s quota.
 ```
 
-Đúng bằng ceiling, zero margin. Ở 100 tenants: **vượt liên tục.**
+Giải pháp: **GCP project pool bắt buộc từ Sprint 1.** 50 GCP projects, mỗi project 20 tenants, mỗi project có service account riêng. Không phải future concern — đây là thiết kế ngày 1 vì v1 target là 1K tenants.
 
-**Hậu quả:** Sync fails → stale inventory → offboarding trigger không fire → ex-employee vẫn có access. Đây là lý do cốt lõi khách hàng mua sản phẩm.
+**Hậu quả nếu không làm từ Sprint 1:** Sync fails → stale inventory → offboarding trigger không fire → ex-employee vẫn có access. Đây là lý do cốt lõi khách hàng mua sản phẩm.
 
 ---
 
@@ -501,7 +503,7 @@ type JWTValidator struct {
 // - RTO target: <2 min (ECS task replacement)
 ```
 
-**Alternative for v1:** Evaluate WorkOS or Auth0 as managed alternative. Cost: ~$500-1,000/mo at 50 customers (vs Keycloak $50/mo but requires dedicated ops). Trade-off: operational simplicity vs cost. Revisit at v2.
+**Alternative for v1:** Evaluate WorkOS or Auth0 as managed alternative. Cost: ~$500-1,000/mo at early stage (but scales to ~$115K+/mo at 1K tenants — not a long-term option). Keycloak self-hosted: $150/mo for 4 tasks. Trade-off: operational simplicity vs $500K+/yr cost at scale. Revisit at v2.
 
 ---
 

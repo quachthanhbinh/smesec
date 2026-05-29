@@ -122,6 +122,7 @@ Month 15–19.5 (Phase 4):           + Compliance Consultant (contract)
 
 #### Key Changes from Original:
 - Split S1 into S1a + S1b (infrastructure vs auth) — **now 4 weeks instead of 2**
+- **S1a expanded for 1K tenant target:** GCP project pool (50 projects), RDS Proxy, Redis r6g.large, bounded sync worker pool, and batch secrets schema are all Sprint 1 mandatory (not v2 concerns)
 - Add buffer sprint S7 for integration stabilization
 - Add buffer sprint S8 for pilot feedback
 - MVP moved from S6 (W12) to S9 (W18)
@@ -130,8 +131,8 @@ Month 15–19.5 (Phase 4):           + Compliance Consultant (contract)
 
 | Sprint | Week | Focus | Key Deliverables |
 |--------|------|-------|------------------|
-| **S1a** | W1–2 | Infrastructure Foundation | AWS VPC, ECS, RDS, CI/CD, M365 webhook schema, PgBouncer |
-| **S1b** | W3–4 | Auth + Security | Keycloak HA, JWT JWKS caching, RLS policies, WAF |
+| **S1a** | W1–2 | Infrastructure Foundation | AWS VPC, ECS, RDS + **RDS Proxy**, Redis **r6g.large**, CI/CD, M365 webhook schema (`subscription_registry` + `renewal_bucket`), **50 GCP projects provisioned**, `gcp_project_id`+`shard_id` in `tenant_config` schema, **batch secrets schema** (1 JSON/tenant), **bounded sync worker pool scaffold** (200-worker pool) |
+| **S1b** | W3–4 | Auth + Security | Keycloak HA (4 ECS tasks), JWT JWKS caching, RLS policies on all tables, WAF, GCP project assignment logic in SyncScheduler |
 | **S2** | W5–6 | Google Workspace Sync | User/OAuth sync, dashboard skeleton, shadow IT detection v1 |
 | **S3** | W7–8 | M365 Sync + Dashboard | M365 delta link, webhook renewal, unified dashboard |
 | **S4** | W9–10 | Classification + Alerts | Asset classification, OAuth risk scoring, mobile scaffold |

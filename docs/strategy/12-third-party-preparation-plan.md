@@ -180,7 +180,7 @@ Several 3rd-party integrations have **2-8 week lead times** from registration to
 | **What's needed** | Hive Moderation API key + rate limits confirmed + pricing tier selected |
 | **Lead time** | **1-2 weeks** (account approval + API key provisioning) |
 | **Blocks** | Sprint 10 (W19-20) — Deepfake detection is S10 deliverable (Track 2) |
-| **Cost** | Pay-per-use (~$0.01/check), estimated $200-500/mo at 50 customers |
+| **Cost** | Pay-per-use (~$0.01/check), estimated $1,000-2,000/mo at 1K tenants × ~100-200 checks/mo |
 | **Steps** | 1. Sign up for Hive Moderation (Day 1)<br>2. **Submit API access request** (Day 2) → **1-2 weeks wait**<br>3. Receive API key (Week 2)<br>4. Test voice/video analysis (W3)<br>5. Confirm rate limits + pricing (W3) |
 | **Risk if delayed** | S10 cannot integrate deepfake detection → Track 2 accuracy gate 4 delayed |
 | **Owner** | ML Engineer #1 (API integration) + PM (account setup) |
@@ -201,7 +201,7 @@ Several 3rd-party integrations have **2-8 week lead times** from registration to
 | **What's needed** | Lakera Guard API key + pricing confirmation + rate limits confirmed |
 | **Lead time** | **1-2 weeks** (account approval + API key provisioning) |
 | **Blocks** | Sprint 8 (W15-16) — Prompt injection detection is S8 deliverable (Track 2) |
-| **Cost** | ~$0.001/request, estimated $50-100/mo at 50 customers × 50K daily checks |
+| **Cost** | ~$0.001/request, estimated $500-1,000/mo at 1K tenants (rate-capped per tenant; Starter plan uses WASM-only = $0 Lakera cost). Confirm pricing viability and cap model in Sprint 1. |
 | **Steps** | 1. Sign up for Lakera Guard (Day 1)<br>2. **Submit API access request** (Day 2) → **1-2 weeks wait**<br>3. Receive API key (Week 2)<br>4. Test prompt injection detection (W3)<br>5. **Confirm pricing viability** (W3) → **Go/No-go decision by S1 end (W2)** |
 | **Risk if delayed** | S8 cannot integrate prompt injection detection → Track 2 feature delayed |
 | **Owner** | ML Engineer #1 (API integration) + PM (pricing negotiation) |

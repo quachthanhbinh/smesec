@@ -34,7 +34,7 @@ SMESec applies a deliberate **Hybrid Build/Buy** strategy: buy proven commodity 
 
 **Build:** Integration sync engine (Google Workspace + M365 + Slack + AWS IAM — rate limit handling, delta sync, shadow IT detection are the core differentiators), asset inventory and classification engine (no competitor detects shadow AI tools at SME pricing), browser extension DLP (local PII inference, tenant-scoped allow-list, privacy-preserving), incident playbook wizard (domain-specific UX for non-security staff), and all domain logic (Clean Architecture — domain is vendor-independent).
 
-**Why Hybrid wins:** Pure Buy = vendor lock-in to tools ill-suited for SMEs. Pure Build = 18+ months before product exists. Hybrid = v1 in 6 months with gross margin ~91% (infra costs $44K/yr vs $480K ARR at 50 customers).
+**Why Hybrid wins:** Pure Buy = vendor lock-in to tools ill-suited for SMEs. Pure Build = 18+ months before product exists. Hybrid = v1 in 6 months, infrastructure designed for 1K tenants from Sprint 1, gross margin ~99% at 1K tenant capacity ($9.6M ARR vs ~$70K/yr infra).
 
 ---
 
@@ -75,7 +75,7 @@ Four non-negotiable commitments:
 
 | Component | Decision | Detailed Rationale | Cost |
 |---|---|---|---|
-| **Authentication (SSO + MFA)** | **Buy: Keycloak (self-hosted ECS)** | OIDC/SAML 2.0, Google + M365 federation built-in. Zero per-user cost (vs Auth0 $0.23/MAU = $1,380/mo at 500 users/tenant × 10 tenants). Full control: custom MFA flows, branding, GDPR DPA. **⚠️ R-C6 requirements:** (1) Min 2 ECS tasks (active-active, not just multi-AZ placement); (2) JWKS caching mandatory — JWT validation must not depend on Keycloak uptime; (3) Keycloak DB separate from app DB. **Alternative (revisit at v1 launch):** If DevSecOps ops capacity is insufficient, evaluate WorkOS/Auth0 (~$500–1,000/mo) before v1.5. **Lead time:** <1 week (infrastructure setup). See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category C. | ~$50/mo (ECS only); WorkOS/Auth0 alt: ~$500–1,000/mo |
+| **Authentication (SSO + MFA)** | **Buy: Keycloak (self-hosted ECS)** | OIDC/SAML 2.0, Google + M365 federation built-in. Zero per-user cost ($150/mo for 4 ECS tasks) vs Auth0 $0.23/MAU = **~$115,000+/mo at v1 target scale (1K tenants × 500 users = 500K MAU)**. Saves ~$500K+/yr at 1K tenants. Full control: custom MFA flows, branding, GDPR DPA. **⚠️ R-C6 requirements:** (1) Min 2 ECS tasks (active-active, not just multi-AZ placement); (2) JWKS caching mandatory — JWT validation must not depend on Keycloak uptime; (3) Keycloak DB separate from app DB. **Alternative (revisit at v1 launch):** If DevSecOps ops capacity is insufficient, evaluate WorkOS/Auth0 (~$500–1,000/mo) before v1.5. **Lead time:** <1 week (infrastructure setup). See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category C. | ~$150/mo (ECS, 4 tasks); WorkOS/Auth0 alt: ~$500–1,000/mo |
 | **Compliance automation** | **Buy: Vanta (Startup plan)** | $4–6K/yr vs 3 months engineer time ($60K+ cost). AWS + GitHub + Cloudflare connectors native. Evidence collection 24/7. Auditor portal. SOC 2 Type 1 in 60 days. **Lead time:** 2-3 weeks (account setup + connector provisioning + initial evidence scan). Must start Week 8 for W13 evidence collection. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category A, Gate 5. | $4–6K/yr |
 | **Deepfake detection** | **Buy: Hive Moderation API** | Pay-per-use (<$0.01/check). No training data required. Vendor maintains model updates. Voice + Video. Only SME-accessible tool with a real-time API. **Lead time:** 1-2 weeks (account approval + API key provisioning). Submit Week 1 for S10 readiness. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category B. | ~$0.01/check |
 | **ML platform** | **Buy: AWS SageMaker** | Managed training jobs, endpoint auto-scaling, model registry, A/B testing. vs 6 months building custom MLOps infra. Drift monitoring built-in. | ~$200–500/mo |
@@ -86,7 +86,7 @@ Four non-negotiable commitments:
 | **Incident playbook engine** | **Build on Step Functions** | Step Functions = proven orchestration (retry, state, parallel). Build playbook logic + wizard UI. Domain-specific UX for non-security staff is the differentiator. | 2 engineers × 2 sprints |
 | **Audit logging** | **Build on S3 Object Lock** | S3 Object Lock = WORM compliance-ready at near-zero cost. No vendor to depend on for immutability. | ~$10–50/mo (storage) |
 | **AI phishing detection** | **Buy + Thin wrapper: M365 Defender / Google Workspace security** | Enterprise-grade phishing detection. SMESec adds: alert routing + playbook trigger + compliance evidence. No need to build ML classifier for known phishing. | Included in M365/Google subscription |
-| **Prompt injection detection** | **Buy: Lakera Guard API (v1)** | Production-validated (~$0.001/request). No training data required. Covers known injection patterns + novel variants. **Internal BERT target moved to Sprint 23–24 Enterprise-only evaluation** — not a v1 target. Gate: FPR <2% AND TPR >85% on 30-day production holdout before graduating from beta. **Lead time:** 1-2 weeks (account approval + API key). **Go/No-go decision Week 2 (S1 end):** Must confirm <$0.05/request viable. Submit Week 1 for S8 readiness. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category B, Gate 3. | ~$0.001/request; ~$50/mo at 50K daily checks |
+| **Prompt injection detection** | **Buy: Lakera Guard API (v1)** | Production-validated (~$0.001/request). No training data required. Covers known injection patterns + novel variants. **Internal BERT target moved to Sprint 23–24 Enterprise-only evaluation** — not a v1 target. Gate: FPR <2% AND TPR >85% on 30-day production holdout before graduating from beta. **Lead time:** 1-2 weeks (account approval + API key). **Go/No-go decision Week 2 (S1 end):** Must confirm <$0.05/request viable. Submit Week 1 for S8 readiness. See [11-third-party-integration-principles.md](11-third-party-integration-principles.md) Category B, Gate 3. | ~$0.001/request; ~$1,000/mo at 1K tenants (rate-capped; Starter plan = WASM-only) |
 | **Observability** | **Buy: CloudWatch (primary) + Datadog (optional v1.5)** | CloudWatch = zero additional cost (AWS native). Datadog APM if budget allows post-v1. | CloudWatch: included; Datadog: ~$200/mo |
 
 ### 2.2 Build Decision Criteria
@@ -110,23 +110,34 @@ Build only when ≥2 of 4 criteria are met:
 ### 2.3 Total Cost of Ownership (Year 1, v1 Launch)
 
 ```
-BUY costs (monthly, ~50 customers):
-  Vanta:               $400/mo  ($4,800/yr)
-  AWS infrastructure:  $3,000/mo
-  Keycloak ECS:        $50/mo (compute only)
-  Hive Moderation:     $200/mo  (usage-based est.)
-  Cloudflare R2:       $50/mo
+Infrastructure costs (designed for 1K tenant capacity):
+  AWS infrastructure (RDS r6g.2xlarge Multi-AZ + RDS Proxy,
+  ECS scaled, Redis r6g.large):   ~$4,000/mo
+  Keycloak ECS (4 tasks):          $150/mo
+  Vanta:                           $500/mo  ($6,000/yr)
+  Hive Moderation:                 $200/mo  (usage-based, scales with tenants)
+  Secrets Manager (batched):       $400/mo  (1K secrets × $0.40)
+  Cloudflare R2:                   $100/mo
+  SageMaker (Track 2):             $500/mo
+  Other AWS services               ~$1,650/mo (Route53, CloudFront/WAF,
+  (Route53, CloudFront/WAF,                   KMS ops, CloudWatch, SES)
+  KMS, CloudWatch, SES):
   ─────────────────────────────────────────────
-  Total Buy:          ~$3,700/mo = $44,400/yr
+  Total (at 1K tenant capacity):  ~$7,500/mo = $90,000/yr
 
 BUILD cost (amortized, 9 FTE × 6 months):
   Engineer cost:      ~$540K (year 1 build cost)
   Amortized over 3yr: $180K/yr
 
-Revenue at 50 customers (avg $800/mo):
-  MRR:                $40,000/mo = $480,000/yr
-  Gross Margin:       ($480K - $44K infra) / $480K = ~91%
-  (after subtracting engineer salaries: ~35–45% net margin)
+Revenue at 1K tenants (avg $800/mo):
+  MRR:                $800,000/mo = $9,600,000/yr
+  Gross Margin:       ($9.6M - $90K infra) / $9.6M = ~99%
+  (after subtracting engineer salaries: ~60–70% net margin at scale)
+
+Note: Infrastructure is pre-provisioned for 1K capacity from Sprint 1.
+At early growth (50 tenants, same fixed infra): $40K MRR vs ~$5,500/mo
+(variable costs scale down at 50 tenants) = ~86% gross margin.
+Margin improves as tenant count grows toward 1K capacity.
 ```
 
 ---
@@ -141,7 +152,7 @@ Revenue at 50 customers (avg $800/mo):
 
 | Approach | Description | SMESec Decision |
 |---|---|---|
-| **Silo (Separate DB per tenant)** | Each tenant has its own DB | ❌ Too costly (~$100/mo/tenant), not viable at SME pricing |
+| **Silo (Separate DB per tenant)** | Each tenant has its own DB | ❌ Too costly (~$100/mo/tenant). At 1K tenants = $100K+/mo vs ~$500/mo shared RDS + RDS Proxy. Unit economics destroyed. |
 | **Shared Schema (App-level isolation)** | Shared DB, application code filters by tenant | ❌ Application bug → cross-tenant data leak. Not sufficiently trustworthy. |
 | **Shared Schema (DB-level RLS)** | Shared DB, PostgreSQL RLS enforces isolation | ✅ **Chosen** — Defense in depth: both DB and app enforce isolation |
 
@@ -845,7 +856,7 @@ DLP Events This Month:
 **Rejected:** Auth0 or AWS Cognito (managed auth)
 
 **Auth0 rejection reasons:**
-- Cost: $0.23/MAU × 500 users/tenant × 50 tenants = $5,750/mo at v1 launch — not sustainable given gross margin target
+- Cost: $0.23/MAU × 500 users/tenant × 1K tenants = $115,000+/mo at v1 target scale — not sustainable. Keycloak saves ~$500K+/yr vs Auth0 at 1K tenants.
 - SAML 2.0 enterprise feature: Auth0 B2C does not support it. Auth0 B2B (Enterprise): additional cost.
 - Data residency: Auth0 does not guarantee EU data stays in EU at Startup tier
 

@@ -156,7 +156,7 @@ INTERNET → Route 53 → CloudFront → WAF (OWASP rules) → ALB
 **Technology choices:**
 - **Backend:** Go (API, sync engine) — chosen for concurrency model matching integration sync workloads
 - **Frontend:** React/Next.js (web), Flutter (mobile)
-- **Auth:** Keycloak self-hosted on ECS — $0/user vs Auth0 at $5,750/mo for 50 tenants
+- **Auth:** Keycloak self-hosted on ECS — $0/user vs Auth0 at ~$115,000+/mo for 1K tenants (500K MAU × $0.23/MAU). Keycloak saves ~$500K/yr at v1 target scale.
 - **Compliance:** Vanta — $4–6K/yr vs 3 months engineering ($60K+)
 
 ### 4.3 Core Architectural Decisions
@@ -349,7 +349,7 @@ Phase 1 makes deliberate, documented trade-offs that have known migration paths:
 
 | Trade-off | Phase 1 Decision | Phase 2+ Migration |
 |---|---|---|
-| Shared DB (RLS) vs DB-per-tenant | Shared PostgreSQL + RLS — viable up to ~500 tenants | If > 500 tenants: evaluate pg_partman + connection pooling (RDS Proxy from S1) |
+| Shared DB (RLS) vs DB-per-tenant | Shared PostgreSQL + RLS — viable up to ~2,000 tenants (RDS Proxy mandatory from Sprint 1 for 1K target) | If > 2K tenants: shard clusters (see [16-large-scale-architecture.md](16-large-scale-architecture.md) §4) |
 | Keycloak self-hosted | 2 ECS tasks, $50/mo — zero per-user cost | v1.5 retrospective: if ops load high → evaluate WorkOS/Auth0 |
 | Vanta for compliance | $4–6K/yr buy — faster than build | If custom compliance rules needed at v2 → extend via Vanta API + custom evidence collectors |
 | Track 2 deferred | No ML in Phase 1 — zero accuracy risk | Phase 2: ML Eng #1 joins M1; 3 months R&D before any GA feature |

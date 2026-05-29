@@ -59,11 +59,11 @@ These are the five numbers that determine if the project lives or dies. If any o
 
 | Metric | Target | Yellow | Red |
 |---|---|---|---|
-| Gross margin (revenue − COGS) / revenue | **>65%** at launch → **>70%** at 50 customers | 60–65% | <60% |
+| Gross margin (revenue − COGS) / revenue | **>65%** at launch → **>85%** at 100 customers → **>99%** at 1K tenants | 60–65% | <60% |
 | COGS per tenant/month (Track 1 + Track 2) | **<$354** (base) → **<$291** (6-month optimized) | $354–$420 | >$420 |
 | SageMaker inference cost per tenant/month | **<$50** | $50–$75 | >$75 |
 
-**Why it kills you:** Below 60% gross margin, the unit economics break before you reach 100 customers. You cannot fund growth, hire support, or pay for the SOC 2 audit. The cost model assumes $44K/yr infra at 50 customers — if AWS costs run 30% over, you are at ~56% margin (see cost-analysis.md Section 1.2 Risk Scenarios).
+**Why it kills you:** Below 60% gross margin, the unit economics break before you reach 100 customers. You cannot fund growth, hire support, or pay for the SOC 2 audit. The cost model assumes ~$70K/yr infra at 1K tenant capacity — infrastructure is pre-provisioned for scale from Sprint 1. At early growth (50 tenants), gross margin is ~85%; at 1K tenants capacity, gross margin reaches ~99%. If AWS costs run 30% over, gross margin at early stage drops to ~80% (still viable). See cost-analysis.md Section 1.2 Risk Scenarios.
 
 **How to measure:** Monthly P&L review. Tag all AWS resources with `tenant_id` and use Cost Explorer to get per-tenant actual costs. Compare against the cost-analysis.md baseline monthly.
 
@@ -279,10 +279,10 @@ These metrics are checked every week by the PM and Tech Lead. They are leading i
 | MRR growth month-over-month | **>15%** M4–M9 · **>10%** M10–M12 | 8–15% | <8% |
 | ARR at v1 (W26) | **>$50K** (approx 5 paying customers) | $25–50K | <$25K |
 | ARR at v1.5 (W38) | **>$120K** (10+ paying customers) | $60–120K | <$60K |
-| ARR at v2 (W52) | **>$480K** (50 customers model) | $240–480K | <$240K |
+| ARR at v2 (W52) | **>$480K** (50+ customers model) | $240–480K | <$240K |
 | Average Contract Value (ACV) | **>$8K/year** (Growth tier baseline) | $5–8K | <$5K |
 
-**ARR breakeven reference:** $480K ARR at 50 customers (Growth tier average) covers ~$44K/yr infra cost with ~91% gross margin on infrastructure. Below 50 customers, shared infra cost per tenant rises.
+**ARR breakeven reference:** $480K ARR at 50+ customers (Growth tier average) covers ~$70K/yr infra cost with >85% gross margin on infrastructure. Architecture is designed for 1K tenants — growing to 1K customers generates $9.6M ARR at ~99% gross margin. Per-tenant infra cost falls as customer count grows toward 1K capacity.
 
 ### Customer Acquisition
 

@@ -169,7 +169,7 @@ This principle prevents sprint delays caused by waiting for external approvals, 
 
 ## Cost Summary by Integration
 
-| Integration | Cost Model | Estimated Cost (50 customers) | Notes |
+| Integration | Cost Model | Estimated Cost (1K tenants) | Notes |
 |-------------|------------|-------------------------------|-------|
 | Google Workspace OAuth | Free | $0/mo | GCP project free tier |
 | Microsoft 365 Publisher | Free | $0/mo | Azure AD free tier |
@@ -184,7 +184,7 @@ This principle prevents sprint delays caused by waiting for external approvals, 
 | Keycloak (self-hosted) | Infrastructure | $50/mo | ECS Fargate compute only |
 | Cloudflare R2 | Usage-based | $50/mo | Storage + egress |
 
-**Total 3rd-party costs (Year 1, 50 customers):** ~$3,700/mo = $44,400/yr
+**Total 3rd-party costs (Year 1 at 1K tenant capacity):** ~$7,500/mo = $90,000/yr. Infrastructure is pre-provisioned for 1K tenants from Sprint 1; costs scale sub-linearly relative to revenue ($800K/mo MRR at 1K tenants = ~0.9% infra-to-revenue ratio.
 
 ---
 
